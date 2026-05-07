@@ -1,0 +1,2 @@
+# molly-game
+Molly é uma visual novel narrativa interativa desenvolvida como projeto de prática extensionista do curso de Ciência da Computação do CIESA. O jogo acompanha a rotina digital de uma jovem chamada Molly, que utiliza filtros de realidade aumentada nas redes sociais. Por meio de escolhas feitas pelo jogador e de momentos em que a própria Molly age sozinha, impulsionada pela ansiedade, o jogo busca conscientizar sobre os impactos psicológicos dos filtros de RA na autoestima e na saúde mental de jovens.
