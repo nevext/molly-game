@@ -1,8 +1,8 @@
-# 🎮 Molly
+# Molly
 
 Jogo narrativo interativo desenvolvido em Python com Flask, criado como projeto de prática extensionista do curso de Ciência da Computação do CIESA.
 
-O jogador acompanha Molly, uma jovem de 16 anos, ao longo de sua rotina digital. As escolhas feitas — e as que a própria Molly faz sozinha — determinam como a história termina.
+O jogador acompanha Molly, uma jovem de 16 anos, ao longo de sua rotina digital. As escolhas feitas e as que a própria Molly faz sozinha determinam como a história termina.
 
 ---
 
@@ -77,7 +77,7 @@ molly-game/
 
 ## Como o jogo funciona
 
-O jogo possui 6 aberturas diferentes sorteadas aleatoriamente a cada jogatina. Cada abertura tem 7 cenas com escolhas de múltipla opção. Uma barra de ansiedade invisível acumula ao longo das cenas — quando ultrapassa certos níveis, a própria Molly toma decisões sem esperar o jogador. O valor final da barra determina se o jogador recebe o final bom ou ruim.
+O jogo possui 6 aberturas diferentes sorteadas aleatoriamente a cada jogatina. Cada abertura tem 7 cenas com escolhas de múltipla opção. Uma barra de ansiedade invisível acumula ao longo das cenas quando ultrapassa certos níveis, a própria Molly toma decisões sem esperar o jogador. O valor final da barra determina se o jogador recebe o final bom ou ruim.
 
 ---
 
