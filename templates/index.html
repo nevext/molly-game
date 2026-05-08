@@ -1,0 +1,212 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Molly</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Raleway:wght@200;300;400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <video class="video-bg" autoplay muted loop playsinline>
+        <source src="{{ url_for('static', filename='video/menu/Menu_night_video_v2.mp4') }}" type="video/mp4">
+    </video>
+
+    <div class="overlay"></div>
+    <div class="particulas" id="particulas"></div>
+
+    <div class="ui">
+        <div class="topo">
+            <div class="titulo">Molly</div>
+            <nav class="nav">
+                <a href="/jogar">Jogar</a>
+                <a href="#" id="sobreLink" onclick="abrirSobre(event)">Sobre</a>
+                <a href="#" id="creditosLink" onclick="abrirCreditos(event)">Créditos</a>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Modal Sobre -->
+    <div class="modal-sobre" id="modalSobre">
+        <div class="modal-overlay" id="modalOverlay"></div>
+        <div class="instagram-profile">
+            <button class="close-btn" id="closeBtn">&times;</button>
+            
+            <div class="profile-header">
+                <div class="profile-pic">
+                    <img src="{{ url_for('static', filename='video/molly/Molly_gif(5s).gif') }}" alt="Molly">
+                </div>
+                <div class="profile-info">
+                    <h1>Molly</h1>
+                    <p class="bio">Um jogo sobre o que as redes sociais fazem com a gente em silêncio.</p>
+                </div>
+            </div>
+
+            <div class="profile-divider"></div>
+
+            <div class="profile-content">
+                <div class="post">
+                    <img src="{{ url_for('static', filename='video/molly/Molly_gif(5s).gif') }}" alt="Post">
+                </div>
+                
+                <div class="about-text">
+                    <p><strong>Desenvolvido como projeto de prática extensionista do curso de Ciência da Computação — CIESA 2026.</strong></p>
+                    <p style="margin-top: 1rem;">Este jogo é uma ficção inspirada em casos reais. Molly Russell tinha 14 anos.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Créditos -->
+    <div class="modal-sobre" id="modalCreditos">
+        <div class="modal-overlay" id="modalOverlayCreditos"></div>
+        <div class="instagram-profile">
+            <button class="close-btn" id="closeBtnCreditos">&times;</button>
+            
+            <div class="profile-header">
+                <div class="profile-pic">
+                    <img src="{{ url_for('static', filename='video/molly/Molly_gif_timida.gif') }}" alt="Molly Tímida">
+                </div>
+                <div class="profile-info">
+                    <h1>Créditos</h1>
+                    <p class="bio">Conheça quem desenvolveu este jogo.</p>
+                </div>
+            </div>
+
+            <div class="profile-divider"></div>
+
+            <div class="profile-content">
+                <div class="post">
+                    <img src="{{ url_for('static', filename='video/molly/Molly_gif_timida.gif') }}" alt="Post">
+                </div>
+                
+                <div class="about-text">
+                    <p><strong>Desenvolvimento</strong></p>
+                    <p>David Neves de Figueiredo<br>Ciência da Computação CIESA 2026</p>
+                    
+                    <p style="margin-top: 1rem;"><strong>Arte</strong></p>
+                    <p>Personagem e expressões geradas com auxílio de IA generativa</p>
+                    
+                    <p style="margin-top: 1rem;"><strong>Cenários</strong></p>
+                    <p>Fotografia e ilustração digital</p>
+                    
+                    <p style="margin-top: 1rem;"><strong>Trilha Sonora</strong></p>
+                    <p>[A DEFINIR]</p>
+                    
+                    <p style="margin-top: 1rem;"><strong>Inspirado em</strong></p>
+                    <p>Molly Russell 2003 a 2017<br>Frances Haugen whistleblower, 2021</p>
+                    
+                    <p style="margin-top: 1rem;"><strong>Orientadora</strong></p>
+                    <p>Me. Janaína Souza CIESA</p>
+                    
+                    <p style="margin-top: 1rem;"><strong>Agradecimentos</strong></p>
+                    <p>CIESA Centro Universitário de Ensino Superior do Amazonas</p>
+                    
+                    <p style="margin-top: 1rem;"><strong>Ferramentas utilizadas</strong></p>
+                    <p>Python • Flask<br>HTML • CSS • JavaScript<br>Adobe After Effects<br>Canva Pro<br>Google Gemini<br>ChatGPT</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Funcionalidade do Modal Sobre
+        function abrirSobre(e) {
+            e.preventDefault();
+            const modal = document.getElementById('modalSobre');
+            modal.classList.add('ativo');
+            document.body.classList.add('modal-aberto');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function fecharSobre() {
+            const modal = document.getElementById('modalSobre');
+            modal.classList.remove('ativo');
+            document.body.classList.remove('modal-aberto');
+            document.body.style.overflow = 'auto';
+        }
+
+        const closeBtn = document.getElementById('closeBtn');
+        const modalOverlay = document.getElementById('modalOverlay');
+
+        closeBtn.addEventListener('click', fecharSobre);
+        modalOverlay.addEventListener('click', fecharSobre);
+
+        // Funcionalidade do Modal Créditos
+        function abrirCreditos(e) {
+            e.preventDefault();
+            const modal = document.getElementById('modalCreditos');
+            modal.classList.add('ativo');
+            document.body.classList.add('modal-aberto');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function fecharCreditos() {
+            const modal = document.getElementById('modalCreditos');
+            modal.classList.remove('ativo');
+            document.body.classList.remove('modal-aberto');
+            document.body.style.overflow = 'auto';
+        }
+
+        const closeBtnCreditos = document.getElementById('closeBtnCreditos');
+        const modalOverlayCreditos = document.getElementById('modalOverlayCreditos');
+
+        closeBtnCreditos.addEventListener('click', fecharCreditos);
+        modalOverlayCreditos.addEventListener('click', fecharCreditos);
+
+        // Fechar modais com ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                fecharSobre();
+                fecharCreditos();
+            }
+        });
+
+        // Resto do código anterior
+        // Quebrar o título em caracteres para efeito de tremor
+        const titulo = document.querySelector('.titulo');
+        const texto = titulo.textContent;
+        titulo.innerHTML = '';
+        
+        for (let i = 0; i < texto.length; i++) {
+            const span = document.createElement('span');
+            span.textContent = texto[i];
+            span.style.display = 'inline-block';
+            titulo.appendChild(span);
+        }
+
+        // Efeito de tremor ao passar o mouse
+        titulo.addEventListener('mousemove', (e) => {
+            const chars = titulo.querySelectorAll('span');
+            const rect = titulo.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left;
+
+            chars.forEach((char, index) => {
+                const charRect = char.getBoundingClientRect();
+                const charX = charRect.left - rect.left + charRect.width / 2;
+                const distance = Math.abs(mouseX - charX);
+                const maxDistance = 100;
+
+                if (distance < maxDistance) {
+                    // Remover a classe anterior se existir
+                    char.classList.remove('char-shake');
+                    // Forçar reflow para reiniciar a animação
+                    void char.offsetWidth;
+                    char.classList.add('char-shake');
+                }
+            });
+        });
+
+        // Remover tremor quando mouse sai
+        titulo.addEventListener('mouseleave', () => {
+            const chars = titulo.querySelectorAll('span');
+            chars.forEach(char => char.classList.remove('char-shake'));
+        });
+
+    </script>
+
+</body>
+</html>

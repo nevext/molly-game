@@ -1,0 +1,383 @@
+/* static/css/style.css */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background: #000;
+}
+
+.video-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.25);
+    z-index: 1;
+}
+
+.ui {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 2rem 2.5rem;
+}
+
+body.modal-aberto .ui {
+    pointer-events: none;
+}
+
+.topo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.titulo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 3.5rem;
+    font-weight: 300;
+    color: #fff;
+    letter-spacing: 0.05em;
+    text-shadow: 0 2px 20px rgba(0,0,0,0.5);
+    cursor: default;
+    transition: opacity 0.3s;
+}
+
+.titulo:hover {
+    opacity: 0.8;
+}
+
+.nav {
+    display: flex;
+    gap: 3rem;
+    align-items: center;
+}
+
+.nav a {
+    font-family: 'Raleway', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 300;
+    color: #fff;
+    text-decoration: none;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    transition: opacity 0.3s;
+}
+
+.nav a:hover {
+    opacity: 0.6;
+}
+
+.notificacoes {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    pointer-events: none;
+    display: none;
+}
+
+.particula {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 50%;
+    animation: flutuar linear infinite;
+}
+
+@keyframes flutuar {
+    0% { transform: translateY(100vh) translateX(0); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { transform: translateY(-10px) translateX(20px); opacity: 0; }
+}
+
+@media (max-width: 768px) {
+    .ui { padding: 1.5rem; }
+    .titulo { font-size: 2rem; }
+    .nav { flex-direction: column; gap: 1rem; align-items: flex-end; }
+    .nav a { font-size: 0.8rem; }
+    .notificacoes { bottom: 1rem; right: 1rem; left: 1rem; }
+    .notificacao { max-width: 100%; }
+}
+
+/* Animações de entrada */
+.video-bg {
+    animation: fadeInVideo 1s ease-in forwards;
+}
+
+.titulo {
+    animation: fadeInTitle 1.2s ease-in 0.8s forwards;
+    opacity: 0;
+}
+
+.nav {
+    animation: fadeInNav 1.2s ease-in 1.2s forwards;
+    opacity: 0;
+}
+
+@keyframes fadeInVideo {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeInTitle {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInNav {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Efeito de tremor no título */
+.titulo span.char-shake {
+    animation: charShake 0.2s ease-in-out;
+    display: inline-block;
+}
+
+@keyframes charShake {
+    0% { transform: translateX(0) translateY(0); }
+    25% { transform: translateX(-2px) translateY(-2px); }
+    50% { transform: translateX(2px) translateY(2px); }
+    75% { transform: translateX(-2px) translateY(2px); }
+    100% { transform: translateX(0) translateY(0); }
+}
+
+/* Modal Sobre - Instagram Profile Style */
+.modal-sobre {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.modal-sobre.ativo {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(3px);
+}
+
+.instagram-profile {
+    position: relative;
+    z-index: 101;
+    background: #fff;
+    border-radius: 20px;
+    max-width: 420px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    animation: slideUp 0.4s ease;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(40px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.close-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    font-size: 2rem;
+    color: #000;
+    cursor: pointer;
+    z-index: 102;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.3s;
+}
+
+.close-btn:hover {
+    opacity: 0.6;
+}
+
+.profile-header {
+    display: flex;
+    align-items: flex-start;
+    padding: 1.5rem;
+    gap: 1rem;
+}
+
+.profile-pic {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid #000;
+    flex-shrink: 0;
+}
+
+.profile-pic img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.profile-info {
+    flex: 1;
+}
+
+.profile-info h1 {
+    font-family: 'Raleway', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #000;
+    margin-bottom: 0.3rem;
+}
+
+.bio {
+    font-family: 'Raleway', sans-serif;
+    font-size: 0.85rem;
+    color: #555;
+    line-height: 1.4;
+    margin-top: 0.5rem;
+}
+
+.profile-divider {
+    height: 1px;
+    background: #eee;
+    margin: 0 1.5rem;
+}
+
+.profile-content {
+    padding: 1rem 1.5rem;
+}
+
+.post {
+    width: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+}
+
+.post img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.about-text {
+    font-family: 'Raleway', sans-serif;
+    color: #333;
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+.about-text p {
+    margin-bottom: 0.5rem;
+}
+
+.about-text strong {
+    color: #000;
+    font-weight: 600;
+}
+
+/* Scrollbar customizado */
+.instagram-profile::-webkit-scrollbar {
+    width: 8px;
+}
+
+.instagram-profile::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.instagram-profile::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 10px;
+}
+
+.instagram-profile::-webkit-scrollbar-thumb:hover {
+    background: #999;
+}
+
+@media (max-width: 600px) {
+    .instagram-profile {
+        border-radius: 16px;
+        max-width: 95%;
+    }
+    
+    .profile-header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    
+    .profile-pic {
+        width: 100px;
+        height: 100px;
+    }
+}
