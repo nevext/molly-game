@@ -267,7 +267,7 @@
     <script>
         // ── Som ──
         const audio = document.getElementById('menuAudio');
-        audio.volume = 1;
+        audio.volume = 0.7;
         audio.play().catch(() => {
             document.addEventListener('click', () => { audio.play(); }, { once: true });
         });
@@ -390,7 +390,9 @@
             const aberturaDiv = document.getElementById('aberturaVideo');
             const video = document.getElementById('videoAbertura');
             aberturaDiv.classList.add('ativo');
-            video.play();
+            video.volume = 1.0;
+            video.muted = false;
+            video.play().catch(() => { video.muted = true; video.play(); });
             video.addEventListener('ended', irJogar);
         }
 

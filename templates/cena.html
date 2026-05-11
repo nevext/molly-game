@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Molly</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
     <style>
         @font-face {
             font-family: 'Glassure';
@@ -23,45 +24,95 @@
             height: 100vh;
             overflow: hidden;
             background: #000;
+            cursor: pointer;
         }
 
-        /* ── Fundo ── */
+        /* ── Fundo — sem animação quando mesma imagem ── */
         .fundo {
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
             object-fit: cover;
             z-index: 0;
-            animation: fadeIn 0.8s ease forwards;
         }
 
-        .overlay {
+        .fundo.nova-imagem {
+            animation: fadeIn 0.4s ease forwards;
+        }
+
+        .fundo-preto {
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            background: rgba(0,0,0,0.15);
-            z-index: 1;
+            background: #000;
+            z-index: 0;
         }
 
-        /* ── Personagem / frame ── */
-        .personagem {
+        /* ── NARRADOR ── */
+        .caixa-narrador {
             position: fixed;
-            bottom: 0;
+            bottom: 2.5rem;
             left: 50%;
             transform: translateX(-50%);
-            height: 85vh;
-            z-index: 2;
+            width: 100%;
+            max-width: 760px;
+            z-index: 10;
+            padding: 0 2rem;
+        }
+
+        .narrador-texto {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 300;
+            font-style: italic;
+            color: rgba(255,255,255,0.82);
+            text-align: center;
+            line-height: 1.8;
+            text-shadow: 0 2px 20px rgba(0,0,0,1), 0 0 60px rgba(0,0,0,1);
+        }
+
+        /* ── CAIXA MOLLY ── */
+        .caixa-molly {
+            position: fixed;
+            bottom: 0; left: 50%;
+            transform: translateX(-50%);
+            width: 900px;
+            max-width: 96vw;
+            z-index: 10;
+        }
+
+        .molly-nome-img {
+            display: block;
+            height: 42px;
             object-fit: contain;
-            animation: entradaPersonagem 0.5s ease forwards;
-            filter: drop-shadow(0 10px 40px rgba(0,0,0,0.6));
-            cursor: pointer;
+            object-position: left;
+            margin-bottom: -2px;
+            margin-left: 8px;
         }
 
-        .personagem.molly-age {
-            animation: entradaPersonagem 0.5s ease forwards, tremor 0.3s ease-in-out 1s 3;
+        .molly-box-wrap {
+            position: relative;
         }
 
-        /* ── Caixa de diálogo (só noite) ── */
+        .molly-box-img {
+            width: 100%;
+            display: block;
+        }
+
+        .molly-box-texto {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 82%;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 300;
+            color: rgba(255,255,255,0.92);
+            line-height: 1.7;
+        }
+
+        /* ── CAIXA NOITE ── */
         .dialogo {
             position: fixed;
             bottom: 0; left: 0;
@@ -71,20 +122,18 @@
         }
 
         .dialogo-inner {
-            background: rgba(5, 5, 15, 0.92);
+            background: rgba(5,5,15,0.92);
             border: 1px solid rgba(255,255,255,0.07);
             border-radius: 14px;
             padding: 1.4rem 2rem;
             max-width: 860px;
             margin: 0 auto;
             backdrop-filter: blur(12px);
-            box-shadow: 0 -8px 40px rgba(0,0,0,0.5);
         }
 
         .dialogo-nome {
             font-family: 'DMSans', sans-serif;
-            font-size: 0.65rem;
-            font-weight: 400;
+            font-size: 0.62rem;
             color: rgba(255,255,255,0.35);
             letter-spacing: 0.3em;
             text-transform: uppercase;
@@ -100,8 +149,8 @@
         }
 
         .dialogo-texto {
-            font-family: 'DMSans', sans-serif;
-            font-size: 1rem;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.95rem;
             font-weight: 300;
             color: rgba(255,255,255,0.88);
             line-height: 1.7;
@@ -126,64 +175,53 @@
             width: 100%;
             max-width: 560px;
             padding: 0 2rem;
-            animation: fadeIn 0.5s ease 0.6s both;
         }
 
         .opcao-btn {
-            background: rgba(5, 5, 15, 0.8);
+            background: rgba(5,5,15,0.85);
             border: 1px solid rgba(255,255,255,0.12);
             border-radius: 4px;
             color: rgba(255,255,255,0.8);
-            font-family: 'DMSans', sans-serif;
+            font-family: 'Montserrat', sans-serif;
             font-size: 0.82rem;
             font-weight: 300;
-            letter-spacing: 0.04em;
             padding: 0.75rem 2rem;
             cursor: pointer;
             width: 100%;
             text-align: center;
             transition: all 0.2s ease;
-            backdrop-filter: blur(8px);
             text-decoration: none;
             display: block;
         }
 
         .opcao-btn:hover {
-            background: rgba(139, 0, 0, 0.4);
-            border-color: rgba(139, 0, 0, 0.6);
+            background: rgba(139,0,0,0.4);
+            border-color: rgba(139,0,0,0.6);
             color: #fff;
         }
 
-        /* ── Botão continuar (dia / molly age) ── */
+        /* ── Botão continuar ── */
         .btn-avancar {
             position: fixed;
-            bottom: 2rem;
+            bottom: 1.5rem;
             right: 2.5rem;
             z-index: 10;
             background: none;
             border: none;
             border-bottom: 1px solid rgba(255,255,255,0.2);
-            color: rgba(255,255,255,0.35);
-            font-family: 'DMSans', sans-serif;
-            font-size: 0.65rem;
+            color: rgba(255,255,255,0.3);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.6rem;
             font-weight: 300;
             letter-spacing: 0.25em;
             text-transform: uppercase;
             cursor: pointer;
             padding: 0.3rem 0;
-            transition: all 0.3s;
             text-decoration: none;
-            animation: piscar 1.5s ease infinite;
+            animation: piscar 1.8s ease infinite;
         }
 
-        .btn-avancar:hover {
-            color: rgba(255,255,255,0.8);
-        }
-
-        @keyframes piscar {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
-        }
+        .btn-avancar:hover { color: rgba(255,255,255,0.8); }
 
         /* ── Easter egg ── */
         .easter-egg {
@@ -201,24 +239,28 @@
             border: 1px solid rgba(255,255,255,0.07);
             border-radius: 6px;
             padding: 0.5rem 0.6rem;
-            font-family: 'DMSans', sans-serif;
+            font-family: 'Montserrat', sans-serif;
             font-size: 0.58rem;
             color: rgba(255,255,255,0.25);
             line-height: 1.4;
         }
 
-        /* ── Tremor ── */
         body.crise { animation: telaBalanca 0.15s ease-in-out infinite; }
 
-        /* ── Animações ── */
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
         }
 
-        @keyframes entradaPersonagem {
-            from { opacity: 0; transform: translateX(-50%) translateY(15px); }
-            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        @keyframes piscar {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.9; }
+        }
+
+        @keyframes telaBalanca {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-3px); }
+            75% { transform: translateX(3px); }
         }
 
         @keyframes tremor {
@@ -227,59 +269,76 @@
             75%  { transform: translateX(calc(-50% + 4px)); }
             100% { transform: translateX(-50%); }
         }
-
-        @keyframes telaBalanca {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-3px); }
-            75% { transform: translateX(3px); }
-        }
     </style>
 </head>
 <body class="{% if molly_age and dados and dados.get('texto_automatico') %}crise{% endif %}">
 
     <!-- Áudio -->
-    <audio id="trilha" loop autoplay>
+    <audio id="trilha" loop>
         <source src="{{ url_for('static', filename=trilha) }}" type="audio/mp3">
     </audio>
 
-    <!-- Fundo -->
-    {% if frame %}
-        <img class="fundo" src="{{ url_for('static', filename=frame) }}" alt=""
-             {% if not tem_escolhas %}onclick="avancarFrame()"{% endif %}>
-    {% endif %}
+    {% if not tem_escolhas %}
+    <!-- ── DIA ── -->
 
-    <div class="overlay"></div>
-
-    {% if tem_escolhas %}
-        <!-- Personagem frame atual -->
-        {% if frame %}
-            <img class="personagem {% if molly_age %}molly-age{% endif %}"
-                 src="{{ url_for('static', filename=frame) }}" alt="Molly">
+        {% if frame.imagem %}
+            <img class="fundo {% if imagem_mudou %}nova-imagem{% endif %}"
+                 id="fundoImg"
+                 src="{{ url_for('static', filename=frame.imagem) }}"
+                 alt="">
+        {% else %}
+            <div class="fundo-preto"></div>
         {% endif %}
 
-        <!-- Easter egg -->
+        {% if frame.tipo_texto == 'narrador' %}
+            <div class="caixa-narrador">
+                <div class="narrador-texto" id="textoAtivo">{{ frame.texto }}</div>
+            </div>
+
+        {% elif frame.tipo_texto == 'molly' %}
+            <div class="caixa-molly">
+                <img class="molly-nome-img"
+                     src="{{ url_for('static', filename='box/box_molly/Molly_Name_Box.png') }}"
+                     alt="Molly">
+                <div class="molly-box-wrap">
+                    <img class="molly-box-img"
+                         src="{{ url_for('static', filename='box/box_molly/box_molly_v2.png') }}"
+                         alt="">
+                    <div class="molly-box-texto" id="textoAtivo">{{ frame.texto }}</div>
+                </div>
+            </div>
+        {% endif %}
+
+        <a href="/avancar_frame" class="btn-avancar" id="btnAvancar">continuar →</a>
+
+    {% else %}
+    <!-- ── NOITE ── -->
+
+        {% if frame %}
+            <img class="fundo nova-imagem"
+                 src="{{ url_for('static', filename=frame) }}" alt="">
+        {% endif %}
+
         {% if dados and dados.easter_egg %}
             <div class="easter-egg" id="easterEgg" onclick="abrirEasterEgg()">
                 <div class="easter-egg-noticia">{{ dados.easter_egg.texto }}</div>
             </div>
         {% endif %}
 
-        <!-- Diálogo -->
         {% if dados %}
         <div class="dialogo">
             <div class="dialogo-inner">
                 <div class="dialogo-nome">Molly</div>
                 <div class="dialogo-titulo">{{ dados.titulo }}</div>
                 {% if molly_age %}
-                    <div class="dialogo-texto automatico" id="textoDialogo">{{ dados.texto_automatico }}</div>
+                    <div class="dialogo-texto automatico" id="textoAtivo">{{ dados.texto_automatico }}</div>
                 {% else %}
-                    <div class="dialogo-texto" id="textoDialogo">{{ dados.texto }}</div>
+                    <div class="dialogo-texto" id="textoAtivo">{{ dados.texto }}</div>
                 {% endif %}
             </div>
         </div>
         {% endif %}
 
-        <!-- Opções ou avancar -->
         {% if molly_age %}
             <a href="/avancar" class="btn-avancar">continuar →</a>
         {% elif dados %}
@@ -290,26 +349,60 @@
             </div>
         {% endif %}
 
-    {% else %}
-        <!-- Dia: clique em qualquer lugar avança frame -->
-        <a href="/avancar_frame" class="btn-avancar" id="btnAvancar">continuar →</a>
     {% endif %}
 
     <script>
-        // Áudio
-        const trilha = document.getElementById('trilha');
-        if (trilha) {
-            trilha.volume = 1.0;
-            trilha.play().catch(() => {
-                document.addEventListener('click', () => trilha.play(), { once: true });
-            });
+        // ── Música: não reinicia entre frames da mesma trilha ──
+        const TRILHA_SRC = "{{ url_for('static', filename=trilha) }}";
+        const TRILHA_KEY = 'molly_trilha_src';
+        const POS_KEY = 'molly_trilha_pos';
+
+        const audio = document.getElementById('trilha');
+        if (audio) {
+            audio.volume = 1.0;
+            const ultimaSrc = sessionStorage.getItem(TRILHA_KEY);
+            const ultimaPos = parseFloat(sessionStorage.getItem(POS_KEY) || '0');
+
+            if (ultimaSrc === TRILHA_SRC && ultimaPos > 0) {
+                // Mesma trilha — restaura sem recarregar
+                audio.addEventListener('canplay', () => {
+                    audio.currentTime = ultimaPos;
+                    audio.play().catch(() => {});
+                }, { once: true });
+            } else {
+                sessionStorage.setItem(TRILHA_KEY, TRILHA_SRC);
+                sessionStorage.setItem(POS_KEY, '0');
+                audio.play().catch(() => {
+                    document.addEventListener('click', () => audio.play(), { once: true });
+                });
+            }
+
+            // Salva posição sem parar a música
+            setInterval(() => {
+                if (!audio.paused && !audio.ended) {
+                    sessionStorage.setItem(POS_KEY, String(audio.currentTime));
+                }
+            }, 500);
         }
 
-        // Easter egg
+        // ── SFX borboleta — caminho correto ──
+        {% if cap_id == 'ato1_tut_borboleta' %}
+        const sfx = new Audio("{{ url_for('static', filename='journey/ato_1/Cap_2(noite)/Sound/sfx_bad_ending(Molly).mp3') }}");
+        sfx.volume = 0.6;
+        sfx.play().catch(() => {});
+        const sfxInt = setInterval(() => {
+            sfx.currentTime = 0;
+            sfx.play().catch(() => {});
+        }, 5000);
+        document.getElementById('btnAvancar').addEventListener('click', () => {
+            clearInterval(sfxInt);
+            sfx.pause();
+        }, { once: true });
+        {% endif %}
+
+        // ── Easter egg ──
         const egg = document.getElementById('easterEgg');
-        if (egg) {
-            setTimeout(() => { egg.style.opacity = '1'; }, 4000);
-        }
+        if (egg) setTimeout(() => { egg.style.opacity = '1'; }, 4000);
 
         function abrirEasterEgg() {
             {% if dados and dados.easter_egg %}
@@ -317,34 +410,121 @@
             {% endif %}
         }
 
-        // Digitação do texto
-        const textoEl = document.getElementById('textoDialogo');
+        // ── Digitação ──
+        const textoEl = document.getElementById('textoAtivo');
         if (textoEl) {
             const original = textoEl.textContent.trim();
             textoEl.textContent = '';
             let i = 0;
+            let digitando = true;
+
             function digitar() {
                 if (i < original.length) {
                     textoEl.textContent += original[i++];
-                    setTimeout(digitar, 18);
+                    setTimeout(digitar, 20);
+                } else {
+                    digitando = false;
                 }
             }
-            setTimeout(digitar, 300);
+            setTimeout(digitar, 150);
+
+            // Clique na tela só completa texto — não avança
             document.addEventListener('click', (e) => {
-                if (!e.target.closest('a') && !e.target.closest('.easter-egg') && i < original.length) {
+                if (e.target.closest('a')) return;
+                if (digitando) {
                     i = original.length;
                     textoEl.textContent = original;
+                    digitando = false;
                 }
             });
         }
 
-        // Dia: clique em qualquer lugar avança
+        // ── Só o botão "continuar" avança — sem reload ──
         {% if not tem_escolhas %}
-        document.body.addEventListener('click', (e) => {
-            if (!e.target.closest('a')) {
-                window.location.href = '/avancar_frame';
+
+        const BOX_MOLLY_SRC = "{{ url_for('static', filename='box/box_molly/box_molly_v2.png') }}";
+        const BOX_NOME_SRC  = "{{ url_for('static', filename='box/box_molly/Molly_Name_Box.png') }}";
+        const BASE_URL = "{{ request.host_url }}static/";
+
+        function avancarFrame() {
+            fetch('/frame_data')
+                .then(r => r.json())
+                .then(data => {
+                    if (data.fim) {
+                        if (audio) sessionStorage.setItem(POS_KEY, String(audio.currentTime));
+                        window.location.href = data.redirect;
+                        return;
+                    }
+
+                    // Troca imagem de fundo se mudou
+                    if (data.imagem_mudou && data.imagem) {
+                        const fundo = document.getElementById('fundoImg');
+                        if (fundo) fundo.src = "{{ request.host_url }}static/" + data.imagem;
+                    }
+
+                    // Troca caixa de texto
+                    const narrador = document.querySelector('.caixa-narrador');
+                    const mollyBox = document.querySelector('.caixa-molly');
+
+                    if (data.tipo_texto === 'narrador') {
+                        if (mollyBox) mollyBox.style.display = 'none';
+                        if (!narrador) {
+                            const div = document.createElement('div');
+                            div.className = 'caixa-narrador';
+                            div.innerHTML = '<div class="narrador-texto" id="textoAtivo"></div>';
+                            document.body.appendChild(div);
+                        } else {
+                            narrador.style.display = '';
+                        }
+                        iniciarTexto('narrador', data.texto);
+
+                    } else if (data.tipo_texto === 'molly') {
+                        if (narrador) narrador.style.display = 'none';
+                        if (!mollyBox) {
+                            const div = document.createElement('div');
+                            div.className = 'caixa-molly';
+                            div.innerHTML = `
+                                <img class="molly-nome-img" src="${BOX_NOME_SRC}" alt="Molly">
+                                <div class="molly-box-wrap">
+                                    <img class="molly-box-img" src="${BOX_MOLLY_SRC}" alt="">
+                                    <div class="molly-box-texto" id="textoAtivo"></div>
+                                </div>`;
+                            document.body.appendChild(div);
+                        } else {
+                            mollyBox.style.display = '';
+                        }
+                        iniciarTexto('molly', data.texto);
+                    }
+                })
+                .catch(() => {
+                    window.location.href = '/avancar_frame';
+                });
+        }
+
+        function iniciarTexto(tipo, texto) {
+            const el = document.getElementById('textoAtivo') ||
+                       document.querySelector('.narrador-texto') ||
+                       document.querySelector('.molly-box-texto');
+            if (!el) return;
+            el.textContent = '';
+            let i = 0;
+            function digitar() {
+                if (i < texto.length) {
+                    el.textContent += texto[i++];
+                    setTimeout(digitar, 20);
+                }
             }
-        });
+            setTimeout(digitar, 100);
+        }
+
+        const btn = document.getElementById('btnAvancar');
+        if (btn) {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                avancarFrame();
+            });
+        }
         {% endif %}
     </script>
 
