@@ -5,207 +5,468 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Molly</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Raleway:wght@200;300;400&display=swap" rel="stylesheet">
+    <style>
+        @font-face {
+            font-family: 'Glassure';
+            src: url("{{ url_for('static', filename='menu/Glassure.otf') }}") format('opentype');
+        }
+        @font-face {
+            font-family: 'DMSans';
+            src: url("{{ url_for('static', filename='menu/DMSans-VariableFont_opsz,wght.ttf') }}") format('truetype');
+            font-weight: 100 900;
+        }
+        @font-face {
+            font-family: 'DMSans';
+            src: url("{{ url_for('static', filename='menu/DMSans-Italic-VariableFont_opsz,wgh....ttf') }}") format('truetype');
+            font-style: italic;
+        }
+    </style>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
 
-    <video class="video-bg" autoplay muted loop playsinline>
-        <source src="{{ url_for('static', filename='video/menu/Menu_night_video_v2.mp4') }}" type="video/mp4">
-    </video>
-
+    <div class="menu-bg" style="background-image: url('{{ url_for('static', filename='menu/menu_fundo.png') }}')"></div>
     <div class="overlay"></div>
-    <div class="particulas" id="particulas"></div>
 
-    <div class="ui">
-        <div class="topo">
-            <div class="titulo">Molly</div>
+    <audio id="menuAudio" loop>
+        <source src="{{ url_for('static', filename='menu/Mr_Magic_Remix(Molly).mp3') }}" type="audio/mp3">
+    </audio>
+
+    <!-- ── UI MENU ── -->
+    <div class="ui" id="uiMenu">
+        <div class="logo-area">
+            <div class="logo-molly">MOLLY</div>
+            <div class="logo-beta">BETA</div>
+        </div>
+        <div class="rodape">
+            <div class="click-hint" id="clickHint">CLIQUE EM QUALQUER LUGAR</div>
             <nav class="nav">
-                <a href="/jogar">Jogar</a>
-                <a href="#" id="sobreLink" onclick="abrirSobre(event)">Sobre</a>
-                <a href="#" id="creditosLink" onclick="abrirCreditos(event)">Créditos</a>
+                <a href="#" onclick="abrirSobre(event)">Sobre</a>
+                <a href="#" onclick="abrirCreditos(event)">Creditos</a>
+                <a href="#" onclick="abrirExtra(event)">Extra</a>
+                <a href="#" onclick="abrirConfiguracoes(event)">Configuracoes</a>
             </nav>
         </div>
     </div>
 
-    <!-- Modal Sobre -->
-    <div class="modal-sobre" id="modalSobre">
-        <div class="modal-overlay" id="modalOverlay"></div>
-        <div class="instagram-profile">
-            <button class="close-btn" id="closeBtn">&times;</button>
-            
-            <div class="profile-header">
-                <div class="profile-pic">
-                    <img src="{{ url_for('static', filename='video/molly/Molly_gif(5s).gif') }}" alt="Molly">
+    <div class="click-overlay" id="clickOverlay" onclick="iniciarJogo()"></div>
+
+    <!-- ── TUTORIAL ── -->
+    <div class="tutorial-screen" id="tutorialScreen">
+
+        <!-- FASE 1: livro em loop + texto -->
+        <div class="tut-fase" id="tutFase1">
+            <div class="tut-livro-wrap">
+                <img class="tut-livro" id="tutLivro" src="" alt="caderno">
+            </div>
+            <div class="tut-texto">
+                <p class="tut-titulo">O Caderno</p>
+                <p class="tut-desc">Todo mundo já teve um diário. Este é o da Molly.<br>Nele ficam as dicas e as coisas mais importantes que ela carrega.</p>
+            </div>
+            <div class="tut-pular" onclick="avancarTutorial(2)">CLIQUE EM QUALQUER LUGAR PARA CONTINUAR</div>
+        </div>
+
+        <!-- FASE 2: livro abre uma vez + caneta escreve -->
+        <div class="tut-fase" id="tutFase2" style="display:none;">
+            <div class="tut-livro-wrap">
+                <img class="tut-livro" id="tutLivro2" src="" alt="caderno">
+                <div class="tut-caneta-wrap" id="tutCanetaWrap" style="opacity:0;">
+                    <img class="tut-caneta" id="tutCaneta" src="{{ url_for('static', filename='pen/CANETA.png') }}" alt="caneta">
                 </div>
-                <div class="profile-info">
-                    <h1>Molly</h1>
-                    <p class="bio">Um jogo sobre o que as redes sociais fazem com a gente em silêncio.</p>
+                <div class="tut-escrito" id="tutEscrito" style="opacity:0;">
+                    Nao se preocupe.<br>Deixa que eu escrevo por voce.
                 </div>
             </div>
+            <div class="tut-pular" onclick="avancarTutorial(3)">CLIQUE EM QUALQUER LUGAR PARA CONTINUAR</div>
+        </div>
 
-            <div class="profile-divider"></div>
+        <!-- FASE 3: borboleta + texto -->
+        <div class="tut-fase" id="tutFase3" style="display:none;">
+            <div class="tut-livro-wrap">
+                <img class="tut-livro" id="tutBorboleta" src="" alt="borboleta">
+            </div>
+            <div class="tut-texto">
+                <p class="tut-titulo">A Borboleta</p>
+                <p class="tut-desc">Quando ela aparecer, significa que voce fez algo<br>que vai afetar o futuro de Molly.</p>
+            </div>
+            <div class="tut-pular" onclick="avancarTutorial(4)">CLIQUE EM QUALQUER LUGAR PARA CONTINUAR</div>
+        </div>
 
-            <div class="profile-content">
-                <div class="post">
-                    <img src="{{ url_for('static', filename='video/molly/Molly_gif(5s).gif') }}" alt="Post">
-                </div>
-                
-                <div class="about-text">
-                    <p><strong>Desenvolvido como projeto de prática extensionista do curso de Ciência da Computação — CIESA 2026.</strong></p>
-                    <p style="margin-top: 1rem;">Este jogo é uma ficção inspirada em casos reais. Molly Russell tinha 14 anos.</p>
-                </div>
+        <!-- FASE 4: escolha — ver abertura ou pular -->
+        <div class="tut-fase" id="tutFase4" style="display:none;">
+            <div class="tut-escolha">
+                <p class="tut-titulo" style="margin-bottom: 2rem;">Como deseja comecar?</p>
+                <button class="tut-btn" onclick="verAbertura()">Ver introducao</button>
+                <button class="tut-btn tut-btn-sec" onclick="irJogar()">Pular para o jogo</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ── VIDEO ABERTURA ── -->
+    <div class="abertura-video" id="aberturaVideo">
+        <video id="videoAbertura" playsinline>
+            <source src="{{ url_for('static', filename='video/Abertura/Opening_Game.mp4') }}" type="video/mp4">
+        </video>
+        <div class="tut-pular" style="position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);" onclick="irJogar()">CLIQUE PARA PULAR</div>
+    </div>
+
+    <!-- ── MODAL SOBRE (TLOU) ── -->
+    <div class="modal-tlou" id="modalSobre">
+        <div class="modal-overlay" onclick="fecharSobre()"></div>
+        <div class="tlou-panel">
+            <div class="tlou-header">
+                <span class="tlou-title">SOBRE</span>
+                <button class="tlou-close" onclick="fecharSobre()">X</button>
+            </div>
+            <div class="tlou-sobre-content">
+                <p class="tlou-sobre-text"><strong>Molly</strong> e uma visual novel interativa desenvolvida como projeto de pratica extensionista do curso de Ciencia da Computacao — CIESA 2026.</p>
+                <p class="tlou-sobre-text" style="margin-top:1rem;">O jogador acompanha Molly, uma jovem de 16 anos, ao longo de uma jornada unica dividida em dias e noites. As escolhas feitas de noite moldam o que acontece de dia.</p>
+                <p class="tlou-sobre-text" style="margin-top:1rem;">Este jogo e uma ficcao inspirada em casos reais.<br><strong>Molly Russell tinha 14 anos.</strong></p>
+                <p class="tlou-sobre-text" style="margin-top:1rem;opacity:0.5;font-size:0.8rem;">Versao Beta — 2026</p>
             </div>
         </div>
     </div>
 
-    <!-- Modal Créditos -->
-    <div class="modal-sobre" id="modalCreditos">
-        <div class="modal-overlay" id="modalOverlayCreditos"></div>
-        <div class="instagram-profile">
-            <button class="close-btn" id="closeBtnCreditos">&times;</button>
-            
-            <div class="profile-header">
-                <div class="profile-pic">
-                    <img src="{{ url_for('static', filename='video/molly/Molly_gif_timida.gif') }}" alt="Molly Tímida">
-                </div>
-                <div class="profile-info">
-                    <h1>Créditos</h1>
-                    <p class="bio">Conheça quem desenvolveu este jogo.</p>
+    <!-- ── MODAL CREDITOS (TLOU) ── -->
+    <div class="modal-tlou" id="modalCreditos">
+        <div class="modal-overlay" onclick="fecharCreditos()"></div>
+        <div class="tlou-panel">
+            <div class="tlou-header">
+                <span class="tlou-title">CREDITOS</span>
+                <button class="tlou-close" onclick="fecharCreditos()">X</button>
+            </div>
+            <ul class="tlou-list tlou-creditos-list">
+                <li class="tlou-cred-item"><span class="tlou-cred-role">Desenvolvimento</span><span class="tlou-cred-nome">David Neves de Figueiredo</span></li>
+                <li class="tlou-cred-item"><span class="tlou-cred-role">Orientadora</span><span class="tlou-cred-nome">Me. Janaina Souza — CIESA</span></li>
+                <li class="tlou-cred-item"><span class="tlou-cred-role">Arte</span><span class="tlou-cred-nome">IA Generativa</span></li>
+                <li class="tlou-cred-item"><span class="tlou-cred-role">Trilha Sonora</span><span class="tlou-cred-nome">Producao original</span></li>
+                <li class="tlou-cred-item"><span class="tlou-cred-role">Inspirado em</span><span class="tlou-cred-nome">Molly Russell 2003–2017<br>Frances Haugen, 2021</span></li>
+                <li class="tlou-cred-item"><span class="tlou-cred-role">Ferramentas</span><span class="tlou-cred-nome">Python · Flask · HTML · CSS · JS<br>After Effects · Canva · Gemini · Firefly</span></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- ── MODAL EXTRA ── -->
+    <div class="modal-tlou" id="modalExtra">
+        <div class="modal-overlay" onclick="fecharExtra()"></div>
+        <div class="tlou-panel">
+            <div class="tlou-header">
+                <span class="tlou-title">EXTRA</span>
+                <button class="tlou-close" onclick="fecharExtra()">X</button>
+            </div>
+            <ul class="tlou-list">
+                <li class="tlou-item" onclick="abrirFinais()"><span class="tlou-label">Finais</span><span class="tlou-arrow">></span></li>
+                <li class="tlou-item" onclick="abrirConquistas()"><span class="tlou-label">Conquistas</span><span class="tlou-arrow">></span></li>
+                <li class="tlou-item bloqueado"><span class="tlou-label">Galeria de Arte</span><span class="tlou-lock">Bloqueado - Beta</span></li>
+                <li class="tlou-item bloqueado"><span class="tlou-label">Trilha Sonora</span><span class="tlou-lock">Bloqueado - Beta</span></li>
+                <li class="tlou-item bloqueado"><span class="tlou-label">Skins da Molly</span><span class="tlou-lock">Bloqueado - Beta</span></li>
+                <li class="tlou-item bloqueado"><span class="tlou-label">Idioma</span><span class="tlou-lock">Bloqueado - Beta</span></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- SUBPAINEL FINAIS -->
+    <div class="modal-tlou" id="modalFinais">
+        <div class="modal-overlay" onclick="fecharFinais()"></div>
+        <div class="tlou-panel">
+            <div class="tlou-header">
+                <button class="tlou-back" onclick="fecharFinais()">Voltar</button>
+                <span class="tlou-title">FINAIS</span>
+            </div>
+            <ul class="tlou-list">
+                <li class="tlou-item bloqueado"><span class="tlou-label">Final Bom</span><span class="tlou-lock">Bloqueado</span></li>
+                <li class="tlou-item bloqueado"><span class="tlou-label">Final Ruim</span><span class="tlou-lock">Bloqueado</span></li>
+                <li class="tlou-item bloqueado"><span class="tlou-label">Final Neutro</span><span class="tlou-lock">Bloqueado</span></li>
+                <li class="tlou-item bloqueado"><span class="tlou-label">Final Especial 1</span><span class="tlou-lock">Bloqueado</span></li>
+                <li class="tlou-item bloqueado"><span class="tlou-label">Final Especial 2</span><span class="tlou-lock">Bloqueado</span></li>
+            </ul>
+            <p class="tlou-hint">Complete o jogo para desbloquear os finais.</p>
+        </div>
+    </div>
+
+    <!-- SUBPAINEL CONQUISTAS -->
+    <div class="modal-tlou" id="modalConquistas">
+        <div class="modal-overlay" onclick="fecharConquistas()"></div>
+        <div class="tlou-panel">
+            <div class="tlou-header">
+                <button class="tlou-back" onclick="fecharConquistas()">Voltar</button>
+                <span class="tlou-title">CONQUISTAS</span>
+            </div>
+            <ul class="tlou-list">
+                <!-- Beta Tester — desbloqueada -->
+                <li class="tlou-item conquista-item">
+                    <div class="conquista-gif">
+                        <img src="{{ url_for('static', filename='video/molly/Molly_gif(5s).gif') }}" alt="Molly">
+                    </div>
+                    <div class="conquista-info">
+                        <span class="tlou-label">Beta Tester</span>
+                        <span class="conquista-desc">Voce jogou a versao beta de Molly.</span>
+                    </div>
+                </li>
+                <!-- Jogador 000 — desbloqueada -->
+                <li class="tlou-item conquista-item">
+                    <div class="conquista-gif">
+                        <img src="{{ url_for('static', filename='video/molly/Molly_gif_timida.gif') }}" alt="Molly Timida">
+                    </div>
+                    <div class="conquista-info">
+                        <span class="tlou-label">Jogador 000</span>
+                        <span class="conquista-desc">Um dos primeiros a encontrar Molly.</span>
+                    </div>
+                </li>
+                <!-- Resto bloqueado -->
+                <li class="tlou-item bloqueado"><span class="tlou-label">Primeira Vez</span><span class="tlou-lock">Bloqueado</span></li>
+                <li class="tlou-item bloqueado"><span class="tlou-label">Ela Escolheu</span><span class="tlou-lock">Bloqueado</span></li>
+                <li class="tlou-item bloqueado"><span class="tlou-label">Ela Nao Conseguiu</span><span class="tlou-lock">Bloqueado</span></li>
+                <li class="tlou-item bloqueado"><span class="tlou-label">Alem da Tela</span><span class="tlou-lock">Bloqueado</span></li>
+                <li class="tlou-item bloqueado"><span class="tlou-label">Ela Tomou o Controle</span><span class="tlou-lock">Bloqueado</span></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- ── MODAL CONFIGURACOES ── -->
+    <div class="modal-tlou" id="modalConfiguracoes">
+        <div class="modal-overlay" onclick="fecharConfiguracoes()"></div>
+        <div class="tlou-panel tlou-panel-config">
+            <div class="tlou-header">
+                <span class="tlou-title">CONFIGURACOES</span>
+                <button class="tlou-close" onclick="fecharConfiguracoes()">X</button>
+            </div>
+            <div class="config-section">
+                <div class="config-label">Volume do Som</div>
+                <div class="config-row">
+                    <input type="range" min="0" max="100" value="70" class="config-slider" id="sliderVolume" oninput="ajustarVolume(this.value)">
+                    <span class="config-value" id="valorVolume">70</span>
                 </div>
             </div>
-
-            <div class="profile-divider"></div>
-
-            <div class="profile-content">
-                <div class="post">
-                    <img src="{{ url_for('static', filename='video/molly/Molly_gif_timida.gif') }}" alt="Post">
+            <div class="config-section">
+                <div class="config-label">Velocidade do Texto</div>
+                <div class="config-row">
+                    <input type="range" min="1" max="3" value="2" step="1" class="config-slider" id="sliderVelocidade" oninput="ajustarVelocidade(this.value)">
+                    <span class="config-value" id="valorVelocidade">Normal</span>
                 </div>
-                
-                <div class="about-text">
-                    <p><strong>Desenvolvimento</strong></p>
-                    <p>David Neves de Figueiredo<br>Ciência da Computação CIESA 2026</p>
-                    
-                    <p style="margin-top: 1rem;"><strong>Arte</strong></p>
-                    <p>Personagem e expressões geradas com auxílio de IA generativa</p>
-                    
-                    <p style="margin-top: 1rem;"><strong>Cenários</strong></p>
-                    <p>Fotografia e ilustração digital</p>
-                    
-                    <p style="margin-top: 1rem;"><strong>Trilha Sonora</strong></p>
-                    <p>[A DEFINIR]</p>
-                    
-                    <p style="margin-top: 1rem;"><strong>Inspirado em</strong></p>
-                    <p>Molly Russell 2003 a 2017<br>Frances Haugen whistleblower, 2021</p>
-                    
-                    <p style="margin-top: 1rem;"><strong>Orientadora</strong></p>
-                    <p>Me. Janaína Souza CIESA</p>
-                    
-                    <p style="margin-top: 1rem;"><strong>Agradecimentos</strong></p>
-                    <p>CIESA Centro Universitário de Ensino Superior do Amazonas</p>
-                    
-                    <p style="margin-top: 1rem;"><strong>Ferramentas utilizadas</strong></p>
-                    <p>Python • Flask<br>HTML • CSS • JavaScript<br>Adobe After Effects<br>Canva Pro<br>Google Gemini<br>ChatGPT</p>
+            </div>
+            <div class="config-section">
+                <div class="config-label">Tamanho do Texto</div>
+                <div class="config-row">
+                    <input type="range" min="1" max="3" value="2" step="1" class="config-slider" id="sliderTamanho" oninput="ajustarTamanho(this.value)">
+                    <span class="config-value" id="valorTamanho">Normal</span>
                 </div>
+            </div>
+            <div class="config-section bloqueado-config">
+                <div class="config-label">Desativar Sons <span class="tlou-lock">Bloqueado - Beta</span></div>
+                <div class="config-row"><div class="config-toggle disabled">OFF</div></div>
+            </div>
+            <div class="config-divider"></div>
+            <div class="config-section">
+                <a href="mailto:nevext@outlook.com?subject=Molly Beta - Reporte de Bug" class="config-btn-report">Reportar Bug ou Erro</a>
             </div>
         </div>
     </div>
 
     <script>
-        // Funcionalidade do Modal Sobre
-        function abrirSobre(e) {
-            e.preventDefault();
-            const modal = document.getElementById('modalSobre');
-            modal.classList.add('ativo');
+        // ── Som ──
+        const audio = document.getElementById('menuAudio');
+        audio.volume = 1;
+        audio.play().catch(() => {
+            document.addEventListener('click', () => { audio.play(); }, { once: true });
+        });
+
+        // ── Assets do tutorial ──
+        const LIVRO = [
+            "{{ url_for('static', filename='book/CADERNO_FECHADO.png') }}",
+            "{{ url_for('static', filename='book/CADERNO_SEMLACRE.png') }}",
+            "{{ url_for('static', filename='book/CADERNO_SEMIABERTO.png') }}",
+            "{{ url_for('static', filename='book/CADERNO_ABERTO_TOTALMENTE.png') }}"
+        ];
+        const BORBOLETA = [
+            "{{ url_for('static', filename='fly/BORBOLETA_1.png') }}",
+            "{{ url_for('static', filename='fly/BORBOLETA_2.png') }}",
+            "{{ url_for('static', filename='fly/BORBOLETA_3.png') }}",
+            "{{ url_for('static', filename='fly/BORBOLETA_4.png') }}"
+        ];
+
+        let livroLoopInterval = null;
+        let livroLoopIdx = 0;
+        let borbInterval = null;
+        let borbIdx = 0;
+
+        // ── Iniciar jogo — escurece e vai pro tutorial ──
+        function iniciarJogo() {
+            if (document.body.classList.contains('modal-aberto')) return;
+            audio.pause();
+            document.getElementById('clickOverlay').style.pointerEvents = 'none';
+            document.body.style.opacity = '0';
+            document.body.style.transition = 'opacity 0.8s ease';
+            setTimeout(() => {
+                document.body.style.opacity = '1';
+                document.getElementById('uiMenu').style.display = 'none';
+                document.getElementById('tutorialScreen').classList.add('ativo');
+                iniciarFase1();
+            }, 800);
+        }
+
+        // ── FASE 1: loop do livro ──
+        function iniciarFase1() {
+            livroLoopIdx = 0;
+            const img = document.getElementById('tutLivro');
+            img.src = LIVRO[0];
+            livroLoopInterval = setInterval(() => {
+                livroLoopIdx = (livroLoopIdx + 1) % LIVRO.length;
+                img.src = LIVRO[livroLoopIdx];
+            }, 400);
+        }
+
+        // ── FASE 2: livro abre uma vez + caneta ──
+        function iniciarFase2() {
+            clearInterval(livroLoopInterval);
+            let idx2 = 0;
+            const img2 = document.getElementById('tutLivro2');
+            img2.src = LIVRO[0];
+
+            const abrirInterval = setInterval(() => {
+                idx2++;
+                img2.src = LIVRO[idx2];
+                if (idx2 >= LIVRO.length - 1) {
+                    clearInterval(abrirInterval);
+                    // Mostra caneta
+                    setTimeout(() => {
+                        const canWrap = document.getElementById('tutCanetaWrap');
+                        canWrap.style.transition = 'opacity 0.4s';
+                        canWrap.style.opacity = '1';
+                        // Anima caneta passando
+                        animarCaneta();
+                        // Depois fade in do texto escrito
+                        setTimeout(() => {
+                            const escrito = document.getElementById('tutEscrito');
+                            escrito.style.transition = 'opacity 1s ease';
+                            escrito.style.opacity = '1';
+                            // Esconde caneta
+                            canWrap.style.opacity = '0';
+                        }, 2000);
+                    }, 500);
+                }
+            }, 350);
+        }
+
+        function animarCaneta() {
+            const can = document.getElementById('tutCaneta');
+            can.style.transition = 'transform 2s ease';
+            can.style.transform = 'translateX(80px) translateY(20px) rotate(-15deg)';
+        }
+
+        // ── FASE 3: borboleta ──
+        function iniciarFase3() {
+            borbIdx = 0;
+            const img = document.getElementById('tutBorboleta');
+            img.src = BORBOLETA[0];
+            borbInterval = setInterval(() => {
+                borbIdx = (borbIdx + 1) % BORBOLETA.length;
+                img.src = BORBOLETA[borbIdx];
+            }, 200);
+        }
+
+        // ── Avançar fases ──
+        function avancarTutorial(fase) {
+            // Esconde todas
+            document.querySelectorAll('.tut-fase').forEach(f => f.style.display = 'none');
+
+            if (fase === 2) {
+                document.getElementById('tutFase2').style.display = 'flex';
+                iniciarFase2();
+            } else if (fase === 3) {
+                clearInterval(livroLoopInterval);
+                document.getElementById('tutFase3').style.display = 'flex';
+                iniciarFase3();
+            } else if (fase === 4) {
+                clearInterval(borbInterval);
+                document.getElementById('tutFase4').style.display = 'flex';
+            }
+        }
+
+        // ── Escolha final do tutorial ──
+        function verAbertura() {
+            document.getElementById('tutorialScreen').classList.remove('ativo');
+            const aberturaDiv = document.getElementById('aberturaVideo');
+            const video = document.getElementById('videoAbertura');
+            aberturaDiv.classList.add('ativo');
+            video.play();
+            video.addEventListener('ended', irJogar);
+        }
+
+        function irJogar() {
+            document.body.style.opacity = '0';
+            document.body.style.transition = 'opacity 0.6s ease';
+            setTimeout(() => { window.location.href = '/jogar'; }, 600);
+        }
+
+        // ── Modais ──
+        function abrirModal(id) {
+            document.getElementById(id).classList.add('ativo');
             document.body.classList.add('modal-aberto');
-            document.body.style.overflow = 'hidden';
+        }
+        function fecharModal(id) {
+            document.getElementById(id).classList.remove('ativo');
+            if (!document.querySelector('.modal-tlou.ativo, .modal-sobre.ativo')) {
+                document.body.classList.remove('modal-aberto');
+            }
         }
 
-        function fecharSobre() {
-            const modal = document.getElementById('modalSobre');
-            modal.classList.remove('ativo');
-            document.body.classList.remove('modal-aberto');
-            document.body.style.overflow = 'auto';
-        }
+        function abrirSobre(e) { e.preventDefault(); e.stopPropagation(); abrirModal('modalSobre'); }
+        function fecharSobre() { fecharModal('modalSobre'); }
 
-        const closeBtn = document.getElementById('closeBtn');
-        const modalOverlay = document.getElementById('modalOverlay');
+        function abrirCreditos(e) { e.preventDefault(); e.stopPropagation(); abrirModal('modalCreditos'); }
+        function fecharCreditos() { fecharModal('modalCreditos'); }
 
-        closeBtn.addEventListener('click', fecharSobre);
-        modalOverlay.addEventListener('click', fecharSobre);
+        function abrirExtra(e) { e.preventDefault(); e.stopPropagation(); abrirModal('modalExtra'); }
+        function fecharExtra() { fecharModal('modalExtra'); }
 
-        // Funcionalidade do Modal Créditos
-        function abrirCreditos(e) {
-            e.preventDefault();
-            const modal = document.getElementById('modalCreditos');
-            modal.classList.add('ativo');
-            document.body.classList.add('modal-aberto');
-            document.body.style.overflow = 'hidden';
-        }
+        function abrirFinais() { abrirModal('modalFinais'); }
+        function fecharFinais() { fecharModal('modalFinais'); }
 
-        function fecharCreditos() {
-            const modal = document.getElementById('modalCreditos');
-            modal.classList.remove('ativo');
-            document.body.classList.remove('modal-aberto');
-            document.body.style.overflow = 'auto';
-        }
+        function abrirConquistas() { abrirModal('modalConquistas'); }
+        function fecharConquistas() { fecharModal('modalConquistas'); }
 
-        const closeBtnCreditos = document.getElementById('closeBtnCreditos');
-        const modalOverlayCreditos = document.getElementById('modalOverlayCreditos');
+        function abrirConfiguracoes(e) { e.preventDefault(); e.stopPropagation(); abrirModal('modalConfiguracoes'); }
+        function fecharConfiguracoes() { fecharModal('modalConfiguracoes'); }
 
-        closeBtnCreditos.addEventListener('click', fecharCreditos);
-        modalOverlayCreditos.addEventListener('click', fecharCreditos);
-
-        // Fechar modais com ESC
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
-                fecharSobre();
-                fecharCreditos();
+                ['modalSobre','modalCreditos','modalExtra','modalFinais','modalConquistas','modalConfiguracoes']
+                    .forEach(id => fecharModal(id));
             }
         });
 
-        // Resto do código anterior
-        // Quebrar o título em caracteres para efeito de tremor
-        const titulo = document.querySelector('.titulo');
-        const texto = titulo.textContent;
-        titulo.innerHTML = '';
-        
-        for (let i = 0; i < texto.length; i++) {
-            const span = document.createElement('span');
-            span.textContent = texto[i];
-            span.style.display = 'inline-block';
-            titulo.appendChild(span);
+        // ── Configurações ──
+        function ajustarVolume(val) {
+            audio.volume = val / 100;
+            document.getElementById('valorVolume').textContent = val;
         }
 
-        // Efeito de tremor ao passar o mouse
-        titulo.addEventListener('mousemove', (e) => {
-            const chars = titulo.querySelectorAll('span');
-            const rect = titulo.getBoundingClientRect();
-            const mouseX = e.clientX - rect.left;
+        const labels = { '1': 'Lento', '2': 'Normal', '3': 'Rapido' };
+        const tamanhos = { '1': 'Pequeno', '2': 'Normal', '3': 'Grande' };
 
-            chars.forEach((char, index) => {
-                const charRect = char.getBoundingClientRect();
-                const charX = charRect.left - rect.left + charRect.width / 2;
-                const distance = Math.abs(mouseX - charX);
-                const maxDistance = 100;
+        function ajustarVelocidade(val) {
+            document.getElementById('valorVelocidade').textContent = labels[val];
+            localStorage.setItem('molly_velocidade', val);
+        }
+        function ajustarTamanho(val) {
+            document.getElementById('valorTamanho').textContent = tamanhos[val];
+            localStorage.setItem('molly_tamanho', val);
+        }
 
-                if (distance < maxDistance) {
-                    // Remover a classe anterior se existir
-                    char.classList.remove('char-shake');
-                    // Forçar reflow para reiniciar a animação
-                    void char.offsetWidth;
-                    char.classList.add('char-shake');
-                }
-            });
-        });
+        const velSalva = localStorage.getItem('molly_velocidade') || '2';
+        const tamSalvo = localStorage.getItem('molly_tamanho') || '2';
+        document.getElementById('sliderVelocidade').value = velSalva;
+        document.getElementById('sliderTamanho').value = tamSalvo;
+        document.getElementById('valorVelocidade').textContent = labels[velSalva];
+        document.getElementById('valorTamanho').textContent = tamanhos[tamSalvo];
 
-        // Remover tremor quando mouse sai
-        titulo.addEventListener('mouseleave', () => {
-            const chars = titulo.querySelectorAll('span');
-            chars.forEach(char => char.classList.remove('char-shake'));
-        });
-
+        // ── Piscar hint ──
+        const hint = document.getElementById('clickHint');
+        setInterval(() => {
+            hint.style.opacity = hint.style.opacity === '0' ? '1' : '0';
+        }, 1200);
     </script>
 
 </body>

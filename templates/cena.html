@@ -3,10 +3,350 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Molly</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        @font-face {
+            font-family: 'Glassure';
+            src: url("{{ url_for('static', filename='menu/Glassure.otf') }}") format('opentype');
+        }
+        @font-face {
+            font-family: 'DMSans';
+            src: url("{{ url_for('static', filename='menu/DMSans-VariableFont_opsz,wght.ttf') }}") format('truetype');
+            font-weight: 100 900;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            background: #000;
+        }
+
+        /* ── Fundo ── */
+        .fundo {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            object-fit: cover;
+            z-index: 0;
+            animation: fadeIn 0.8s ease forwards;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.15);
+            z-index: 1;
+        }
+
+        /* ── Personagem / frame ── */
+        .personagem {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            height: 85vh;
+            z-index: 2;
+            object-fit: contain;
+            animation: entradaPersonagem 0.5s ease forwards;
+            filter: drop-shadow(0 10px 40px rgba(0,0,0,0.6));
+            cursor: pointer;
+        }
+
+        .personagem.molly-age {
+            animation: entradaPersonagem 0.5s ease forwards, tremor 0.3s ease-in-out 1s 3;
+        }
+
+        /* ── Caixa de diálogo (só noite) ── */
+        .dialogo {
+            position: fixed;
+            bottom: 0; left: 0;
+            width: 100%;
+            z-index: 10;
+            padding: 0 2rem 1.5rem;
+        }
+
+        .dialogo-inner {
+            background: rgba(5, 5, 15, 0.92);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 14px;
+            padding: 1.4rem 2rem;
+            max-width: 860px;
+            margin: 0 auto;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 -8px 40px rgba(0,0,0,0.5);
+        }
+
+        .dialogo-nome {
+            font-family: 'DMSans', sans-serif;
+            font-size: 0.65rem;
+            font-weight: 400;
+            color: rgba(255,255,255,0.35);
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            margin-bottom: 0.4rem;
+        }
+
+        .dialogo-titulo {
+            font-family: 'Glassure', serif;
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.5);
+            letter-spacing: 0.1em;
+            margin-bottom: 0.7rem;
+        }
+
+        .dialogo-texto {
+            font-family: 'DMSans', sans-serif;
+            font-size: 1rem;
+            font-weight: 300;
+            color: rgba(255,255,255,0.88);
+            line-height: 1.7;
+        }
+
+        .dialogo-texto.automatico {
+            color: #c8a8e9;
+            font-style: italic;
+        }
+
+        /* ── Opções ── */
+        .opcoes {
+            position: fixed;
+            bottom: 11rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            align-items: center;
+            width: 100%;
+            max-width: 560px;
+            padding: 0 2rem;
+            animation: fadeIn 0.5s ease 0.6s both;
+        }
+
+        .opcao-btn {
+            background: rgba(5, 5, 15, 0.8);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 4px;
+            color: rgba(255,255,255,0.8);
+            font-family: 'DMSans', sans-serif;
+            font-size: 0.82rem;
+            font-weight: 300;
+            letter-spacing: 0.04em;
+            padding: 0.75rem 2rem;
+            cursor: pointer;
+            width: 100%;
+            text-align: center;
+            transition: all 0.2s ease;
+            backdrop-filter: blur(8px);
+            text-decoration: none;
+            display: block;
+        }
+
+        .opcao-btn:hover {
+            background: rgba(139, 0, 0, 0.4);
+            border-color: rgba(139, 0, 0, 0.6);
+            color: #fff;
+        }
+
+        /* ── Botão continuar (dia / molly age) ── */
+        .btn-avancar {
+            position: fixed;
+            bottom: 2rem;
+            right: 2.5rem;
+            z-index: 10;
+            background: none;
+            border: none;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            color: rgba(255,255,255,0.35);
+            font-family: 'DMSans', sans-serif;
+            font-size: 0.65rem;
+            font-weight: 300;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            cursor: pointer;
+            padding: 0.3rem 0;
+            transition: all 0.3s;
+            text-decoration: none;
+            animation: piscar 1.5s ease infinite;
+        }
+
+        .btn-avancar:hover {
+            color: rgba(255,255,255,0.8);
+        }
+
+        @keyframes piscar {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        /* ── Easter egg ── */
+        .easter-egg {
+            position: fixed;
+            top: 35%; right: 8%;
+            z-index: 5;
+            width: 110px;
+            opacity: 0;
+            cursor: pointer;
+            transition: opacity 2s ease;
+        }
+
+        .easter-egg-noticia {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 6px;
+            padding: 0.5rem 0.6rem;
+            font-family: 'DMSans', sans-serif;
+            font-size: 0.58rem;
+            color: rgba(255,255,255,0.25);
+            line-height: 1.4;
+        }
+
+        /* ── Tremor ── */
+        body.crise { animation: telaBalanca 0.15s ease-in-out infinite; }
+
+        /* ── Animações ── */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes entradaPersonagem {
+            from { opacity: 0; transform: translateX(-50%) translateY(15px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+
+        @keyframes tremor {
+            0%   { transform: translateX(-50%); }
+            25%  { transform: translateX(calc(-50% - 4px)); }
+            75%  { transform: translateX(calc(-50% + 4px)); }
+            100% { transform: translateX(-50%); }
+        }
+
+        @keyframes telaBalanca {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-3px); }
+            75% { transform: translateX(3px); }
+        }
+    </style>
 </head>
-<body>
-    <!-- A DEFINIR -->
+<body class="{% if molly_age and dados and dados.get('texto_automatico') %}crise{% endif %}">
+
+    <!-- Áudio -->
+    <audio id="trilha" loop autoplay>
+        <source src="{{ url_for('static', filename=trilha) }}" type="audio/mp3">
+    </audio>
+
+    <!-- Fundo -->
+    {% if frame %}
+        <img class="fundo" src="{{ url_for('static', filename=frame) }}" alt=""
+             {% if not tem_escolhas %}onclick="avancarFrame()"{% endif %}>
+    {% endif %}
+
+    <div class="overlay"></div>
+
+    {% if tem_escolhas %}
+        <!-- Personagem frame atual -->
+        {% if frame %}
+            <img class="personagem {% if molly_age %}molly-age{% endif %}"
+                 src="{{ url_for('static', filename=frame) }}" alt="Molly">
+        {% endif %}
+
+        <!-- Easter egg -->
+        {% if dados and dados.easter_egg %}
+            <div class="easter-egg" id="easterEgg" onclick="abrirEasterEgg()">
+                <div class="easter-egg-noticia">{{ dados.easter_egg.texto }}</div>
+            </div>
+        {% endif %}
+
+        <!-- Diálogo -->
+        {% if dados %}
+        <div class="dialogo">
+            <div class="dialogo-inner">
+                <div class="dialogo-nome">Molly</div>
+                <div class="dialogo-titulo">{{ dados.titulo }}</div>
+                {% if molly_age %}
+                    <div class="dialogo-texto automatico" id="textoDialogo">{{ dados.texto_automatico }}</div>
+                {% else %}
+                    <div class="dialogo-texto" id="textoDialogo">{{ dados.texto }}</div>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Opções ou avancar -->
+        {% if molly_age %}
+            <a href="/avancar" class="btn-avancar">continuar →</a>
+        {% elif dados %}
+            <div class="opcoes">
+                {% for opcao in dados.opcoes %}
+                    <a href="/escolha/{{ loop.index0 }}" class="opcao-btn">{{ opcao.texto }}</a>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+    {% else %}
+        <!-- Dia: clique em qualquer lugar avança frame -->
+        <a href="/avancar_frame" class="btn-avancar" id="btnAvancar">continuar →</a>
+    {% endif %}
+
+    <script>
+        // Áudio
+        const trilha = document.getElementById('trilha');
+        if (trilha) {
+            trilha.volume = 1.0;
+            trilha.play().catch(() => {
+                document.addEventListener('click', () => trilha.play(), { once: true });
+            });
+        }
+
+        // Easter egg
+        const egg = document.getElementById('easterEgg');
+        if (egg) {
+            setTimeout(() => { egg.style.opacity = '1'; }, 4000);
+        }
+
+        function abrirEasterEgg() {
+            {% if dados and dados.easter_egg %}
+            window.open('{{ dados.easter_egg.url }}', '_blank');
+            {% endif %}
+        }
+
+        // Digitação do texto
+        const textoEl = document.getElementById('textoDialogo');
+        if (textoEl) {
+            const original = textoEl.textContent.trim();
+            textoEl.textContent = '';
+            let i = 0;
+            function digitar() {
+                if (i < original.length) {
+                    textoEl.textContent += original[i++];
+                    setTimeout(digitar, 18);
+                }
+            }
+            setTimeout(digitar, 300);
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('a') && !e.target.closest('.easter-egg') && i < original.length) {
+                    i = original.length;
+                    textoEl.textContent = original;
+                }
+            });
+        }
+
+        // Dia: clique em qualquer lugar avança
+        {% if not tem_escolhas %}
+        document.body.addEventListener('click', (e) => {
+            if (!e.target.closest('a')) {
+                window.location.href = '/avancar_frame';
+            }
+        });
+        {% endif %}
+    </script>
+
 </body>
 </html>
