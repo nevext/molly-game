@@ -19,7 +19,8 @@
 
         /* Narrador */
         .caixa-narrador{position:fixed;bottom:8rem;left:50%;transform:translateX(-50%);width:100%;max-width:760px;z-index:10;padding:0 2rem;pointer-events:none;}
-        .narrador-texto{font-family:'Montserrat',sans-serif;font-size:0.95rem;font-weight:300;font-style:italic;color:rgba(255,255,255,0.82);text-align:center;line-height:1.8;text-shadow:0 2px 20px rgba(0,0,0,1),0 0 60px rgba(0,0,0,1);}
+        .narrador-texto{font-family:'Montserrat',sans-serif;font-size:0.95rem;font-weight:300;font-style:italic;color:rgba(255,255,255,0.9);text-align:center;line-height:1.8;text-shadow:0 1px 4px rgba(0,0,0,1),0 0 20px rgba(0,0,0,1),0 0 60px rgba(0,0,0,0.9);background:rgba(0,0,0,0.45);padding:0.6rem 1.2rem;border-radius:6px;}
+        .narrador-texto.noite{color:#f5e642;text-shadow:0 1px 4px rgba(0,0,0,1),0 0 20px rgba(0,0,0,1);background:rgba(0,0,0,0.5);}
 
         /* Caixa Molly */
         .caixa-molly{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:900px;max-width:96vw;z-index:10;}
@@ -58,7 +59,7 @@
         .opcao-btn.direita{right:2rem;bottom:3rem;animation:fadeInRight 0.5s ease forwards;}
         .opcao-btn.baixo{left:50%;transform:translateX(-50%);bottom:1rem;animation:fadeInUp 0.5s ease 0.3s forwards;}
         .opcao-btn:hover{background:rgba(139,0,0,0.4);border-color:rgba(139,0,0,0.6);color:#fff;}
-        .opcao-btn.opcao-bloqueada{pointer-events:none;}
+        /* opcao-bloqueada: sem pointer-events apenas quando sumindo */
         .opcao-btn.sumindo{animation:fadeOut 1.5s ease forwards;pointer-events:none;}
         @keyframes fadeOut{from{opacity:1;}to{opacity:0;visibility:hidden;}}
         @keyframes fadeInLeft{from{opacity:0;transform:translateX(-20px);}to{opacity:1;transform:translateX(0);}}
@@ -105,7 +106,7 @@
     {% if not tem_escolhas %}
     <!-- DIA -->
         {% if frame.imagem %}
-            <img class="fundo {% if imagem_mudou %}nova-imagem{% endif %}" id="fundoImg" src="{{ url_for('static', filename=frame.imagem) }}" alt="" onerror="this.style.display='none'">
+            <img class="fundo {% if imagem_mudou %}nova-imagem{% endif %}" id="fundoImg" src="{{ url_for('static', filename=frame.imagem) }}" alt="" style="opacity:1;" onerror="this.style.display='none';console.error('Fundo nao carregou')">
         {% else %}
             <div class="fundo-preto"></div>
         {% endif %}
@@ -175,7 +176,7 @@
 
             {% else %}
                 <!-- Narrador noite -->
-                <div class="caixa-narrador"><div class="narrador-texto" id="textoAtivo">{{ dados.texto }}</div></div>
+                <div class="caixa-narrador"><div class="narrador-texto noite" id="textoAtivo">{{ dados.texto }}</div></div>
                 {% if not dados.opcoes %}
                     <button class="btn-avancar" id="btnAvancar">continuar →</button>
                 {% endif %}
@@ -221,10 +222,13 @@
             setInterval(() => { if (!audio.paused && !audio.ended) sessionStorage.setItem(POS_KEY, String(audio.currentTime)); }, 500);
         }
 
-        // ── Fade out de opções que devem sumir (volta de curtidas) ──
-        const opsBloqueadas = document.querySelectorAll('.opcao-btn[data-sumir="true"]');
-        if (opsBloqueadas.length > 0) {
-            // Bloqueia imediatamente, faz fade depois de 1s
+        // ── Fade out de opções que devem sumir (só na segunda vez) ──
+        const voltaAqui = {{ 'true' if dados and dados.get('volta_aqui') and session_volta else 'false' }};
+        if (voltaAqui) {
+            const opsBloqueadas = document.querySelectorAll('.opcao-btn[data-sumir="true"]');
+            // Bloqueia pointer-events imediatamente
+            opsBloqueadas.forEach(btn => { btn.style.pointerEvents = 'none'; btn.style.cursor = 'default'; });
+            // Fade após 800ms
             setTimeout(() => {
                 opsBloqueadas.forEach(btn => btn.classList.add('sumindo'));
             }, 800);
@@ -254,13 +258,14 @@
             "{{ url_for('static', filename='fly/BORBOLETA_4.png') }}",
         ];
 
-        function tocarBorboletaSFX(sfxNome, callback) {
+        function mostrarBorboleta(sfxNome) {
+            // Borboleta aparece mas não bloqueia — jogo continua
             const div = document.getElementById('borboletaSfx');
             const img = document.getElementById('borboletaImg');
             div.classList.add('ativo');
             let bi = 0;
             const bInt = setInterval(() => { bi = (bi+1) % BORBOLETAS.length; img.src = BORBOLETAS[bi]; }, 200);
-            // SFX começa após 5s de suspense
+            // SFX após 5s
             setTimeout(() => {
                 const sfx = new Audio('/static/journey/ato_1/Cap_2(noite)/Sound/' + sfxNome);
                 sfx.volume = 1.0;
@@ -268,9 +273,16 @@
                 sfx.onended = () => {
                     clearInterval(bInt);
                     div.classList.remove('ativo');
-                    if (callback) callback();
                 };
             }, 5000);
+            // Auto-remove após 3s
+            setTimeout(() => { clearInterval(bInt); div.classList.remove('ativo'); }, 3000);
+        }
+
+        function tocarBorboletaSFX(sfxNome, callback) {
+            mostrarBorboleta(sfxNome);
+            // Navega imediatamente sem esperar a borboleta
+            if (callback) setTimeout(callback, 300);
         }
 
         // ── Efeito olho fechando ──
@@ -357,45 +369,89 @@
 
         function avancarFrame() {
             if (audio) sessionStorage.setItem(POS_KEY, String(audio.currentTime));
-            fetch('/frame_data').then(r=>r.json()).then(data => {
-                if (data.fim) { window.location.href = data.redirect; return; }
-
-                if (data.imagem_mudou && data.imagem) {
-                    const f = document.getElementById('fundoImg');
-                    if (f) f.src = '/static/' + data.imagem;
-                }
-
-                const narrador = document.querySelector('.caixa-narrador');
-                const mollyBox = document.querySelector('.caixa-molly');
-
-                if (data.tipo_texto === 'narrador') {
-                    if (mollyBox) mollyBox.style.display = 'none';
-                    if (narrador) { narrador.style.display = ''; } else {
-                        const d = document.createElement('div'); d.className = 'caixa-narrador';
-                        d.innerHTML = '<div class="narrador-texto" id="textoAtivo"></div>';
-                        document.body.appendChild(d);
+            fetch('/frame_data')
+                .then(r => r.json())
+                .then(data => {
+                    if (data.fim) {
+                        window.location.href = data.redirect;
+                        return;
                     }
-                } else if (data.tipo_texto === 'molly') {
-                    if (narrador) narrador.style.display = 'none';
-                    if (mollyBox) { mollyBox.style.display = ''; } else {
-                        const d = document.createElement('div'); d.className = 'caixa-molly';
-                        d.innerHTML = `<img class="molly-nome-img" src="${BOX_NOME}" alt="Molly"><div class="molly-box-wrap"><img class="molly-box-img" src="${BOX_MOLLY}" alt=""><div class="molly-box-texto" id="textoAtivo"></div></div>`;
-                        document.body.appendChild(d);
-                    }
-                }
 
-                const el = document.getElementById('textoAtivo') || document.querySelector('.narrador-texto') || document.querySelector('.molly-box-texto');
-                if (el) {
-                    el.textContent = '';
-                    let i = 0;
-                    function dgt() { if (i < data.texto.length) { el.textContent += data.texto[i++]; setTimeout(dgt, 20); } }
-                    setTimeout(dgt, 100);
-                }
-            }).catch(() => { window.location.href = '/avancar_frame'; });
+                    // Troca imagem sem flash
+                    const fundo = document.getElementById('fundoImg');
+                    if (data.imagem_mudou && data.imagem && fundo) {
+                        const novaImg = new Image();
+                        novaImg.onload = () => {
+                            fundo.src = novaImg.src;
+                            fundo.style.transition = 'none';
+                            fundo.style.opacity = '1';
+                        };
+                        novaImg.onerror = () => { console.error('Imagem nao carregou:', novaImg.src); };
+                        novaImg.src = window.location.origin + '/static/' + data.imagem;
+                        console.log('Carregando imagem:', novaImg.src);
+                    } else if (!data.imagem && fundo) {
+                        fundo.style.display = 'none';
+                        if (!document.querySelector('.fundo-preto')) {
+                            const d = document.createElement('div');
+                            d.className = 'fundo-preto';
+                            document.body.insertBefore(d, document.body.firstChild);
+                        }
+                    }
+
+                    // Troca caixa de texto
+                    const narrador = document.querySelector('.caixa-narrador');
+                    const mollyBox = document.querySelector('.caixa-molly');
+                    let alvo = null;
+
+                    if (data.tipo_texto === 'narrador') {
+                        if (mollyBox) mollyBox.style.display = 'none';
+                        if (narrador) {
+                            narrador.style.display = '';
+                            alvo = narrador.querySelector('.narrador-texto');
+                        } else {
+                            const d = document.createElement('div');
+                            d.className = 'caixa-narrador';
+                            d.innerHTML = '<div class="narrador-texto" id="textoAtivo"></div>';
+                            document.body.appendChild(d);
+                            alvo = d.querySelector('.narrador-texto');
+                        }
+                    } else if (data.tipo_texto === 'molly') {
+                        if (narrador) narrador.style.display = 'none';
+                        if (mollyBox) {
+                            mollyBox.style.display = '';
+                            alvo = mollyBox.querySelector('.molly-box-texto');
+                        } else {
+                            const d = document.createElement('div');
+                            d.className = 'caixa-molly';
+                            d.innerHTML = `<img class="molly-nome-img" src="${BOX_NOME}" alt="Molly"><div class="molly-box-wrap"><img class="molly-box-img" src="${BOX_MOLLY}" alt=""><div class="molly-box-texto" id="textoAtivo"></div></div>`;
+                            document.body.appendChild(d);
+                            alvo = d.querySelector('.molly-box-texto');
+                        }
+                    }
+
+                    if (alvo) {
+                        alvo.textContent = '';
+                        let i = 0;
+                        function dgt() {
+                            if (i < data.texto.length) {
+                                alvo.textContent += data.texto[i++];
+                                setTimeout(dgt, 20);
+                            }
+                        }
+                        setTimeout(dgt, 100);
+                    }
+                })
+                .catch(() => { window.location.href = '/avancar_frame'; });
         }
 
         const btn = document.getElementById('btnAvancar');
-        if (btn) { btn.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); avancarFrame(); }); }
+        if (btn) {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                avancarFrame();
+            });
+        }
         {% endif %}
 
         // ── Noite: btn continuar ──

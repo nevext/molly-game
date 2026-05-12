@@ -2,6 +2,19 @@
 from flask import Flask, render_template, session, redirect, url_for, jsonify
 from game_logic import get_capitulo, get_proximo_capitulo, processar_escolha, molly_age_sozinha, get_final
 
+TRILHAS_NOITE = [
+    "journey/ato_1/Cap_2(noite)/Music/Molly_Original_Soundtrack(Night).mp3",
+    "journey/ato_1/Cap_2(noite)/Music/Molly_Original_Soundtrack(Night_2).mp3",
+    "journey/ato_1/Cap_2(noite)/Music/Molly_Original_Soundtrack(Night_3).mp3",
+]
+
+def get_trilha_noite():
+    idx = session.get("noite_count", 0) % len(TRILHAS_NOITE)
+    return TRILHAS_NOITE[idx]
+
+def incrementar_noite():
+    session["noite_count"] = session.get("noite_count", 0) + 1
+
 app = Flask(__name__)
 app.secret_key = "molly2026"
 
@@ -18,6 +31,7 @@ def jogar():
     session["frame"] = 0
     session["barra"] = 3
     session["cena"] = 1
+    session["noite_count"] = 0
     return redirect(url_for("cena"))
 
 
@@ -32,7 +46,11 @@ def cena():
     if not cap:
         return redirect(url_for("index"))
 
-    trilha = cap.get("trilha", "")
+    # Trilha rotativa para noite
+    if cap.get("tipo") == "noite":
+        trilha = get_trilha_noite()
+    else:
+        trilha = cap.get("trilha", "")
 
     if cap.get("tipo") == "demo":
         return render_template("fim_demo.html")
@@ -77,12 +95,16 @@ def cena():
     frame_atual = frames_noite[frame_idx_cena] if frame_idx_cena < len(frames_noite) else None
     age = molly_age_sozinha(cap_id, cena_num, barra)
 
+    # Detectar se voltou de curtidas
+    session_volta = session.pop("volta_curtidas", False)
+
     return render_template("cena.html",
         cap_id=cap_id, tipo="noite", trilha=trilha,
         frame=frame_atual, frame_idx=frame_idx,
         total_frames=len(cenas), imagem_mudou=True,
         tem_escolhas=True, dados=dados_cena,
         molly_age=age, barra=barra, cena_num=cena_num,
+        session_volta=session_volta,
         sfx_base="/static/journey/ato_1/Cap_2(noite)/Sound/")
 
 
@@ -162,6 +184,10 @@ def transicao(tipo):
 
 @app.route("/iniciar_cap")
 def iniciar_cap():
+    cap_id = session.get("cap", "")
+    cap = get_capitulo(cap_id)
+    if cap and cap.get("tipo") == "noite":
+        incrementar_noite()
     return redirect(url_for("cena"))
 
 
@@ -247,6 +273,7 @@ def avancar():
         session["cap"] = "ato1_cap2_examinar"
         session["cena"] = 6
         session["frame"] = 0
+        session["volta_curtidas"] = True
         return redirect(url_for("cena"))
 
     # Ir dormir: transição para dia
