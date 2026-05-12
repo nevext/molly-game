@@ -16,7 +16,8 @@ def incrementar_noite():
     session["noite_count"] = session.get("noite_count", 0) + 1
 
 app = Flask(__name__)
-app.secret_key = "molly2026"
+import os
+app.secret_key = os.environ.get("SECRET_KEY", "molly2026")
 
 
 @app.route("/")
