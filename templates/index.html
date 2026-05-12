@@ -95,33 +95,18 @@
             <div class="tut-pular" id="tutBorboletaContinuar" style="display:none;" onclick="avancarTutorial(4)">CLIQUE EM QUALQUER LUGAR PARA CONTINUAR</div>
         </div>
 
-        <!-- FASE 4: tutorial de sons -->
+        <!-- FASE 4: os sonhos -->
         <div class="tut-fase" id="tutFase4" style="display:none;">
-            <div class="tut-texto" style="margin-bottom: 2rem;">
-                <p class="tut-titulo">Os Sons</p>
-                <p class="tut-desc">Cada final tem um som diferente.<br>Clique nos tres para reconhece-los antes de comecar.</p>
+            <div class="tut-livro-wrap">
+                <img class="tut-livro"
+                     src="{{ url_for('static', filename='journey/dream/dream_initial/dream_demo_test.png') }}"
+                     alt="sonho">
             </div>
-            <div class="sons-grid">
-                <button class="som-btn" id="somBom" onclick="tocarSom('bom')">
-                    <span class="som-icone">&#9834;</span>
-                    <span class="som-label">Final Bom</span>
-                    <span class="som-status" id="statusBom">clique para ouvir</span>
-                </button>
-                <button class="som-btn" id="somEspecial" onclick="tocarSom('especial')">
-                    <span class="som-icone">&#9834;</span>
-                    <span class="som-label">Final Especial</span>
-                    <span class="som-status" id="statusEspecial">clique para ouvir</span>
-                </button>
-                <button class="som-btn" id="somRuim" onclick="tocarSom('ruim')">
-                    <span class="som-icone">&#9834;</span>
-                    <span class="som-label">Final Ruim</span>
-                    <span class="som-status" id="statusRuim">clique para ouvir</span>
-                </button>
+            <div class="tut-texto">
+                <p class="tut-titulo">Os Sonhos</p>
+                <p class="tut-desc">Se prepare para os sonhos ou pesadelos <br>que a Molly vai enfrentar.<br><br><em style="opacity:0.5;">Guarde energia...Ou nao...</em></p>
             </div>
-            <button class="tut-btn" id="btnProsseguirSons" onclick="avancarTutorial(5)"
-                    style="margin-top: 2rem; opacity: 0.3; cursor: not-allowed;" disabled>
-                Prosseguir
-            </button>
+            <div class="tut-pular" onclick="avancarTutorial(5)">CLIQUE EM QUALQUER LUGAR PARA CONTINUAR</div>
         </div>
 
         <!-- FASE 5: escolha — ver abertura ou pular -->
