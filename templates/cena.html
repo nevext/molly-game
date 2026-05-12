@@ -288,57 +288,30 @@
             setTimeout(() => { if (callback) callback(); }, 1600);
         }
 
-        // ── Opções com SFX e borboleta ──
-        document.querySelectorAll('.opcao-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const sfxNome    = btn.dataset.sfx;
-                const temBorb    = btn.dataset.borboleta === 'true';
-                const vaiDormir  = btn.dataset.dormir === 'true';
-                const href       = btn.getAttribute('href');
-
-                e.preventDefault();
-
-                function navegar() {
-                    if (audio) sessionStorage.setItem(POS_KEY, String(audio.currentTime));
-                    window.location.href = href;
-                }
-
-                if (vaiDormir) {
-                    fecharOlho(navegar);
-                } else if (temBorb && sfxNome) {
-                    if (audio) { audio.pause(); }
-                    tocarBorboletaSFX(sfxNome, () => setTimeout(navegar, 1000));
-                } else if (sfxNome) {
-                    tocarBorboletaSFX(sfxNome, navegar);
-                } else {
-                    navegar();
-                }
-            });
-        });
-
-        // ── Conversa Kelly ──
+        // ── Conversa Kelly (cena inicial via Jinja2) ──
         {% if dados and dados.tipo_texto == 'conversa' %}
-        const mensagens = {{ dados.mensagens | tojson }};
-        const inner = document.getElementById('conversaInner');
-        let mi = 0;
-
-        function mostrarMsg() {
-            if (mi >= mensagens.length) {
-                // Fim da conversa — ir dormir
-                setTimeout(() => fecharOlho(() => { window.location.href = '/avancar'; }), 1500);
-                return;
+        (function() {
+            const mensagensInit = {{ dados.mensagens | tojson }};
+            const innerInit = document.getElementById('conversaInner');
+            let miInit = 0;
+            function mostrarMsgInit() {
+                if (miInit >= mensagensInit.length) {
+                    {% if dados.ir_dormir %}
+                    setTimeout(() => fecharOlho(() => fetchAvancar(true)), 1500);
+                    {% endif %}
+                    return;
+                }
+                const m = mensagensInit[miInit++];
+                const div = document.createElement('div');
+                div.className = 'msg ' + m.lado;
+                div.textContent = m.texto;
+                div.style.animationDelay = '0s';
+                innerInit.appendChild(div);
+                innerInit.scrollTop = innerInit.scrollHeight;
+                setTimeout(mostrarMsgInit, m.lado === 'eu' ? 800 : 1400);
             }
-            const m = mensagens[mi++];
-            const div = document.createElement('div');
-            div.className = 'msg ' + m.lado;
-            div.textContent = m.texto;
-            div.style.animationDelay = '0s';
-            inner.appendChild(div);
-            inner.scrollTop = inner.scrollHeight;
-            setTimeout(mostrarMsg, m.lado === 'eu' ? 800 : 1400);
-        }
-
-        setTimeout(mostrarMsg, 500);
+            setTimeout(mostrarMsgInit, 500);
+        })();
         {% endif %}
 
         // ── Digitação ──
@@ -374,23 +347,35 @@
                     }
 
                     // Troca imagem sem flash
-                    const fundo = document.getElementById('fundoImg');
-                    if (data.imagem_mudou && data.imagem && fundo) {
+                    if (data.imagem_mudou && data.imagem) {
                         const novaImg = new Image();
                         novaImg.onload = () => {
+                            let fundo = document.getElementById('fundoImg');
+                            if (!fundo) {
+                                fundo = document.createElement('img');
+                                fundo.className = 'fundo';
+                                fundo.id = 'fundoImg';
+                                fundo.alt = '';
+                                const fp = document.querySelector('.fundo-preto');
+                                if (fp) fp.remove();
+                                document.body.insertBefore(fundo, document.body.firstChild);
+                            }
                             fundo.src = novaImg.src;
+                            fundo.style.display = '';
                             fundo.style.transition = 'none';
                             fundo.style.opacity = '1';
                         };
                         novaImg.onerror = () => { console.error('Imagem nao carregou:', novaImg.src); };
                         novaImg.src = window.location.origin + '/static/' + data.imagem;
-                        console.log('Carregando imagem:', novaImg.src);
-                    } else if (!data.imagem && fundo) {
-                        fundo.style.display = 'none';
-                        if (!document.querySelector('.fundo-preto')) {
-                            const d = document.createElement('div');
-                            d.className = 'fundo-preto';
-                            document.body.insertBefore(d, document.body.firstChild);
+                    } else if (!data.imagem) {
+                        const fundo = document.getElementById('fundoImg');
+                        if (fundo) {
+                            fundo.style.display = 'none';
+                            if (!document.querySelector('.fundo-preto')) {
+                                const d = document.createElement('div');
+                                d.className = 'fundo-preto';
+                                document.body.insertBefore(d, document.body.firstChild);
+                            }
                         }
                     }
 
@@ -450,16 +435,260 @@
         }
         {% endif %}
 
-        // ── Noite: btn continuar ──
+        // ── NOITE: sistema fetch sem reload ──
         {% if tem_escolhas %}
-        const btnN = document.getElementById('btnAvancar');
-        if (btnN) {
-            btnN.addEventListener('click', (e) => {
-                e.preventDefault();
-                if (audio) sessionStorage.setItem(POS_KEY, String(audio.currentTime));
-                window.location.href = '/avancar';
+        const BOX_MOLLY_N = "{{ url_for('static', filename='box/box_molly/box_molly_v2.png') }}";
+        const BOX_NOME_N  = "{{ url_for('static', filename='box/box_molly/Molly_Name_Box.png') }}";
+        let irDormirFlag = {{ 'true' if dados and dados.ir_dormir else 'false' }};
+
+        function limparUI() {
+            ['.caixa-narrador', '.caixa-molly', '.sms-bubble-wrap',
+             '.conversa-wrap', '.dialogo', '#opcoesContainer', '#btnAvancar'].forEach(sel => {
+                const el = document.querySelector(sel);
+                if (el) el.remove();
             });
         }
+
+        function digitarNoite(el, texto) {
+            el.textContent = '';
+            let i = 0;
+            setTimeout(function dgt() {
+                if (i < texto.length) { el.textContent += texto[i++]; setTimeout(dgt, 20); }
+            }, 100);
+        }
+
+        function criarBtnAvancar(handler) {
+            const btn = document.createElement('button');
+            btn.id = 'btnAvancar';
+            btn.className = 'btn-avancar';
+            btn.textContent = 'continuar →';
+            btn.addEventListener('click', e => { e.preventDefault(); handler(); });
+            document.body.appendChild(btn);
+        }
+
+        function atualizarFundoNoite(frame) {
+            let fundo = document.getElementById('fundoImg');
+            if (frame) {
+                if (!fundo) {
+                    fundo = document.createElement('img');
+                    fundo.id = 'fundoImg';
+                    fundo.className = 'fundo nova-imagem';
+                    fundo.alt = '';
+                    document.body.insertBefore(fundo, document.getElementById('olhoOverlay') || document.body.firstChild);
+                    const fp = document.querySelector('.fundo-preto');
+                    if (fp) fp.remove();
+                }
+                fundo.src = '/static/' + frame;
+                fundo.style.display = '';
+            } else {
+                if (fundo) fundo.style.display = 'none';
+                if (!document.querySelector('.fundo-preto')) {
+                    const d = document.createElement('div');
+                    d.className = 'fundo-preto';
+                    document.body.insertBefore(d, document.body.firstChild);
+                }
+            }
+        }
+
+        function fetchAvancar(skipDormir) {
+            if (audio) sessionStorage.setItem(POS_KEY, String(audio.currentTime));
+            fetch('/avancar_data')
+                .then(r => r.json())
+                .then(data => {
+                    if (data.fim) {
+                        if (!skipDormir && irDormirFlag) {
+                            fecharOlho(() => { window.location.href = data.redirect; });
+                        } else {
+                            window.location.href = data.redirect;
+                        }
+                        return;
+                    }
+                    renderCena(data);
+                })
+                .catch(() => { window.location.href = '/avancar'; });
+        }
+
+        function escolherOpcao(idx, sfxNome, temBorb, vaiDormir) {
+            if (audio) sessionStorage.setItem(POS_KEY, String(audio.currentTime));
+            function fazerEscolha() {
+                fetch('/escolha_data/' + idx)
+                    .then(r => r.json())
+                    .then(data => {
+                        if (data.fim) {
+                            if (data.dormir) {
+                                fecharOlho(() => { window.location.href = data.redirect; });
+                            } else {
+                                window.location.href = data.redirect;
+                            }
+                            return;
+                        }
+                        renderCena(data);
+                    })
+                    .catch(() => { window.location.href = '/escolha/' + idx; });
+            }
+            if (vaiDormir) {
+                fecharOlho(fazerEscolha);
+            } else if (temBorb && sfxNome) {
+                if (audio) audio.pause();
+                tocarBorboletaSFX(sfxNome, () => setTimeout(fazerEscolha, 1000));
+            } else if (sfxNome) {
+                tocarBorboletaSFX(sfxNome, fazerEscolha);
+            } else {
+                fazerEscolha();
+            }
+        }
+
+        function renderNarradorNoite(texto) {
+            const d = document.createElement('div');
+            d.className = 'caixa-narrador';
+            d.innerHTML = '<div class="narrador-texto noite"></div>';
+            document.body.appendChild(d);
+            digitarNoite(d.querySelector('.narrador-texto'), texto);
+        }
+
+        function renderMollyNoite(texto) {
+            const d = document.createElement('div');
+            d.className = 'caixa-molly';
+            d.innerHTML = '<img class="molly-nome-img" src="' + BOX_NOME_N + '" alt="Molly">' +
+                '<div class="molly-box-wrap"><img class="molly-box-img" src="' + BOX_MOLLY_N + '" alt="">' +
+                '<div class="molly-box-texto"></div></div>';
+            document.body.appendChild(d);
+            digitarNoite(d.querySelector('.molly-box-texto'), texto);
+        }
+
+        function renderSMSNoite(remetente, texto) {
+            const d = document.createElement('div');
+            d.className = 'sms-bubble-wrap';
+            d.innerHTML = '<div class="sms-nome">' + remetente + '</div>' +
+                '<div class="sms-bubble"></div>';
+            document.body.appendChild(d);
+            digitarNoite(d.querySelector('.sms-bubble'), texto);
+        }
+
+        function renderConversaDinamica(mensagens, irDormir) {
+            const wrap = document.createElement('div');
+            wrap.className = 'conversa-wrap';
+            wrap.innerHTML = '<div class="conversa-inner" id="conversaInner">' +
+                '<div class="conversa-header">Kelly</div></div>';
+            document.body.appendChild(wrap);
+            const inner = document.getElementById('conversaInner');
+            let mi = 0;
+            function mostrarMsg() {
+                if (mi >= mensagens.length) {
+                    if (irDormir) {
+                        setTimeout(() => fecharOlho(() => fetchAvancar(true)), 1500);
+                    }
+                    return;
+                }
+                const m = mensagens[mi++];
+                const div = document.createElement('div');
+                div.className = 'msg ' + m.lado;
+                div.textContent = m.texto;
+                div.style.animationDelay = '0s';
+                inner.appendChild(div);
+                inner.scrollTop = inner.scrollHeight;
+                setTimeout(mostrarMsg, m.lado === 'eu' ? 800 : 1400);
+            }
+            setTimeout(mostrarMsg, 500);
+        }
+
+        function renderOpcoesNoite(opcoes, sessionVolta) {
+            const container = document.createElement('div');
+            container.className = 'opcoes-container';
+            container.id = 'opcoesContainer';
+            opcoes.forEach((op, idx) => {
+                const btn = document.createElement('a');
+                btn.className = 'opcao-btn ' + op.posicao;
+                btn.style.animationDelay = (idx * 0.15) + 's';
+                btn.href = '#';
+                btn.textContent = op.texto;
+                if (op.sfx) btn.dataset.sfx = op.sfx;
+                if (op.borboleta) btn.dataset.borboleta = 'true';
+                if (op.sumir_apos) btn.dataset.sumir = 'true';
+                const vaiDormir = op.acao === 'dormir' || op.acao === 'dormir_olho';
+                btn.addEventListener('click', e => {
+                    e.preventDefault();
+                    escolherOpcao(idx, op.sfx || null, !!op.borboleta, vaiDormir);
+                });
+                container.appendChild(btn);
+            });
+            document.body.appendChild(container);
+            if (sessionVolta) {
+                const sumindo = container.querySelectorAll('[data-sumir="true"]');
+                sumindo.forEach(b => { b.style.pointerEvents = 'none'; b.style.cursor = 'default'; });
+                setTimeout(() => sumindo.forEach(b => b.classList.add('sumindo')), 800);
+            }
+        }
+
+        function renderCena(data) {
+            irDormirFlag = !!data.ir_dormir;
+            atualizarFundoNoite(data.frame);
+            const eggOld = document.getElementById('easterEgg');
+            if (eggOld) eggOld.remove();
+            limparUI();
+
+            if (data.cortar_musica && audio) audio.pause();
+
+            if (data.sfx) {
+                const s = new Audio(data.sfx_base + data.sfx);
+                s.volume = 1.0;
+                setTimeout(() => s.play().catch(() => {}), 600);
+            }
+
+            if (data.easter_egg) {
+                const egg = document.createElement('div');
+                egg.className = 'easter-egg';
+                egg.id = 'easterEgg';
+                egg.innerHTML = '<div class="easter-egg-noticia">' + data.easter_egg.texto + '</div>';
+                egg.addEventListener('click', () => window.open(data.easter_egg.url, '_blank'));
+                document.body.appendChild(egg);
+                setTimeout(() => { egg.style.opacity = '1'; }, 4000);
+            }
+
+            const hasOpcoes = data.opcoes && data.opcoes.length > 0;
+
+            if (data.tipo_texto === 'conversa') {
+                renderConversaDinamica(data.mensagens, data.ir_dormir);
+            } else if (data.tipo_texto === 'sms') {
+                renderSMSNoite(data.remetente || '', data.texto);
+                criarBtnAvancar(() => fetchAvancar());
+            } else if (data.tipo_texto === 'narrador') {
+                renderNarradorNoite(data.texto);
+                if (!hasOpcoes) {
+                    if (data.ir_dormir) criarBtnAvancar(() => fecharOlho(() => fetchAvancar(true)));
+                    else criarBtnAvancar(() => fetchAvancar());
+                }
+            } else if (data.tipo_texto === 'molly') {
+                renderMollyNoite(data.texto);
+                if (!hasOpcoes) {
+                    if (data.ir_dormir) criarBtnAvancar(() => fecharOlho(() => fetchAvancar(true)));
+                    else criarBtnAvancar(() => fetchAvancar());
+                }
+            }
+
+            if (hasOpcoes) renderOpcoesNoite(data.opcoes, !!data.session_volta);
+        }
+
+        // Inicialização: primeira cena (Jinja2)
+        const btnN = document.getElementById('btnAvancar');
+        if (btnN) {
+            btnN.addEventListener('click', e => {
+                e.preventDefault();
+                if (audio) sessionStorage.setItem(POS_KEY, String(audio.currentTime));
+                if (irDormirFlag) fecharOlho(() => fetchAvancar(true));
+                else fetchAvancar();
+            });
+        }
+
+        document.querySelectorAll('.opcao-btn').forEach((btn, idx) => {
+            btn.addEventListener('click', e => {
+                e.preventDefault();
+                const sfxNome  = btn.dataset.sfx || null;
+                const temBorb  = btn.dataset.borboleta === 'true';
+                const vaiDorm  = btn.dataset.dormir === 'true';
+                escolherOpcao(idx, sfxNome, temBorb, vaiDorm);
+            });
+        });
         {% endif %}
     </script>
 </body>

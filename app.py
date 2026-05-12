@@ -303,6 +303,146 @@ def avancar():
     return redirect(url_for("cena"))
 
 
+def build_cena_json(cap_id, cena_num, barra):
+    cap = get_capitulo(cap_id)
+    if not cap:
+        return {"fim": True, "redirect": "/"}
+    frames_noite = cap.get("frames", [])
+    cenas = cap.get("cenas", {})
+    dados_cena = cenas.get(cena_num)
+    if not dados_cena:
+        return {"fim": True, "redirect": "/final"}
+    frame_idx_cena = dados_cena.get("frame_idx", 0)
+    frame_atual = frames_noite[frame_idx_cena] if frame_idx_cena < len(frames_noite) else None
+    age = molly_age_sozinha(cap_id, cena_num, barra)
+    return {
+        "fim": False,
+        "frame": frame_atual,
+        "tipo_texto": dados_cena.get("tipo_texto"),
+        "texto": dados_cena.get("texto", ""),
+        "titulo": dados_cena.get("titulo", ""),
+        "remetente": dados_cena.get("remetente", ""),
+        "mensagens": dados_cena.get("mensagens", []),
+        "sfx": dados_cena.get("sfx"),
+        "sfx_base": "/static/journey/ato_1/Cap_2(noite)/Sound/",
+        "opcoes": dados_cena.get("opcoes", []),
+        "easter_egg": dados_cena.get("easter_egg"),
+        "molly_age": age,
+        "barra": barra,
+        "volta_aqui": dados_cena.get("volta_aqui", False),
+        "session_volta": False,
+        "ir_dormir": dados_cena.get("ir_dormir", False),
+        "fim_curtidas": dados_cena.get("fim_curtidas", False),
+        "cortar_musica": dados_cena.get("cortar_musica", False),
+    }
+
+
+@app.route("/avancar_data")
+def avancar_data():
+    cap_id   = session.get("cap")
+    cena_num = session.get("cena", 1)
+    barra    = session.get("barra", 3)
+    cap = get_capitulo(cap_id)
+    cenas = cap.get("cenas", {}) if cap else {}
+    dados_cena = cenas.get(cena_num, {})
+
+    if dados_cena.get("fim_curtidas"):
+        session["cap"] = "ato1_cap2_examinar"
+        session["cena"] = 6
+        session["frame"] = 0
+        result = build_cena_json("ato1_cap2_examinar", 6, barra)
+        result["session_volta"] = True
+        return jsonify(result)
+
+    if dados_cena.get("ir_dormir"):
+        proximo_cap = get_proximo_capitulo(cap_id)
+        if proximo_cap:
+            session["cap"] = proximo_cap
+            session["frame"] = 0
+            session["cena"] = 1
+        return jsonify({"fim": True, "redirect": "/transicao/dia"})
+
+    proxima = cena_num + 1
+    if proxima not in cenas:
+        proximo_cap = get_proximo_capitulo(cap_id)
+        if proximo_cap:
+            session["cap"] = proximo_cap
+            session["frame"] = 0
+            session["cena"] = 1
+            cap_prox = get_capitulo(proximo_cap)
+            if not cap_prox or cap_prox.get("tipo") == "demo":
+                return jsonify({"fim": True, "redirect": "/cena"})
+            return jsonify({"fim": True, "redirect": f"/transicao/{cap_prox.get('tipo', 'noite')}"})
+        return jsonify({"fim": True, "redirect": "/final"})
+
+    session["cena"] = proxima
+    return jsonify(build_cena_json(cap_id, proxima, barra))
+
+
+@app.route("/escolha_data/<int:opcao>")
+def escolha_data(opcao):
+    cap_id   = session.get("cap")
+    cena_num = session.get("cena", 1)
+    barra    = session.get("barra", 3)
+
+    nova_barra, acao = processar_escolha(cap_id, cena_num, opcao, barra)
+    session["barra"] = nova_barra
+
+    if acao in ("dormir", "dormir_olho"):
+        proximo_cap = get_proximo_capitulo(cap_id)
+        if proximo_cap:
+            session["cap"] = proximo_cap
+            session["frame"] = 0
+            session["cena"] = 1
+        return jsonify({"fim": True, "redirect": "/transicao/dia", "dormir": True})
+
+    if acao == "examinar":
+        session["cap"] = "ato1_cap2_examinar"
+        session["frame"] = 0
+        session["cena"] = 1
+        return jsonify(build_cena_json("ato1_cap2_examinar", 1, nova_barra))
+
+    if acao == "conversa_kelly":
+        session["cap"] = "ato1_cap2_kelly"
+        session["frame"] = 0
+        session["cena"] = 1
+        return jsonify(build_cena_json("ato1_cap2_kelly", 1, nova_barra))
+
+    if acao == "ver_curtidas":
+        session["cap"] = "ato1_cap2_curtidas"
+        session["frame"] = 0
+        session["cena"] = 1
+        return jsonify(build_cena_json("ato1_cap2_curtidas", 1, nova_barra))
+
+    if acao == "ver_comentario":
+        session["cap"] = "ato1_cap2_comentario"
+        session["frame"] = 0
+        session["cena"] = 1
+        return jsonify(build_cena_json("ato1_cap2_comentario", 1, nova_barra))
+
+    if acao == "apagar_post":
+        session["cena"] = 5
+        return jsonify(build_cena_json(cap_id, 5, nova_barra))
+
+    cap = get_capitulo(cap_id)
+    cenas = cap.get("cenas", {}) if cap else {}
+    proxima = cena_num + 1
+    if proxima not in cenas:
+        proximo_cap = get_proximo_capitulo(cap_id)
+        if proximo_cap:
+            session["cap"] = proximo_cap
+            session["frame"] = 0
+            session["cena"] = 1
+            cap_prox = get_capitulo(proximo_cap)
+            if not cap_prox or cap_prox.get("tipo") == "demo":
+                return jsonify({"fim": True, "redirect": "/cena"})
+            return jsonify({"fim": True, "redirect": f"/transicao/{cap_prox.get('tipo', 'noite')}"})
+        return jsonify({"fim": True, "redirect": "/final"})
+
+    session["cena"] = proxima
+    return jsonify(build_cena_json(cap_id, proxima, nova_barra))
+
+
 @app.route("/final")
 def final():
     barra = session.get("barra", 3)
