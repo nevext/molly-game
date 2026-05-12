@@ -80,20 +80,52 @@
             <div class="tut-pular" onclick="avancarTutorial(3)">CLIQUE EM QUALQUER LUGAR PARA CONTINUAR</div>
         </div>
 
-        <!-- FASE 3: borboleta + texto -->
+        <!-- FASE 3: borboleta + sons sequenciais -->
         <div class="tut-fase" id="tutFase3" style="display:none;">
             <div class="tut-livro-wrap">
                 <img class="tut-livro" id="tutBorboleta" src="" alt="borboleta">
             </div>
             <div class="tut-texto">
                 <p class="tut-titulo">A Borboleta</p>
-                <p class="tut-desc">Quando ela aparecer, significa que voce fez algo<br>que vai afetar o futuro de Molly.</p>
+                <p class="tut-desc" id="descBorboleta">Quando ela aparecer, significa que voce fez algo<br>que vai afetar o futuro de Molly.</p>
             </div>
-            <div class="tut-pular" onclick="avancarTutorial(4)">CLIQUE EM QUALQUER LUGAR PARA CONTINUAR</div>
+            <div class="tut-sons" id="tutSons" style="margin-top: 1.5rem; text-align: center; min-height: 60px;">
+                <p class="tut-desc" id="tutSomMsg" style="font-style: italic; opacity: 0; transition: opacity 0.5s;"></p>
+            </div>
+            <div class="tut-pular" id="tutBorboletaContinuar" style="display:none;" onclick="avancarTutorial(4)">CLIQUE EM QUALQUER LUGAR PARA CONTINUAR</div>
         </div>
 
-        <!-- FASE 4: escolha — ver abertura ou pular -->
+        <!-- FASE 4: tutorial de sons -->
         <div class="tut-fase" id="tutFase4" style="display:none;">
+            <div class="tut-texto" style="margin-bottom: 2rem;">
+                <p class="tut-titulo">Os Sons</p>
+                <p class="tut-desc">Cada final tem um som diferente.<br>Clique nos tres para reconhece-los antes de comecar.</p>
+            </div>
+            <div class="sons-grid">
+                <button class="som-btn" id="somBom" onclick="tocarSom('bom')">
+                    <span class="som-icone">&#9834;</span>
+                    <span class="som-label">Final Bom</span>
+                    <span class="som-status" id="statusBom">clique para ouvir</span>
+                </button>
+                <button class="som-btn" id="somEspecial" onclick="tocarSom('especial')">
+                    <span class="som-icone">&#9834;</span>
+                    <span class="som-label">Final Especial</span>
+                    <span class="som-status" id="statusEspecial">clique para ouvir</span>
+                </button>
+                <button class="som-btn" id="somRuim" onclick="tocarSom('ruim')">
+                    <span class="som-icone">&#9834;</span>
+                    <span class="som-label">Final Ruim</span>
+                    <span class="som-status" id="statusRuim">clique para ouvir</span>
+                </button>
+            </div>
+            <button class="tut-btn" id="btnProsseguirSons" onclick="avancarTutorial(5)"
+                    style="margin-top: 2rem; opacity: 0.3; cursor: not-allowed;" disabled>
+                Prosseguir
+            </button>
+        </div>
+
+        <!-- FASE 5: escolha — ver abertura ou pular -->
+        <div class="tut-fase" id="tutFase5" style="display:none;">
             <div class="tut-escolha">
                 <p class="tut-titulo" style="margin-bottom: 2rem;">Como deseja comecar?</p>
                 <button class="tut-btn" onclick="verAbertura()">Ver introducao</button>
@@ -355,7 +387,15 @@
             can.style.transform = 'translateX(80px) translateY(20px) rotate(-15deg)';
         }
 
-        // ── FASE 3: borboleta ──
+        // ── FASE 3: borboleta + sons sequenciais ──
+        const SFX_BASE = "{{ url_for('static', filename='journey/ato_1/Cap_2(noite)/Sound/') }}";
+        const sfxSeq = [
+            { audio: new Audio(SFX_BASE + 'sfx_good_ending.mp3'),           label: 'Quando voce ouvir esse som...', resultado: 'significa que Molly chegou a um final bom.' },
+            { audio: new Audio(SFX_BASE + 'sfx_bad_ending(Molly).mp3'),     label: 'Quando voce ouvir esse som...', resultado: 'significa que Molly chegou a um final ruim.' },
+            { audio: new Audio(SFX_BASE + 'sfx_especial_ending(Molly).mp3'),label: 'Quando voce ouvir esse som...', resultado: 'algo diferente aconteceu. Um final especial.' },
+        ];
+        let sfxSeqIdx = 0;
+
         function iniciarFase3() {
             borbIdx = 0;
             const img = document.getElementById('tutBorboleta');
@@ -364,6 +404,46 @@
                 borbIdx = (borbIdx + 1) % BORBOLETA.length;
                 img.src = BORBOLETA[borbIdx];
             }, 200);
+
+            // Esconde o continuar ate terminar os sons
+            document.getElementById('tutBorboletaContinuar').style.display = 'none';
+
+            // Inicia sequencia de sons apos 1.5s
+            setTimeout(() => iniciarSomSeq(0), 1500);
+        }
+
+        function iniciarSomSeq(idx) {
+            if (idx >= sfxSeq.length) {
+                const msg = document.getElementById('tutSomMsg');
+                msg.style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('tutBorboletaContinuar').style.display = 'block';
+                }, 600);
+                return;
+            }
+            const item = sfxSeq[idx];
+            const msg = document.getElementById('tutSomMsg');
+
+            // Mostra "Quando voce ouvir esse som..."
+            msg.style.opacity = '0';
+            setTimeout(() => {
+                msg.textContent = item.label;
+                msg.style.opacity = '1';
+            }, 300);
+
+            item.audio.volume = 1.0;
+            item.audio.currentTime = 0;
+            item.audio.play().catch(() => {});
+
+            item.audio.onended = () => {
+                // Mostra o resultado apos tocar
+                msg.style.opacity = '0';
+                setTimeout(() => {
+                    msg.textContent = item.resultado;
+                    msg.style.opacity = '1';
+                    setTimeout(() => iniciarSomSeq(idx + 1), 2500);
+                }, 400);
+            };
         }
 
         // ── Avançar fases ──
@@ -381,6 +461,8 @@
             } else if (fase === 4) {
                 clearInterval(borbInterval);
                 document.getElementById('tutFase4').style.display = 'flex';
+            } else if (fase === 5) {
+                document.getElementById('tutFase5').style.display = 'flex';
             }
         }
 
@@ -390,9 +472,20 @@
             const aberturaDiv = document.getElementById('aberturaVideo');
             const video = document.getElementById('videoAbertura');
             aberturaDiv.classList.add('ativo');
-            video.volume = 1.0;
+            // Para o áudio do menu antes de tocar o vídeo
+            const menuAudio = document.getElementById('menuAudio');
+            if (menuAudio) { menuAudio.pause(); menuAudio.currentTime = 0; }
+            // O clique do usuário no botão garante que o som funciona
             video.muted = false;
-            video.play().catch(() => { video.muted = true; video.play(); });
+            video.volume = 1.0;
+            const playPromise = video.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(() => {
+                    // Fallback: toca mutado se ainda bloquear
+                    video.muted = true;
+                    video.play();
+                });
+            }
             video.addEventListener('ended', irJogar);
         }
 
