@@ -13,8 +13,8 @@
         *{margin:0;padding:0;box-sizing:border-box;}
         body{width:100vw;height:100vh;overflow:hidden;background:#000;}
 
-        .fundo{position:fixed;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:0;opacity:1;}
-        .fundo.nova-imagem{animation:fadeIn 0.4s ease forwards;}
+        .fundo{position:fixed;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:0;opacity:1;transition:opacity 0.3s ease;}
+        .fundo.nova-imagem{opacity:1;}
         .fundo-preto{position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:0;}
 
         /* Narrador */
@@ -259,24 +259,20 @@
         ];
 
         function mostrarBorboleta(sfxNome) {
-            // Borboleta aparece mas não bloqueia — jogo continua
             const div = document.getElementById('borboletaSfx');
             const img = document.getElementById('borboletaImg');
             div.classList.add('ativo');
             let bi = 0;
             const bInt = setInterval(() => { bi = (bi+1) % BORBOLETAS.length; img.src = BORBOLETAS[bi]; }, 200);
-            // SFX após 5s
+            // SFX imediatamente
+            const sfx = new Audio('/static/journey/ato_1/Cap_2(noite)/Sound/' + sfxNome);
+            sfx.volume = 1.0;
+            sfx.play().catch(()=>{});
+            // Remove após 3s
             setTimeout(() => {
-                const sfx = new Audio('/static/journey/ato_1/Cap_2(noite)/Sound/' + sfxNome);
-                sfx.volume = 1.0;
-                sfx.play().catch(()=>{});
-                sfx.onended = () => {
-                    clearInterval(bInt);
-                    div.classList.remove('ativo');
-                };
-            }, 5000);
-            // Auto-remove após 3s
-            setTimeout(() => { clearInterval(bInt); div.classList.remove('ativo'); }, 3000);
+                clearInterval(bInt);
+                div.classList.remove('ativo');
+            }, 3000);
         }
 
         function tocarBorboletaSFX(sfxNome, callback) {
