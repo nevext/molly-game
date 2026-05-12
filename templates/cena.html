@@ -5,327 +5,126 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Molly</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
     <style>
-        @font-face {
-            font-family: 'Glassure';
-            src: url("{{ url_for('static', filename='menu/Glassure.otf') }}") format('opentype');
-        }
-        @font-face {
-            font-family: 'DMSans';
-            src: url("{{ url_for('static', filename='menu/DMSans-VariableFont_opsz,wght.ttf') }}") format('truetype');
-            font-weight: 100 900;
-        }
+        @font-face { font-family:'Glassure'; src:url("{{ url_for('static',filename='menu/Glassure.otf') }}") format('opentype'); }
+        @font-face { font-family:'DMSans'; src:url("{{ url_for('static',filename='menu/DMSans-VariableFont_opsz,wght.ttf') }}") format('truetype'); font-weight:100 900; }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{width:100vw;height:100vh;overflow:hidden;background:#000;}
 
-        body {
-            width: 100vw;
-            height: 100vh;
-            overflow: hidden;
-            background: #000;
-            cursor: pointer;
-        }
+        .fundo{position:fixed;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:0;}
+        .fundo.nova-imagem{animation:fadeIn 0.4s ease forwards;}
+        .fundo-preto{position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:0;}
 
-        /* ── Fundo — sem animação quando mesma imagem ── */
-        .fundo {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            object-fit: cover;
-            z-index: 0;
-        }
+        /* Narrador */
+        .caixa-narrador{position:fixed;bottom:2.5rem;left:50%;transform:translateX(-50%);width:100%;max-width:760px;z-index:10;padding:0 2rem;pointer-events:none;}
+        .narrador-texto{font-family:'Montserrat',sans-serif;font-size:0.95rem;font-weight:300;font-style:italic;color:rgba(255,255,255,0.82);text-align:center;line-height:1.8;text-shadow:0 2px 20px rgba(0,0,0,1),0 0 60px rgba(0,0,0,1);}
 
-        .fundo.nova-imagem {
-            animation: fadeIn 0.4s ease forwards;
-        }
+        /* Caixa Molly */
+        .caixa-molly{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:900px;max-width:96vw;z-index:10;}
+        .molly-nome-img{display:block;height:42px;object-fit:contain;object-position:left;margin-bottom:-2px;margin-left:8px;}
+        .molly-box-wrap{position:relative;}
+        .molly-box-img{width:100%;display:block;}
+        .molly-box-texto{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:82%;font-family:'Montserrat',sans-serif;font-size:0.95rem;font-weight:300;color:rgba(255,255,255,0.92);line-height:1.7;}
 
-        .fundo-preto {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: #000;
-            z-index: 0;
-        }
+        /* Diálogo noite */
+        .dialogo{position:fixed;bottom:0;left:0;width:100%;z-index:10;padding:0 2rem 1.5rem;}
+        .dialogo-inner{background:rgba(5,5,15,0.92);border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:1.4rem 2rem;max-width:860px;margin:0 auto;backdrop-filter:blur(12px);}
+        .dialogo-nome{font-family:'DMSans',sans-serif;font-size:0.62rem;color:rgba(255,255,255,0.35);letter-spacing:0.3em;text-transform:uppercase;margin-bottom:0.4rem;}
+        .dialogo-titulo{font-family:'Glassure',serif;font-size:0.9rem;color:rgba(255,255,255,0.5);letter-spacing:0.1em;margin-bottom:0.7rem;}
+        .dialogo-texto{font-family:'Montserrat',sans-serif;font-size:0.95rem;font-weight:300;color:rgba(255,255,255,0.88);line-height:1.7;}
+        .dialogo-texto.automatico{color:#c8a8e9;font-style:italic;}
 
-        /* ── NARRADOR ── */
-        .caixa-narrador {
-            position: fixed;
-            bottom: 2.5rem;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100%;
-            max-width: 760px;
-            z-index: 10;
-            padding: 0 2rem;
-        }
+        /* SMS balão */
+        .sms-bubble-wrap{position:fixed;bottom:6rem;left:50%;transform:translateX(-50%);z-index:10;display:flex;flex-direction:column;align-items:flex-start;gap:0.4rem;max-width:420px;width:90%;animation:slideUp 0.4s ease forwards;}
+        .sms-nome{font-family:'DMSans',sans-serif;font-size:0.65rem;color:rgba(255,255,255,0.4);letter-spacing:0.2em;text-transform:uppercase;margin-bottom:0.2rem;margin-left:0.5rem;}
+        .sms-bubble{background:rgba(40,40,60,0.95);border:1px solid rgba(255,255,255,0.1);border-radius:18px 18px 18px 4px;padding:0.8rem 1.2rem;font-family:'Montserrat',sans-serif;font-size:0.88rem;font-weight:300;color:rgba(255,255,255,0.9);line-height:1.5;max-width:100%;backdrop-filter:blur(8px);}
+        @keyframes slideUp{from{opacity:0;transform:translateX(-50%) translateY(10px);}to{opacity:1;transform:translateX(-50%) translateY(0);}}
 
-        .narrador-texto {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 0.95rem;
-            font-weight: 300;
-            font-style: italic;
-            color: rgba(255,255,255,0.82);
-            text-align: center;
-            line-height: 1.8;
-            text-shadow: 0 2px 20px rgba(0,0,0,1), 0 0 60px rgba(0,0,0,1);
-        }
+        /* Conversa estilo iMessage */
+        .conversa-wrap{position:fixed;top:0;left:0;width:100%;height:100%;z-index:10;display:flex;flex-direction:column;justify-content:flex-end;padding:2rem;background:rgba(0,0,0,0.7);backdrop-filter:blur(4px);}
+        .conversa-inner{max-width:480px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:0.5rem;max-height:70vh;overflow:hidden;}
+        .conversa-header{font-family:'DMSans',sans-serif;font-size:0.65rem;color:rgba(255,255,255,0.3);letter-spacing:0.2em;text-transform:uppercase;text-align:center;margin-bottom:0.5rem;}
+        .msg{max-width:78%;padding:0.6rem 1rem;border-radius:18px;font-family:'Montserrat',sans-serif;font-size:0.85rem;font-weight:300;line-height:1.5;opacity:0;animation:msgAppear 0.4s ease forwards;}
+        .msg.deles{background:rgba(50,50,70,0.95);color:rgba(255,255,255,0.88);border-radius:18px 18px 18px 4px;align-self:flex-start;}
+        .msg.eu{background:rgba(139,0,0,0.7);color:rgba(255,255,255,0.92);border-radius:18px 18px 4px 18px;align-self:flex-end;}
+        @keyframes msgAppear{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
 
-        /* ── CAIXA MOLLY ── */
-        .caixa-molly {
-            position: fixed;
-            bottom: 0; left: 50%;
-            transform: translateX(-50%);
-            width: 900px;
-            max-width: 96vw;
-            z-index: 10;
-        }
+        /* Opções 3 posições */
+        .opcoes-container{position:fixed;bottom:0;left:0;width:100%;height:100%;z-index:10;pointer-events:none;}
+        .opcao-btn{position:absolute;background:rgba(5,5,15,0.88);border:1px solid rgba(255,255,255,0.12);border-radius:4px;color:rgba(255,255,255,0.8);font-family:'Montserrat',sans-serif;font-size:0.8rem;font-weight:300;padding:0.75rem 1.5rem;cursor:pointer;text-align:center;text-decoration:none;display:block;pointer-events:auto;max-width:300px;transition:all 0.2s ease;opacity:0;}
+        .opcao-btn.esquerda{left:2rem;bottom:3rem;animation:fadeInLeft 0.5s ease forwards;}
+        .opcao-btn.direita{right:2rem;bottom:3rem;animation:fadeInRight 0.5s ease forwards;}
+        .opcao-btn.baixo{left:50%;transform:translateX(-50%);bottom:1rem;animation:fadeInUp 0.5s ease 0.3s forwards;}
+        .opcao-btn:hover{background:rgba(139,0,0,0.4);border-color:rgba(139,0,0,0.6);color:#fff;}
+        @keyframes fadeInLeft{from{opacity:0;transform:translateX(-20px);}to{opacity:1;transform:translateX(0);}}
+        @keyframes fadeInRight{from{opacity:0;transform:translateX(20px);}to{opacity:1;transform:translateX(0);}}
+        @keyframes fadeInUp{from{opacity:0;transform:translateX(-50%) translateY(10px);}to{opacity:1;transform:translateX(-50%) translateY(0);}}
 
-        .molly-nome-img {
-            display: block;
-            height: 42px;
-            object-fit: contain;
-            object-position: left;
-            margin-bottom: -2px;
-            margin-left: 8px;
-        }
+        /* Botão continuar */
+        .btn-avancar{position:fixed;bottom:1.5rem;right:2.5rem;z-index:10;background:none;border:none;border-bottom:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.3);font-family:'Montserrat',sans-serif;font-size:0.6rem;font-weight:300;letter-spacing:0.25em;text-transform:uppercase;cursor:pointer;padding:0.3rem 0;text-decoration:none;animation:piscar 1.8s ease infinite;}
+        .btn-avancar:hover{color:rgba(255,255,255,0.8);}
 
-        .molly-box-wrap {
-            position: relative;
-        }
+        /* Easter egg */
+        .easter-egg{position:fixed;top:35%;right:8%;z-index:5;width:110px;opacity:0;cursor:pointer;transition:opacity 2s ease;}
+        .easter-egg-noticia{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:6px;padding:0.5rem 0.6rem;font-family:'Montserrat',sans-serif;font-size:0.58rem;color:rgba(255,255,255,0.25);line-height:1.4;}
 
-        .molly-box-img {
-            width: 100%;
-            display: block;
-        }
+        /* Borboleta SFX canto inferior direito */
+        .borboleta-sfx{position:fixed;bottom:1rem;right:1rem;z-index:20;width:60px;height:60px;display:none;}
+        .borboleta-sfx img{width:100%;height:100%;object-fit:contain;}
+        .borboleta-sfx.ativo{display:block;animation:pulsarBorb 0.3s ease infinite;}
+        @keyframes pulsarBorb{0%,100%{opacity:1;}50%{opacity:0.5;}}
 
-        .molly-box-texto {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 82%;
-            font-family: 'Montserrat', sans-serif;
-            font-size: 0.95rem;
-            font-weight: 300;
-            color: rgba(255,255,255,0.92);
-            line-height: 1.7;
-        }
+        /* Olho fechando */
+        .olho-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:50;opacity:0;pointer-events:none;transition:opacity 1.5s ease;}
+        .olho-overlay.fechando{opacity:1;}
 
-        /* ── CAIXA NOITE ── */
-        .dialogo {
-            position: fixed;
-            bottom: 0; left: 0;
-            width: 100%;
-            z-index: 10;
-            padding: 0 2rem 1.5rem;
-        }
-
-        .dialogo-inner {
-            background: rgba(5,5,15,0.92);
-            border: 1px solid rgba(255,255,255,0.07);
-            border-radius: 14px;
-            padding: 1.4rem 2rem;
-            max-width: 860px;
-            margin: 0 auto;
-            backdrop-filter: blur(12px);
-        }
-
-        .dialogo-nome {
-            font-family: 'DMSans', sans-serif;
-            font-size: 0.62rem;
-            color: rgba(255,255,255,0.35);
-            letter-spacing: 0.3em;
-            text-transform: uppercase;
-            margin-bottom: 0.4rem;
-        }
-
-        .dialogo-titulo {
-            font-family: 'Glassure', serif;
-            font-size: 0.9rem;
-            color: rgba(255,255,255,0.5);
-            letter-spacing: 0.1em;
-            margin-bottom: 0.7rem;
-        }
-
-        .dialogo-texto {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 0.95rem;
-            font-weight: 300;
-            color: rgba(255,255,255,0.88);
-            line-height: 1.7;
-        }
-
-        .dialogo-texto.automatico {
-            color: #c8a8e9;
-            font-style: italic;
-        }
-
-        /* ── Opções ── */
-        .opcoes {
-            position: fixed;
-            bottom: 11rem;
-            left: 0;
-            width: 100%;
-            z-index: 10;
-            display: flex;
-            flex-direction: row;
-            justify-content: space-between;
-            align-items: flex-end;
-            padding: 0 3rem;
-            gap: 2rem;
-            pointer-events: none;
-        }
-
-        .opcao-btn {
-            background: rgba(5,5,15,0.88);
-            border: 1px solid rgba(255,255,255,0.12);
-            border-radius: 4px;
-            color: rgba(255,255,255,0.8);
-            font-family: 'Montserrat', sans-serif;
-            font-size: 0.82rem;
-            font-weight: 300;
-            padding: 0.75rem 1.5rem;
-            cursor: pointer;
-            max-width: 320px;
-            text-align: center;
-            transition: all 0.2s ease;
-            text-decoration: none;
-            display: block;
-            pointer-events: auto;
-        }
-
-        .opcao-btn:first-child {
-            align-self: flex-end;
-        }
-
-        .opcao-btn:last-child {
-            align-self: flex-end;
-        }
-
-        .opcao-btn:hover {
-            background: rgba(139,0,0,0.4);
-            border-color: rgba(139,0,0,0.6);
-            color: #fff;
-        }
-
-        /* ── Botão continuar ── */
-        .btn-avancar {
-            position: fixed;
-            bottom: 1.5rem;
-            right: 2.5rem;
-            z-index: 10;
-            background: none;
-            border: none;
-            border-bottom: 1px solid rgba(255,255,255,0.2);
-            color: rgba(255,255,255,0.3);
-            font-family: 'Montserrat', sans-serif;
-            font-size: 0.6rem;
-            font-weight: 300;
-            letter-spacing: 0.25em;
-            text-transform: uppercase;
-            cursor: pointer;
-            padding: 0.3rem 0;
-            text-decoration: none;
-            animation: piscar 1.8s ease infinite;
-        }
-
-        .btn-avancar:hover { color: rgba(255,255,255,0.8); }
-
-        /* ── Easter egg ── */
-        .easter-egg {
-            position: fixed;
-            top: 35%; right: 8%;
-            z-index: 5;
-            width: 110px;
-            opacity: 0;
-            cursor: pointer;
-            transition: opacity 2s ease;
-        }
-
-        .easter-egg-noticia {
-            background: rgba(255,255,255,0.04);
-            border: 1px solid rgba(255,255,255,0.07);
-            border-radius: 6px;
-            padding: 0.5rem 0.6rem;
-            font-family: 'Montserrat', sans-serif;
-            font-size: 0.58rem;
-            color: rgba(255,255,255,0.25);
-            line-height: 1.4;
-        }
-
-        body.crise { animation: telaBalanca 0.15s ease-in-out infinite; }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        @keyframes piscar {
-            0%, 100% { opacity: 0.3; }
-            50% { opacity: 0.9; }
-        }
-
-        @keyframes telaBalanca {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-3px); }
-            75% { transform: translateX(3px); }
-        }
-
-        @keyframes tremor {
-            0%   { transform: translateX(-50%); }
-            25%  { transform: translateX(calc(-50% - 4px)); }
-            75%  { transform: translateX(calc(-50% + 4px)); }
-            100% { transform: translateX(-50%); }
-        }
+        body.crise{animation:telaBalanca 0.15s ease-in-out infinite;}
+        @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+        @keyframes piscar{0%,100%{opacity:0.3;}50%{opacity:0.9;}}
+        @keyframes telaBalanca{0%,100%{transform:translateX(0);}25%{transform:translateX(-3px);}75%{transform:translateX(3px);}}
     </style>
 </head>
-<body class="{% if molly_age and dados and dados.get('texto_automatico') %}crise{% endif %}">
-
-    <!-- Áudio -->
+<body>
     <audio id="trilha" loop>
         <source src="{{ url_for('static', filename=trilha) }}" type="audio/mp3">
     </audio>
 
-    {% if not tem_escolhas %}
-    <!-- ── DIA ── -->
+    <!-- Olho fechando -->
+    <div class="olho-overlay" id="olhoOverlay"></div>
 
+    <!-- Borboleta SFX -->
+    <div class="borboleta-sfx" id="borboletaSfx">
+        <img id="borboletaImg" src="{{ url_for('static', filename='fly/BORBOLETA_1.png') }}" alt="">
+    </div>
+
+    {% if not tem_escolhas %}
+    <!-- DIA -->
         {% if frame.imagem %}
-            <img class="fundo {% if imagem_mudou %}nova-imagem{% endif %}"
-                 id="fundoImg"
-                 src="{{ url_for('static', filename=frame.imagem) }}"
-                 alt="">
+            <img class="fundo {% if imagem_mudou %}nova-imagem{% endif %}" id="fundoImg" src="{{ url_for('static', filename=frame.imagem) }}" alt="">
         {% else %}
             <div class="fundo-preto"></div>
         {% endif %}
 
         {% if frame.tipo_texto == 'narrador' %}
-            <div class="caixa-narrador">
-                <div class="narrador-texto" id="textoAtivo">{{ frame.texto }}</div>
-            </div>
-
+            <div class="caixa-narrador"><div class="narrador-texto" id="textoAtivo">{{ frame.texto }}</div></div>
         {% elif frame.tipo_texto == 'molly' %}
             <div class="caixa-molly">
-                <img class="molly-nome-img"
-                     src="{{ url_for('static', filename='box/box_molly/Molly_Name_Box.png') }}"
-                     alt="Molly">
+                <img class="molly-nome-img" src="{{ url_for('static', filename='box/box_molly/Molly_Name_Box.png') }}" alt="Molly">
                 <div class="molly-box-wrap">
-                    <img class="molly-box-img"
-                         src="{{ url_for('static', filename='box/box_molly/box_molly_v2.png') }}"
-                         alt="">
+                    <img class="molly-box-img" src="{{ url_for('static', filename='box/box_molly/box_molly_v2.png') }}" alt="">
                     <div class="molly-box-texto" id="textoAtivo">{{ frame.texto }}</div>
                 </div>
             </div>
         {% endif %}
 
-        <a href="/avancar_frame" class="btn-avancar" id="btnAvancar">continuar →</a>
+        <button class="btn-avancar" id="btnAvancar">continuar →</button>
 
     {% else %}
-    <!-- ── NOITE ── -->
-
+    <!-- NOITE -->
         {% if frame %}
-            <img class="fundo nova-imagem"
-                 src="{{ url_for('static', filename=frame) }}" alt="">
+            <img class="fundo nova-imagem" id="fundoImg" src="{{ url_for('static', filename=frame) }}" alt="">
         {% endif %}
 
         {% if dados and dados.easter_egg %}
@@ -335,217 +134,265 @@
         {% endif %}
 
         {% if dados %}
-            {% if molly_age %}
-            <div class="dialogo">
-                <div class="dialogo-inner">
+            {% if dados.tipo_texto == 'sms' %}
+                <!-- Balão SMS -->
+                <div class="sms-bubble-wrap">
+                    <div class="sms-nome">{{ dados.remetente }}</div>
+                    <div class="sms-bubble" id="textoAtivo">{{ dados.texto }}</div>
+                </div>
+                <button class="btn-avancar" id="btnAvancar">continuar →</button>
+
+            {% elif dados.tipo_texto == 'conversa' %}
+                <!-- Conversa iMessage -->
+                <div class="conversa-wrap">
+                    <div class="conversa-inner" id="conversaInner">
+                        <div class="conversa-header">{{ dados.get('remetente', 'Kelly') }}</div>
+                    </div>
+                </div>
+
+            {% elif molly_age %}
+                <div class="dialogo"><div class="dialogo-inner">
                     <div class="dialogo-nome">Molly</div>
                     <div class="dialogo-titulo">{{ dados.titulo }}</div>
                     <div class="dialogo-texto automatico" id="textoAtivo">{{ dados.texto_automatico }}</div>
-                </div>
-            </div>
+                </div></div>
+                <a href="/avancar" class="btn-avancar">continuar →</a>
+
             {% elif dados.tipo_texto == 'molly' %}
-            <div class="dialogo">
-                <div class="dialogo-inner">
-                    <div class="dialogo-nome">Molly</div>
-                    <div class="dialogo-titulo">{{ dados.titulo }}</div>
-                    <div class="dialogo-texto" id="textoAtivo">{{ dados.texto }}</div>
+                <div class="caixa-molly">
+                    <img class="molly-nome-img" src="{{ url_for('static', filename='box/box_molly/Molly_Name_Box.png') }}" alt="Molly">
+                    <div class="molly-box-wrap">
+                        <img class="molly-box-img" src="{{ url_for('static', filename='box/box_molly/box_molly_v2.png') }}" alt="">
+                        <div class="molly-box-texto" id="textoAtivo">{{ dados.texto }}</div>
+                    </div>
                 </div>
-            </div>
+                {% if not dados.opcoes %}
+                    <button class="btn-avancar" id="btnAvancar">continuar →</button>
+                {% endif %}
+
             {% else %}
-            <div class="caixa-narrador">
-                <div class="narrador-texto" id="textoAtivo">{{ dados.texto }}</div>
-            </div>
+                <!-- Narrador noite -->
+                <div class="caixa-narrador"><div class="narrador-texto" id="textoAtivo">{{ dados.texto }}</div></div>
+                {% if not dados.opcoes %}
+                    <button class="btn-avancar" id="btnAvancar">continuar →</button>
+                {% endif %}
+            {% endif %}
+
+            <!-- Opções -->
+            {% if dados.opcoes %}
+                <div class="opcoes-container" id="opcoesContainer">
+                    {% for opcao in dados.opcoes %}
+                        <a href="/escolha/{{ loop.index0 }}"
+                           class="opcao-btn {{ opcao.posicao }}"
+                           style="animation-delay: {{ loop.index0 * 0.15 }}s"
+                           {% if opcao.sfx %}data-sfx="{{ opcao.sfx }}"{% endif %}
+                           {% if opcao.get('borboleta') %}data-borboleta="true"{% endif %}
+                           {% if opcao.acao in ['dormir','dormir_olho'] %}data-dormir="true"{% endif %}>
+                            {{ opcao.texto }}
+                        </a>
+                    {% endfor %}
+                </div>
             {% endif %}
         {% endif %}
-
-        {% if molly_age %}
-            <a href="/avancar" class="btn-avancar">continuar →</a>
-        {% elif dados %}
-            <div class="opcoes">
-                {% for opcao in dados.opcoes %}
-                    <a href="/escolha/{{ loop.index0 }}" class="opcao-btn">{{ opcao.texto }}</a>
-                {% endfor %}
-            </div>
-        {% endif %}
-
     {% endif %}
 
     <script>
-        // ── Música: não reinicia entre frames da mesma trilha ──
+        // ── Música ──
         const TRILHA_SRC = "{{ url_for('static', filename=trilha) }}";
         const TRILHA_KEY = 'molly_trilha_src';
-        const POS_KEY = 'molly_trilha_pos';
-
+        const POS_KEY    = 'molly_trilha_pos';
         const audio = document.getElementById('trilha');
+
         if (audio) {
             audio.volume = 1.0;
             const ultimaSrc = sessionStorage.getItem(TRILHA_KEY);
             const ultimaPos = parseFloat(sessionStorage.getItem(POS_KEY) || '0');
-
             if (ultimaSrc === TRILHA_SRC && ultimaPos > 0) {
-                // Mesma trilha — restaura sem recarregar
-                audio.addEventListener('canplay', () => {
-                    audio.currentTime = ultimaPos;
-                    audio.play().catch(() => {});
-                }, { once: true });
+                audio.addEventListener('canplay', () => { audio.currentTime = ultimaPos; audio.play().catch(()=>{}); }, { once: true });
             } else {
                 sessionStorage.setItem(TRILHA_KEY, TRILHA_SRC);
                 sessionStorage.setItem(POS_KEY, '0');
-                audio.play().catch(() => {
-                    document.addEventListener('click', () => audio.play(), { once: true });
-                });
+                audio.play().catch(() => { document.addEventListener('click', () => audio.play(), { once: true }); });
             }
-
-            // Salva posição sem parar a música
-            setInterval(() => {
-                if (!audio.paused && !audio.ended) {
-                    sessionStorage.setItem(POS_KEY, String(audio.currentTime));
-                }
-            }, 500);
+            setInterval(() => { if (!audio.paused && !audio.ended) sessionStorage.setItem(POS_KEY, String(audio.currentTime)); }, 500);
         }
 
-        // ── SFX borboleta — caminho correto ──
-        {% if cap_id == 'ato1_tut_borboleta' %}
-        const sfx = new Audio("{{ url_for('static', filename='journey/ato_1/Cap_2(noite)/Sound/sfx_bad_ending(Molly).mp3') }}");
-        sfx.volume = 0.6;
-        sfx.play().catch(() => {});
-        const sfxInt = setInterval(() => {
-            sfx.currentTime = 0;
-            sfx.play().catch(() => {});
-        }, 5000);
-        document.getElementById('btnAvancar').addEventListener('click', () => {
-            clearInterval(sfxInt);
-            sfx.pause();
-        }, { once: true });
+        // ── SFX da cena (notificação etc) ──
+        {% if dados and dados.sfx %}
+        const sfxCena = new Audio("/static/journey/ato_1/Cap_2(noite)/Sound/{{ dados.sfx }}");
+        sfxCena.volume = 1.0;
+        setTimeout(() => sfxCena.play().catch(()=>{}), 600);
         {% endif %}
 
         // ── Easter egg ──
         const egg = document.getElementById('easterEgg');
         if (egg) setTimeout(() => { egg.style.opacity = '1'; }, 4000);
-
         function abrirEasterEgg() {
             {% if dados and dados.easter_egg %}
             window.open('{{ dados.easter_egg.url }}', '_blank');
             {% endif %}
         }
 
+        // ── Borboleta SFX ──
+        const BORBOLETAS = [
+            "{{ url_for('static', filename='fly/BORBOLETA_1.png') }}",
+            "{{ url_for('static', filename='fly/BORBOLETA_2.png') }}",
+            "{{ url_for('static', filename='fly/BORBOLETA_3.png') }}",
+            "{{ url_for('static', filename='fly/BORBOLETA_4.png') }}",
+        ];
+
+        function tocarBorboletaSFX(sfxNome, callback) {
+            const div = document.getElementById('borboletaSfx');
+            const img = document.getElementById('borboletaImg');
+            const sfx = new Audio('/static/journey/ato_1/Cap_2(noite)/Sound/' + sfxNome);
+            sfx.volume = 1.0;
+            div.classList.add('ativo');
+            let bi = 0;
+            const bInt = setInterval(() => { bi = (bi+1) % BORBOLETAS.length; img.src = BORBOLETAS[bi]; }, 200);
+            sfx.play().catch(()=>{});
+            sfx.onended = () => {
+                clearInterval(bInt);
+                div.classList.remove('ativo');
+                if (callback) callback();
+            };
+        }
+
+        // ── Efeito olho fechando ──
+        function fecharOlho(callback) {
+            const overlay = document.getElementById('olhoOverlay');
+            overlay.classList.add('fechando');
+            setTimeout(() => { if (callback) callback(); }, 1600);
+        }
+
+        // ── Opções com SFX e borboleta ──
+        document.querySelectorAll('.opcao-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const sfxNome    = btn.dataset.sfx;
+                const temBorb    = btn.dataset.borboleta === 'true';
+                const vaiDormir  = btn.dataset.dormir === 'true';
+                const href       = btn.getAttribute('href');
+
+                e.preventDefault();
+
+                function navegar() {
+                    if (audio) sessionStorage.setItem(POS_KEY, String(audio.currentTime));
+                    window.location.href = href;
+                }
+
+                if (vaiDormir) {
+                    fecharOlho(navegar);
+                } else if (temBorb && sfxNome) {
+                    if (audio) { audio.pause(); }
+                    tocarBorboletaSFX(sfxNome, () => setTimeout(navegar, 1000));
+                } else if (sfxNome) {
+                    tocarBorboletaSFX(sfxNome, navegar);
+                } else {
+                    navegar();
+                }
+            });
+        });
+
+        // ── Conversa Kelly ──
+        {% if dados and dados.tipo_texto == 'conversa' %}
+        const mensagens = {{ dados.mensagens | tojson }};
+        const inner = document.getElementById('conversaInner');
+        let mi = 0;
+
+        function mostrarMsg() {
+            if (mi >= mensagens.length) {
+                // Fim da conversa — ir dormir
+                setTimeout(() => fecharOlho(() => { window.location.href = '/avancar'; }), 1500);
+                return;
+            }
+            const m = mensagens[mi++];
+            const div = document.createElement('div');
+            div.className = 'msg ' + m.lado;
+            div.textContent = m.texto;
+            div.style.animationDelay = '0s';
+            inner.appendChild(div);
+            inner.scrollTop = inner.scrollHeight;
+            setTimeout(mostrarMsg, m.lado === 'eu' ? 800 : 1400);
+        }
+
+        setTimeout(mostrarMsg, 500);
+        {% endif %}
+
         // ── Digitação ──
         const textoEl = document.getElementById('textoAtivo');
         if (textoEl) {
             const original = textoEl.textContent.trim();
             textoEl.textContent = '';
-            let i = 0;
-            let digitando = true;
-
+            let i = 0, digitando = true;
             function digitar() {
-                if (i < original.length) {
-                    textoEl.textContent += original[i++];
-                    setTimeout(digitar, 20);
-                } else {
-                    digitando = false;
-                }
+                if (i < original.length) { textoEl.textContent += original[i++]; setTimeout(digitar, 20); }
+                else digitando = false;
             }
             setTimeout(digitar, 150);
-
-            // Clique na tela só completa texto — não avança
             document.addEventListener('click', (e) => {
-                if (e.target.closest('a')) return;
-                if (digitando) {
-                    i = original.length;
-                    textoEl.textContent = original;
-                    digitando = false;
-                }
+                if (e.target.closest('a') || e.target.closest('button')) return;
+                if (digitando) { i = original.length; textoEl.textContent = original; digitando = false; }
             });
         }
 
-        // ── Só o botão "continuar" avança — sem reload ──
+        // ── Dia: fetch sem reload ──
         {% if not tem_escolhas %}
-
-        const BOX_MOLLY_SRC = "{{ url_for('static', filename='box/box_molly/box_molly_v2.png') }}";
-        const BOX_NOME_SRC  = "{{ url_for('static', filename='box/box_molly/Molly_Name_Box.png') }}";
-        const BASE_URL = "{{ request.host_url }}static/";
+        const BOX_MOLLY = "{{ url_for('static', filename='box/box_molly/box_molly_v2.png') }}";
+        const BOX_NOME  = "{{ url_for('static', filename='box/box_molly/Molly_Name_Box.png') }}";
 
         function avancarFrame() {
-            fetch('/frame_data')
-                .then(r => r.json())
-                .then(data => {
-                    if (data.fim) {
-                        if (audio) sessionStorage.setItem(POS_KEY, String(audio.currentTime));
-                        window.location.href = data.redirect;
-                        return;
-                    }
+            if (audio) sessionStorage.setItem(POS_KEY, String(audio.currentTime));
+            fetch('/frame_data').then(r=>r.json()).then(data => {
+                if (data.fim) { window.location.href = data.redirect; return; }
 
-                    // Troca imagem de fundo se mudou
-                    if (data.imagem_mudou && data.imagem) {
-                        const fundo = document.getElementById('fundoImg');
-                        if (fundo) fundo.src = "{{ request.host_url }}static/" + data.imagem;
-                    }
-
-                    // Troca caixa de texto
-                    const narrador = document.querySelector('.caixa-narrador');
-                    const mollyBox = document.querySelector('.caixa-molly');
-
-                    if (data.tipo_texto === 'narrador') {
-                        if (mollyBox) mollyBox.style.display = 'none';
-                        if (!narrador) {
-                            const div = document.createElement('div');
-                            div.className = 'caixa-narrador';
-                            div.innerHTML = '<div class="narrador-texto" id="textoAtivo"></div>';
-                            document.body.appendChild(div);
-                        } else {
-                            narrador.style.display = '';
-                        }
-                        iniciarTexto('narrador', data.texto);
-
-                    } else if (data.tipo_texto === 'molly') {
-                        if (narrador) narrador.style.display = 'none';
-                        if (!mollyBox) {
-                            const div = document.createElement('div');
-                            div.className = 'caixa-molly';
-                            div.innerHTML = `
-                                <img class="molly-nome-img" src="${BOX_NOME_SRC}" alt="Molly">
-                                <div class="molly-box-wrap">
-                                    <img class="molly-box-img" src="${BOX_MOLLY_SRC}" alt="">
-                                    <div class="molly-box-texto" id="textoAtivo"></div>
-                                </div>`;
-                            document.body.appendChild(div);
-                        } else {
-                            mollyBox.style.display = '';
-                        }
-                        iniciarTexto('molly', data.texto);
-                    }
-                })
-                .catch(() => {
-                    window.location.href = '/avancar_frame';
-                });
-        }
-
-        function iniciarTexto(tipo, texto) {
-            const el = document.getElementById('textoAtivo') ||
-                       document.querySelector('.narrador-texto') ||
-                       document.querySelector('.molly-box-texto');
-            if (!el) return;
-            el.textContent = '';
-            let i = 0;
-            function digitar() {
-                if (i < texto.length) {
-                    el.textContent += texto[i++];
-                    setTimeout(digitar, 20);
+                if (data.imagem_mudou && data.imagem) {
+                    const f = document.getElementById('fundoImg');
+                    if (f) f.src = '/static/' + data.imagem;
                 }
-            }
-            setTimeout(digitar, 100);
+
+                const narrador = document.querySelector('.caixa-narrador');
+                const mollyBox = document.querySelector('.caixa-molly');
+
+                if (data.tipo_texto === 'narrador') {
+                    if (mollyBox) mollyBox.style.display = 'none';
+                    if (narrador) { narrador.style.display = ''; } else {
+                        const d = document.createElement('div'); d.className = 'caixa-narrador';
+                        d.innerHTML = '<div class="narrador-texto" id="textoAtivo"></div>';
+                        document.body.appendChild(d);
+                    }
+                } else if (data.tipo_texto === 'molly') {
+                    if (narrador) narrador.style.display = 'none';
+                    if (mollyBox) { mollyBox.style.display = ''; } else {
+                        const d = document.createElement('div'); d.className = 'caixa-molly';
+                        d.innerHTML = `<img class="molly-nome-img" src="${BOX_NOME}" alt="Molly"><div class="molly-box-wrap"><img class="molly-box-img" src="${BOX_MOLLY}" alt=""><div class="molly-box-texto" id="textoAtivo"></div></div>`;
+                        document.body.appendChild(d);
+                    }
+                }
+
+                const el = document.getElementById('textoAtivo') || document.querySelector('.narrador-texto') || document.querySelector('.molly-box-texto');
+                if (el) {
+                    el.textContent = '';
+                    let i = 0;
+                    function dgt() { if (i < data.texto.length) { el.textContent += data.texto[i++]; setTimeout(dgt, 20); } }
+                    setTimeout(dgt, 100);
+                }
+            }).catch(() => { window.location.href = '/avancar_frame'; });
         }
 
         const btn = document.getElementById('btnAvancar');
-        if (btn) {
-            btn.addEventListener('click', (e) => {
+        if (btn) { btn.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); avancarFrame(); }); }
+        {% endif %}
+
+        // ── Noite: btn continuar ──
+        {% if tem_escolhas %}
+        const btnN = document.getElementById('btnAvancar');
+        if (btnN) {
+            btnN.addEventListener('click', (e) => {
                 e.preventDefault();
-                e.stopPropagation();
-                avancarFrame();
+                if (audio) sessionStorage.setItem(POS_KEY, String(audio.currentTime));
+                window.location.href = '/avancar';
             });
         }
         {% endif %}
     </script>
-
 </body>
 </html>

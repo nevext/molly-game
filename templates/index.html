@@ -54,6 +54,25 @@
     <!-- ── TUTORIAL ── -->
     <div class="tutorial-screen" id="tutorialScreen">
 
+        <!-- FASE 0: aviso DEMO -->
+        <div class="tut-fase" id="tutFase0">
+            <div class="tut-texto">
+                <p class="tut-titulo">Versao Beta</p>
+                <p class="tut-desc">Esta e uma versao DEMO de Molly.<br>Bugs podem existir e a versao completa tem muito mais historia,<br>personagens e momentos que nao cabem aqui ainda.<br><br><em style="opacity:0.5;">Obrigado por jogar.</em></p>
+            </div>
+            <div class="tut-pular" onclick="avancarTutorial(0.5)">CLIQUE EM QUALQUER LUGAR PARA CONTINUAR</div>
+        </div>
+
+        <!-- FASE 0.5: fones de ouvido -->
+        <div class="tut-fase" id="tutFase05" style="display:none;">
+            <div class="tut-texto">
+                <p class="tut-titulo" style="font-size:3rem;">&#127911;</p>
+                <p class="tut-titulo">Use fones de ouvido</p>
+                <p class="tut-desc">A melhor experiencia jogando Molly e com fones de ouvido.<br>Fique atento aos sons do ambiente.<br><br><em style="opacity:0.5;">O jogo funciona normalmente sem fone tambem.</em></p>
+            </div>
+            <div class="tut-pular" onclick="avancarTutorial(3)">CLIQUE EM QUALQUER LUGAR PARA CONTINUAR</div>
+        </div>
+
         <!-- FASE 1: livro em loop + texto -->
         <div class="tut-fase" id="tutFase1">
             <div class="tut-livro-wrap">
@@ -104,7 +123,7 @@
             </div>
             <div class="tut-texto">
                 <p class="tut-titulo">Os Sonhos</p>
-                <p class="tut-desc">Se prepare para os sonhos — ou pesadelos —<br>que a Molly vai enfrentar.<br><br><em style="opacity:0.5;">Guarde energia. Ou nao.</em></p>
+                <p class="tut-desc">Durante sua jornada, podera ter sonhos ou pesadelos<br>ou ate nem sonhar com nada, fique atento e ajude a Molly.<br><br><em style="opacity:0.5;">Seja esperto e guarde energia... ou aproveite o momento.</em></p>
             </div>
             <div class="tut-pular" onclick="avancarTutorial(5)">CLIQUE EM QUALQUER LUGAR PARA CONTINUAR</div>
         </div>
@@ -113,7 +132,7 @@
         <div class="tut-fase" id="tutFase5" style="display:none;">
             <div class="tut-escolha">
                 <p class="tut-titulo" style="margin-bottom: 2rem;">Como deseja comecar?</p>
-                <button class="tut-btn" onclick="verAbertura()">Ver introducao</button>
+                <button class="tut-btn" onclick="verAbertura()">Ver trailer cinematografico</button>
                 <button class="tut-btn tut-btn-sec" onclick="irJogar()">Pular para o jogo</button>
             </div>
         </div>
@@ -319,9 +338,8 @@
                 document.body.style.opacity = '1';
                 document.getElementById('uiMenu').style.display = 'none';
                 document.getElementById('tutorialScreen').classList.add('ativo');
-                iniciarFase3();
                 document.querySelectorAll('.tut-fase').forEach(f => f.style.display = 'none');
-                document.getElementById('tutFase3').style.display = 'flex';
+                document.getElementById('tutFase0').style.display = 'flex';
             }, 800);
         }
 
@@ -435,10 +453,11 @@
 
         // ── Avançar fases ──
         function avancarTutorial(fase) {
-            // Esconde todas
             document.querySelectorAll('.tut-fase').forEach(f => f.style.display = 'none');
 
-            if (fase === 2) {
+            if (fase === 0.5) {
+                document.getElementById('tutFase05').style.display = 'flex';
+            } else if (fase === 2) {
                 document.getElementById('tutFase2').style.display = 'flex';
                 iniciarFase2();
             } else if (fase === 3) {
