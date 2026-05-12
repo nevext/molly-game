@@ -104,7 +104,7 @@
             </div>
             <div class="tut-texto">
                 <p class="tut-titulo">Os Sonhos</p>
-                <p class="tut-desc">Se prepare para os sonhos ou pesadelos <br>que a Molly vai enfrentar.<br><br><em style="opacity:0.5;">Guarde energia...Ou nao...</em></p>
+                <p class="tut-desc">Se prepare para os sonhos — ou pesadelos —<br>que a Molly vai enfrentar.<br><br><em style="opacity:0.5;">Guarde energia. Ou nao.</em></p>
             </div>
             <div class="tut-pular" onclick="avancarTutorial(5)">CLIQUE EM QUALQUER LUGAR PARA CONTINUAR</div>
         </div>
@@ -319,7 +319,9 @@
                 document.body.style.opacity = '1';
                 document.getElementById('uiMenu').style.display = 'none';
                 document.getElementById('tutorialScreen').classList.add('ativo');
-                iniciarFase1();
+                iniciarFase3();
+                document.querySelectorAll('.tut-fase').forEach(f => f.style.display = 'none');
+                document.getElementById('tutFase3').style.display = 'flex';
             }, 800);
         }
 

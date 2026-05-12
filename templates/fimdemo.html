@@ -1,0 +1,117 @@
+<!-- templates/fim_demo.html -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Molly — Demo</title>
+    <style>
+        @font-face {
+            font-family: 'Glassure';
+            src: url("{{ url_for('static', filename='menu/Glassure.otf') }}") format('opentype');
+        }
+        @font-face {
+            font-family: 'DMSans';
+            src: url("{{ url_for('static', filename='menu/DMSans-VariableFont_opsz,wght.ttf') }}") format('truetype');
+            font-weight: 100 900;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            width: 100vw;
+            height: 100vh;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 2rem;
+            animation: fadeIn 1.5s ease forwards;
+        }
+
+        .demo-titulo {
+            font-family: 'Glassure', serif;
+            font-size: clamp(2rem, 6vw, 5rem);
+            color: rgba(255,255,255,0.9);
+            letter-spacing: 0.1em;
+            text-align: center;
+        }
+
+        .demo-subtitulo {
+            font-family: 'DMSans', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 300;
+            color: rgba(255,255,255,0.35);
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            text-align: center;
+        }
+
+        .demo-texto {
+            font-family: 'DMSans', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 300;
+            color: rgba(255,255,255,0.55);
+            text-align: center;
+            line-height: 1.8;
+            max-width: 480px;
+            padding: 0 2rem;
+        }
+
+        .demo-divisor {
+            width: 30px;
+            height: 1px;
+            background: rgba(255,255,255,0.15);
+        }
+
+        .demo-acoes {
+            display: flex;
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+
+        .demo-btn {
+            font-family: 'DMSans', sans-serif;
+            font-size: 0.72rem;
+            font-weight: 300;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.45);
+            text-decoration: none;
+            border-bottom: 1px solid rgba(255,255,255,0.15);
+            padding-bottom: 2px;
+            transition: all 0.3s;
+        }
+
+        .demo-btn:hover {
+            color: #fff;
+            border-bottom-color: #fff;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="demo-titulo">Molly</div>
+    <div class="demo-subtitulo">Versão Beta — Demo</div>
+
+    <div class="demo-divisor"></div>
+
+    <div class="demo-texto">
+        A história de Molly ainda está sendo escrita.<br>
+        O que você viveu aqui é apenas o começo.<br><br>
+        Obrigado por jogar a demo.
+    </div>
+
+    <div class="demo-acoes">
+        <a href="/reiniciar" class="demo-btn">jogar novamente</a>
+        <a href="/" class="demo-btn">menu</a>
+    </div>
+
+</body>
+</html>

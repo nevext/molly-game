@@ -165,33 +165,42 @@
         .opcoes {
             position: fixed;
             bottom: 11rem;
-            left: 50%;
-            transform: translateX(-50%);
+            left: 0;
+            width: 100%;
             z-index: 10;
             display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-            align-items: center;
-            width: 100%;
-            max-width: 560px;
-            padding: 0 2rem;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: flex-end;
+            padding: 0 3rem;
+            gap: 2rem;
+            pointer-events: none;
         }
 
         .opcao-btn {
-            background: rgba(5,5,15,0.85);
+            background: rgba(5,5,15,0.88);
             border: 1px solid rgba(255,255,255,0.12);
             border-radius: 4px;
             color: rgba(255,255,255,0.8);
             font-family: 'Montserrat', sans-serif;
             font-size: 0.82rem;
             font-weight: 300;
-            padding: 0.75rem 2rem;
+            padding: 0.75rem 1.5rem;
             cursor: pointer;
-            width: 100%;
+            max-width: 320px;
             text-align: center;
             transition: all 0.2s ease;
             text-decoration: none;
             display: block;
+            pointer-events: auto;
+        }
+
+        .opcao-btn:first-child {
+            align-self: flex-end;
+        }
+
+        .opcao-btn:last-child {
+            align-self: flex-end;
         }
 
         .opcao-btn:hover {
@@ -326,17 +335,27 @@
         {% endif %}
 
         {% if dados %}
-        <div class="dialogo">
-            <div class="dialogo-inner">
-                <div class="dialogo-nome">Molly</div>
-                <div class="dialogo-titulo">{{ dados.titulo }}</div>
-                {% if molly_age %}
+            {% if molly_age %}
+            <div class="dialogo">
+                <div class="dialogo-inner">
+                    <div class="dialogo-nome">Molly</div>
+                    <div class="dialogo-titulo">{{ dados.titulo }}</div>
                     <div class="dialogo-texto automatico" id="textoAtivo">{{ dados.texto_automatico }}</div>
-                {% else %}
-                    <div class="dialogo-texto" id="textoAtivo">{{ dados.texto }}</div>
-                {% endif %}
+                </div>
             </div>
-        </div>
+            {% elif dados.tipo_texto == 'molly' %}
+            <div class="dialogo">
+                <div class="dialogo-inner">
+                    <div class="dialogo-nome">Molly</div>
+                    <div class="dialogo-titulo">{{ dados.titulo }}</div>
+                    <div class="dialogo-texto" id="textoAtivo">{{ dados.texto }}</div>
+                </div>
+            </div>
+            {% else %}
+            <div class="caixa-narrador">
+                <div class="narrador-texto" id="textoAtivo">{{ dados.texto }}</div>
+            </div>
+            {% endif %}
         {% endif %}
 
         {% if molly_age %}

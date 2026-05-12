@@ -37,6 +37,10 @@ def cena():
 
     trilha = cap.get("trilha", "")
 
+    # ── Fim da demo ──
+    if cap.get("tipo") == "demo":
+        return render_template("fim_demo.html")
+
     # ── Capítulo de DIA ──
     if not cap.get("tem_escolhas"):
         frames = cap.get("frames", [])
@@ -119,6 +123,8 @@ def avancar_frame():
             session["frame"] = 0
             session["cena"] = 1
             cap_prox = get_capitulo(proximo_cap)
+            if not cap_prox or cap_prox.get("tipo") == "demo":
+                return redirect(url_for("cena"))
             tipo = cap_prox.get("tipo") if cap_prox else "noite"
             return redirect(url_for("transicao", tipo=tipo))
         return redirect(url_for("final"))
@@ -151,7 +157,12 @@ def escolha(opcao):
     proxima = cena_num + 1
 
     if proxima not in cenas:
-        return redirect(url_for("final"))
+        proximo_cap = get_proximo_capitulo(cap_id)
+        if proximo_cap:
+            session["cap"] = proximo_cap
+            session["frame"] = 0
+            session["cena"] = 1
+        return redirect(url_for("cena"))
 
     session["cena"] = proxima
     return redirect(url_for("cena"))
