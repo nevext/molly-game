@@ -1,0 +1,238 @@
+<!-- templates/transicao_sonho_bom.html -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sonho</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { width: 100vw; height: 100vh; overflow: hidden; background: #000; display: flex; justify-content: center; align-items: center; }
+
+        /* Fundo suave e onírico */
+        .sonho-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1a0f2e 0%, #2a1a4e 50%, #1a0f2e 100%);
+            z-index: 0;
+            animation: gradienteAnimado 6s ease infinite;
+        }
+
+        @keyframes gradienteAnimado {
+            0%, 100% { background: linear-gradient(135deg, #1a0f2e 0%, #2a1a4e 50%, #1a0f2e 100%); }
+            50% { background: linear-gradient(135deg, #2a1a4e 0%, #3a2a6e 50%, #2a1a4e 100%); }
+        }
+
+        /* Partículas flutuantes (estrelas/luz) */
+        .particula {
+            position: absolute;
+            background: rgba(200, 180, 255, 0.6);
+            border-radius: 50%;
+            animation: flutua 4s ease-in-out infinite;
+        }
+
+        .particula:nth-child(1) { width: 4px; height: 4px; top: 20%; left: 15%; animation-delay: 0s; }
+        .particula:nth-child(2) { width: 3px; height: 3px; top: 40%; left: 25%; animation-delay: 0.5s; }
+        .particula:nth-child(3) { width: 5px; height: 5px; top: 60%; left: 35%; animation-delay: 1s; }
+        .particula:nth-child(4) { width: 2px; height: 2px; top: 30%; left: 70%; animation-delay: 1.5s; }
+        .particula:nth-child(5) { width: 4px; height: 4px; top: 50%; left: 80%; animation-delay: 2s; }
+        .particula:nth-child(6) { width: 3px; height: 3px; top: 70%; left: 60%; animation-delay: 2.5s; }
+
+        @keyframes flutua {
+            0%, 100% { opacity: 0.3; transform: translateY(0) translateX(0); }
+            50% { opacity: 0.8; transform: translateY(-20px) translateX(10px); }
+        }
+
+        /* Nuvem suave */
+        .nuvem {
+            position: absolute;
+            opacity: 0.2;
+            z-index: 1;
+        }
+
+        .nuvem:nth-child(7) { top: 15%; left: 10%; font-size: 120px; animation: flutuaNuvem 8s linear infinite; }
+        .nuvem:nth-child(8) { top: 60%; right: 10%; font-size: 100px; animation: flutuaNuvem 10s linear infinite reverse; }
+
+        @keyframes flutuaNuvem {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(100vw); }
+        }
+
+        /* Imagem de mãe (será adicionada via CSS se houver) */
+        .imagem-sonho {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 200px;
+            height: 200px;
+            opacity: 0;
+            animation: apareceImagem 3s ease forwards;
+            z-index: 2;
+        }
+
+        @keyframes apareceImagem {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+            40% { opacity: 0; }
+            70% { opacity: 0.7; transform: translate(-50%, -50%) scale(1); }
+            100% { opacity: 0.5; transform: translate(-50%, -50%) scale(1.05); }
+        }
+
+        /* Brilho suave ao redor */
+        .brilho-centro {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(200, 150, 255, 0.15), transparent);
+            transform: translate(-50%, -50%);
+            z-index: 1;
+            filter: blur(60px);
+            animation: pulsaBrilho 4s ease infinite;
+        }
+
+        @keyframes pulsaBrilho {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.8; }
+        }
+
+        /* Texto suave */
+        .sonho-texto {
+            position: fixed;
+            top: 35%;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            z-index: 5;
+            opacity: 0;
+            animation: apareceTexto 3.5s ease forwards;
+        }
+
+        .sonho-titulo {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 3rem;
+            font-weight: 300;
+            color: rgba(200, 150, 255, 0.9);
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            text-shadow: 0 0 20px rgba(200, 150, 255, 0.4), 0 0 40px rgba(100, 50, 255, 0.2);
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .sonho-mensagem {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 300;
+            color: rgba(200, 150, 255, 0.7);
+            line-height: 1.8;
+            letter-spacing: 0.05em;
+            max-width: 500px;
+        }
+
+        @keyframes apareceTexto {
+            0% { opacity: 0; transform: translateX(-50%) translateY(20px); }
+            50% { opacity: 0; }
+            80% { opacity: 1; transform: translateX(-50%) translateY(0); }
+            100% { opacity: 1; }
+        }
+
+        /* Botão suave */
+        .btn-continuar {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 20;
+            background: rgba(200, 150, 255, 0.1);
+            border: 2px solid rgba(200, 150, 255, 0.4);
+            border-radius: 4px;
+            color: rgba(200, 150, 255, 0.7);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.7rem;
+            font-weight: 300;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            padding: 0.6rem 1.2rem;
+            cursor: pointer;
+            opacity: 0;
+            animation: apareceBtn 3.8s ease forwards;
+            transition: all 0.3s ease;
+        }
+
+        .btn-continuar:hover {
+            background: rgba(200, 150, 255, 0.2);
+            border-color: rgba(200, 150, 255, 0.8);
+            color: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 0 15px rgba(200, 150, 255, 0.3);
+        }
+
+        @keyframes apareceBtn {
+            0% { opacity: 0; }
+            85% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <audio id="sfxDreamCool" autoplay>
+        <source src="{{ url_for('static', filename='audio/Sound_Effects/sfx_dream_cool.mp3') }}" type="audio/mp3">
+    </audio>
+
+    <div class="sonho-bg"></div>
+    <div class="brilho-centro"></div>
+
+    <!-- Partículas flutuantes -->
+    <div class="particula"></div>
+    <div class="particula"></div>
+    <div class="particula"></div>
+    <div class="particula"></div>
+    <div class="particula"></div>
+    <div class="particula"></div>
+
+    <!-- Nuvens suaves -->
+    <div class="nuvem">☁</div>
+    <div class="nuvem">☁</div>
+
+    <!-- Imagem do sonho (círculo branco representando a mãe) -->
+    <div class="imagem-sonho" style="border-radius: 50%; border: 3px solid rgba(200, 150, 255, 0.5); background: radial-gradient(circle, rgba(220, 200, 255, 0.3), rgba(100, 50, 200, 0.1));"></div>
+
+    <div class="sonho-texto">
+        <h1 class="sonho-titulo">SONHO</h1>
+        <p class="sonho-mensagem">Sua mãe está aqui. Você não está sozinha.</p>
+    </div>
+
+    <button class="btn-continuar" onclick="irProContinuacao()">Continuar →</button>
+
+    <script>
+        // Reproduzir som de suspense ao carregar
+        function playClickSound() {
+            const audio = new Audio("{{ url_for('static', filename='audio/Sound_Effects/sfx_suspense(Molly).mp3') }}");
+            audio.play().catch(e => console.log("Erro ao reproduzir SFX:", e));
+        }
+
+        // Reproduzir som ao clicar no botão
+        document.querySelector('.btn-continuar').addEventListener('click', function() {
+            playClickSound();
+            setTimeout(() => {
+                irProContinuacao();
+            }, 300);
+        });
+
+        function irProContinuacao() {
+            // Por enquanto vai para o final também
+            // Após implementar Ato 3, isso irá para a primeira cena de Ato 3
+            window.location.href = '/final';
+        }
+
+        // Reproduzir som de suspense quando a página carrega
+        window.addEventListener('load', function() {
+            playClickSound();
+        });
+    </script>
+</body>
+</html>

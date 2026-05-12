@@ -11,7 +11,32 @@
         @font-face { font-family:'DMSans'; src:url("{{ url_for('static',filename='menu/DMSans-VariableFont_opsz,wght.ttf') }}") format('truetype'); font-weight:100 900; }
 
         *{margin:0;padding:0;box-sizing:border-box;}
-        body{width:100vw;height:100vh;overflow:hidden;background:#000;}
+        body{width:100vw;height:100vh;overflow:hidden;background:#000;position:relative;}
+        
+        /* Container do jogo — tela inteira */
+        #game-container {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        #game-content {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Borda cinematográfica sobre tela inteira */
+        #cinematic-border {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 9;
+            pointer-events: none;
+            box-shadow: inset 0 0 0 40px #000;
+        }
 
         .fundo{position:fixed;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:0;opacity:1;transition:opacity 0.3s ease;}
         .fundo.nova-imagem{opacity:1;}
@@ -74,6 +99,21 @@
         .easter-egg{position:fixed;top:35%;right:8%;z-index:5;width:110px;opacity:0;cursor:pointer;transition:opacity 2s ease;}
         .easter-egg-noticia{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:6px;padding:0.5rem 0.6rem;font-family:'Montserrat',sans-serif;font-size:0.58rem;color:rgba(255,255,255,0.25);line-height:1.4;}
 
+        /* HUD — Ato e Capítulo (canto superior esquerdo, dentro da borda) */
+        #hud-ato-cap{position:fixed;top:55px;left:55px;z-index:10;pointer-events:none;display:flex;flex-direction:column;gap:2px;}
+        .hud-ato-texto{font-family:'DMSans',sans-serif;font-size:0.5rem;color:rgba(255,255,255,0.28);letter-spacing:0.35em;text-transform:uppercase;}
+        .hud-cap-texto{font-family:'Glassure',serif;font-size:0.72rem;color:rgba(255,255,255,0.16);letter-spacing:0.12em;}
+
+        /* Notificação musical estilo Spotify (canto superior direito) */
+        #musica-notif{position:fixed;top:50px;right:50px;z-index:11;display:flex;align-items:center;gap:0.6rem;background:rgba(8,8,16,0.9);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:0.5rem 0.85rem;pointer-events:none;transform:translateX(calc(100% + 60px));transition:transform 0.45s cubic-bezier(0.25,0.46,0.45,0.94);backdrop-filter:blur(12px);max-width:220px;}
+        #musica-notif.visivel{transform:translateX(0);}
+        .musica-disco{width:28px;height:28px;border-radius:50%;border:2px solid rgba(139,0,0,0.5);background:radial-gradient(circle at 35% 35%,rgba(139,0,0,0.85),#080812);animation:girarDisco 3s linear infinite;flex-shrink:0;position:relative;}
+        .musica-disco::after{content:'';position:absolute;top:50%;left:50%;width:7px;height:7px;background:rgba(16,16,26,0.95);border-radius:50%;transform:translate(-50%,-50%);}
+        @keyframes girarDisco{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+        .musica-info{display:flex;flex-direction:column;gap:2px;min-width:0;}
+        .musica-label{font-family:'DMSans',sans-serif;font-size:0.42rem;color:rgba(255,255,255,0.28);letter-spacing:0.35em;text-transform:uppercase;}
+        .musica-nome{font-family:'Montserrat',sans-serif;font-size:0.68rem;font-weight:400;color:rgba(255,255,255,0.85);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
         /* Borboleta SFX canto superior esquerdo */
         .borboleta-sfx{position:fixed;top:2rem;left:2rem;z-index:20;width:120px;height:120px;display:none;}
         .borboleta-sfx img{width:100%;height:100%;object-fit:contain;}
@@ -91,17 +131,39 @@
     </style>
 </head>
 <body>
+    <!-- Borda cinematográfica: overlay fixo sobre tela inteira -->
+    <div id="cinematic-border"></div>
+
+    <!-- HUD: Ato e Capítulo -->
+    {% if hud_ato %}
+    <div id="hud-ato-cap">
+        <div class="hud-ato-texto">{{ hud_ato }}</div>
+        <div class="hud-cap-texto">{{ hud_cap }}</div>
+    </div>
+    {% endif %}
+
+    <!-- Notificação musical estilo Spotify -->
+    <div id="musica-notif">
+        <div class="musica-disco"></div>
+        <div class="musica-info">
+            <div class="musica-label">tocando agora</div>
+            <div class="musica-nome" id="musica-nome-texto"></div>
+        </div>
+    </div>
+
     <audio id="trilha" loop>
         <source src="{{ url_for('static', filename=trilha) }}" type="audio/mp3">
     </audio>
 
-    <!-- Olho fechando -->
-    <div class="olho-overlay" id="olhoOverlay"></div>
+    <div id="game-container">
+        <div id="game-content">
+        <!-- Olho fechando -->
+        <div class="olho-overlay" id="olhoOverlay"></div>
 
-    <!-- Borboleta SFX -->
-    <div class="borboleta-sfx" id="borboletaSfx">
-        <img id="borboletaImg" src="{{ url_for('static', filename='fly/BORBOLETA_1.png') }}" alt="">
-    </div>
+        <!-- Borboleta SFX -->
+        <div class="borboleta-sfx" id="borboletaSfx">
+            <img id="borboletaImg" src="{{ url_for('static', filename='fly/BORBOLETA_1.png') }}" alt="">
+        </div>
 
     {% if not tem_escolhas %}
     <!-- DIA -->
@@ -200,6 +262,8 @@
             {% endif %}
         {% endif %}
     {% endif %}
+        </div><!-- Fim game-content -->
+    </div><!-- Fim game-container -->
 
     <script>
         // ── Música ──
@@ -314,20 +378,32 @@
         })();
         {% endif %}
 
+        // ── Controle de clique rápido ──
+        let digitandoAtual = false;
+        let completarAtual = null;
+        let aguardandoFetch = false;
+
         // ── Digitação ──
         const textoEl = document.getElementById('textoAtivo');
         if (textoEl) {
             const original = textoEl.textContent.trim();
             textoEl.textContent = '';
-            let i = 0, digitando = true;
+            let i = 0;
+            digitandoAtual = true;
+            completarAtual = () => {
+                i = original.length;
+                textoEl.textContent = original;
+                digitandoAtual = false;
+                completarAtual = null;
+            };
             function digitar() {
                 if (i < original.length) { textoEl.textContent += original[i++]; setTimeout(digitar, 20); }
-                else digitando = false;
+                else { digitandoAtual = false; completarAtual = null; }
             }
             setTimeout(digitar, 150);
             document.addEventListener('click', (e) => {
                 if (e.target.closest('a') || e.target.closest('button')) return;
-                if (digitando) { i = original.length; textoEl.textContent = original; digitando = false; }
+                if (digitandoAtual && completarAtual) completarAtual();
             });
         }
 
@@ -337,10 +413,13 @@
         const BOX_NOME  = "{{ url_for('static', filename='box/box_molly/Molly_Name_Box.png') }}";
 
         function avancarFrame() {
+            if (aguardandoFetch) return;
+            aguardandoFetch = true;
             if (audio) sessionStorage.setItem(POS_KEY, String(audio.currentTime));
             fetch('/frame_data')
                 .then(r => r.json())
                 .then(data => {
+                    aguardandoFetch = false;
                     if (data.fim) {
                         window.location.href = data.redirect;
                         return;
@@ -413,16 +492,26 @@
                     if (alvo) {
                         alvo.textContent = '';
                         let i = 0;
+                        digitandoAtual = true;
+                        completarAtual = () => {
+                            i = data.texto.length;
+                            alvo.textContent = data.texto;
+                            digitandoAtual = false;
+                            completarAtual = null;
+                        };
                         function dgt() {
                             if (i < data.texto.length) {
                                 alvo.textContent += data.texto[i++];
                                 setTimeout(dgt, 20);
+                            } else {
+                                digitandoAtual = false;
+                                completarAtual = null;
                             }
                         }
                         setTimeout(dgt, 100);
                     }
                 })
-                .catch(() => { window.location.href = '/avancar_frame'; });
+                .catch(() => { aguardandoFetch = false; window.location.href = '/avancar_frame'; });
         }
 
         const btn = document.getElementById('btnAvancar');
@@ -430,6 +519,8 @@
             btn.addEventListener('click', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
+                if (digitandoAtual && completarAtual) { completarAtual(); return; }
+                if (aguardandoFetch) return;
                 avancarFrame();
             });
         }
@@ -440,6 +531,8 @@
         const BOX_MOLLY_N = "{{ url_for('static', filename='box/box_molly/box_molly_v2.png') }}";
         const BOX_NOME_N  = "{{ url_for('static', filename='box/box_molly/Molly_Name_Box.png') }}";
         let irDormirFlag = {{ 'true' if dados and dados.ir_dormir else 'false' }};
+        let barraAtual = {{ barra }};
+        let ultimaEscolhaTinhaBorb = false;
 
         function limparUI() {
             ['.caixa-narrador', '.caixa-molly', '.sms-bubble-wrap',
@@ -452,8 +545,21 @@
         function digitarNoite(el, texto) {
             el.textContent = '';
             let i = 0;
+            digitandoAtual = true;
+            completarAtual = () => {
+                i = texto.length;
+                el.textContent = texto;
+                digitandoAtual = false;
+                completarAtual = null;
+            };
             setTimeout(function dgt() {
-                if (i < texto.length) { el.textContent += texto[i++]; setTimeout(dgt, 20); }
+                if (i < texto.length) {
+                    el.textContent += texto[i++];
+                    setTimeout(dgt, 20);
+                } else {
+                    digitandoAtual = false;
+                    completarAtual = null;
+                }
             }, 100);
         }
 
@@ -462,7 +568,12 @@
             btn.id = 'btnAvancar';
             btn.className = 'btn-avancar';
             btn.textContent = 'continuar →';
-            btn.addEventListener('click', e => { e.preventDefault(); handler(); });
+            btn.addEventListener('click', e => {
+                e.preventDefault();
+                if (digitandoAtual && completarAtual) { completarAtual(); return; }
+                if (aguardandoFetch) return;
+                handler();
+            });
             document.body.appendChild(btn);
         }
 
@@ -491,10 +602,13 @@
         }
 
         function fetchAvancar(skipDormir) {
+            if (aguardandoFetch) return;
+            aguardandoFetch = true;
             if (audio) sessionStorage.setItem(POS_KEY, String(audio.currentTime));
             fetch('/avancar_data')
                 .then(r => r.json())
                 .then(data => {
+                    aguardandoFetch = false;
                     if (data.fim) {
                         if (!skipDormir && irDormirFlag) {
                             fecharOlho(() => { window.location.href = data.redirect; });
@@ -505,15 +619,18 @@
                     }
                     renderCena(data);
                 })
-                .catch(() => { window.location.href = '/avancar'; });
+                .catch(() => { aguardandoFetch = false; window.location.href = '/avancar'; });
         }
 
         function escolherOpcao(idx, sfxNome, temBorb, vaiDormir) {
+            ultimaEscolhaTinhaBorb = temBorb;
             if (audio) sessionStorage.setItem(POS_KEY, String(audio.currentTime));
             function fazerEscolha() {
+                aguardandoFetch = true;
                 fetch('/escolha_data/' + idx)
                     .then(r => r.json())
                     .then(data => {
+                        aguardandoFetch = false;
                         if (data.fim) {
                             if (data.dormir) {
                                 fecharOlho(() => { window.location.href = data.redirect; });
@@ -524,13 +641,13 @@
                         }
                         renderCena(data);
                     })
-                    .catch(() => { window.location.href = '/escolha/' + idx; });
+                    .catch(() => { aguardandoFetch = false; window.location.href = '/escolha/' + idx; });
             }
             if (vaiDormir) {
                 fecharOlho(fazerEscolha);
-            } else if (temBorb && sfxNome) {
+            } else if (temBorb) {
                 if (audio) audio.pause();
-                tocarBorboletaSFX(sfxNome, () => setTimeout(fazerEscolha, 1000));
+                tocarBorboletaSFX('sfx_especial_ending(Molly).mp3', () => setTimeout(fazerEscolha, 1000));
             } else if (sfxNome) {
                 tocarBorboletaSFX(sfxNome, fazerEscolha);
             } else {
@@ -608,6 +725,7 @@
                 const vaiDormir = op.acao === 'dormir' || op.acao === 'dormir_olho';
                 btn.addEventListener('click', e => {
                     e.preventDefault();
+                    if (aguardandoFetch) return;
                     escolherOpcao(idx, op.sfx || null, !!op.borboleta, vaiDormir);
                 });
                 container.appendChild(btn);
@@ -621,6 +739,17 @@
         }
 
         function renderCena(data) {
+            // Borboleta automática baseada na mudança de barra
+            if (typeof data.barra === 'number') {
+                const delta = data.barra - barraAtual;
+                if (!ultimaEscolhaTinhaBorb) {
+                    if (delta < 0) setTimeout(() => mostrarBorboleta('sfx_good_ending.mp3'), 300);
+                    else if (delta > 0) setTimeout(() => mostrarBorboleta('sfx_bad_ending(Molly).mp3'), 300);
+                }
+                barraAtual = data.barra;
+            }
+            ultimaEscolhaTinhaBorb = false;
+
             irDormirFlag = !!data.ir_dormir;
             atualizarFundoNoite(data.frame);
             const eggOld = document.getElementById('easterEgg');
@@ -674,6 +803,8 @@
         if (btnN) {
             btnN.addEventListener('click', e => {
                 e.preventDefault();
+                if (digitandoAtual && completarAtual) { completarAtual(); return; }
+                if (aguardandoFetch) return;
                 if (audio) sessionStorage.setItem(POS_KEY, String(audio.currentTime));
                 if (irDormirFlag) fecharOlho(() => fetchAvancar(true));
                 else fetchAvancar();
@@ -683,6 +814,7 @@
         document.querySelectorAll('.opcao-btn').forEach((btn, idx) => {
             btn.addEventListener('click', e => {
                 e.preventDefault();
+                if (aguardandoFetch) return;
                 const sfxNome  = btn.dataset.sfx || null;
                 const temBorb  = btn.dataset.borboleta === 'true';
                 const vaiDorm  = btn.dataset.dormir === 'true';
@@ -690,6 +822,26 @@
             });
         });
         {% endif %}
+
+        // ── Notificação musical estilo Spotify ──
+        (function() {
+            const MUSICA_KEY  = 'molly_musica_atual';
+            const trilhaPath  = {{ trilha | tojson }};
+            const trilhaNome  = {{ (trilha_nome | default('')) | tojson }};
+            const ultimaMusica = sessionStorage.getItem(MUSICA_KEY);
+            if (ultimaMusica !== trilhaPath && trilhaNome) {
+                sessionStorage.setItem(MUSICA_KEY, trilhaPath);
+                const notif  = document.getElementById('musica-notif');
+                const nomeEl = document.getElementById('musica-nome-texto');
+                if (notif && nomeEl) {
+                    nomeEl.textContent = trilhaNome;
+                    setTimeout(() => {
+                        notif.classList.add('visivel');
+                        setTimeout(() => notif.classList.remove('visivel'), 5000);
+                    }, 1200);
+                }
+            }
+        })();
     </script>
 </body>
 </html>

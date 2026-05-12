@@ -1,0 +1,72 @@
+<!-- test_transitions.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Transições</title>
+    <style>
+        body { font-family: Arial; max-width: 800px; margin: 40px auto; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; font-size: 16px; }
+        .container { border: 1px solid #ccc; padding: 20px; }
+        h2 { color: #333; }
+    </style>
+</head>
+<body>
+    <h1>Teste de Transições - Molly Game</h1>
+    
+    <div class="container">
+        <h2>Teste 1: Transição Normal (Barra 3-5)</h2>
+        <p>Clique para começar jogo e testar transição normal de dia</p>
+        <button onclick="testNormalTransition()">Testar Transição Normal</button>
+    </div>
+
+    <div class="container">
+        <h2>Teste 2: Transição Pesadelo (Barra > 6)</h2>
+        <p>Clique para começar jogo com barra alta (pesadelo)</p>
+        <button onclick="testNightmareTransition()">Testar Pesadelo</button>
+    </div>
+
+    <div class="container">
+        <h2>Teste 3: Transição Sonho Bom (Barra <= 2)</h2>
+        <p>Clique para começar jogo com barra baixa (sonho bom)</p>
+        <button onclick="testDreamTransition()">Testar Sonho Bom</button>
+    </div>
+
+    <div id="result" style="margin-top: 20px; padding: 10px; background: #f0f0f0; display: none;"></div>
+
+    <script>
+        function startGameAndSetBarra(barraValue) {
+            // Abrir jogo em nova aba
+            window.open('/jogar', 'molly_game', 'width=1280,height=720');
+            
+            // Aguardar um pouco para o jogo carregar
+            setTimeout(() => {
+                // Enviar a barra value via fetch para modificar a sessão
+                fetch('/set_barra/' + barraValue)
+                    .then(r => r.json())
+                    .catch(e => console.error('Erro:', e));
+            }, 1000);
+        }
+
+        function testNormalTransition() {
+            showResult('Iniciando teste de transição normal... Abrindo nova janela');
+            startGameAndSetBarra(4); // Barra = 4 (normal)
+        }
+
+        function testNightmareTransition() {
+            showResult('Iniciando teste de PESADELO... Abrindo nova janela');
+            startGameAndSetBarra(8); // Barra = 8 (alta - pesadelo)
+        }
+
+        function testDreamTransition() {
+            showResult('Iniciando teste de SONHO BOM... Abrindo nova janela');
+            startGameAndSetBarra(1); // Barra = 1 (baixa - sonho bom)
+        }
+
+        function showResult(msg) {
+            const div = document.getElementById('result');
+            div.style.display = 'block';
+            div.innerHTML = '<strong>' + msg + '</strong><p>Programe o jogo manualmente até a cena de dormir observando a transição apropriada.</p>';
+        }
+    </script>
+</body>
+</html>

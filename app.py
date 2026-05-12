@@ -1,4 +1,5 @@
 # app.py
+import os
 from flask import Flask, render_template, session, redirect, url_for, jsonify
 from game_logic import get_capitulo, get_proximo_capitulo, processar_escolha, molly_age_sozinha, get_final
 
@@ -8,6 +9,40 @@ TRILHAS_NOITE = [
     "journey/ato_1/Cap_2(noite)/Music/Molly_Original_Soundtrack(Night_3).mp3",
 ]
 
+TRILHA_NOMES = {
+    "Molly_Original_Soundtrack(Day).mp3":    "Molly OST — Dia",
+    "Molly_Original_Soundtrack(Night).mp3":  "Molly OST — Noite",
+    "Molly_Original_Soundtrack(Night_2).mp3":"Molly OST — Noite 2",
+    "Molly_Original_Soundtrack(Night_3).mp3":"Molly OST — Noite 3",
+    "Cannibal_remix_nightmare.mp3":          "Cannibal (Remix)",
+    "Color_Your_Night_Remix(Molly).mp3":     "Color Your Night",
+    "Four_Seasons.mp3":                      "Four Seasons",
+    "Hey_Kids.mp3":                          "Hey Kids",
+    "Its_Going_Down_Now _Remix(Molly).mp3":  "It's Going Down Now",
+    "Last_Surprise_Remix(Molly).mp3":        "Last Surprise",
+    "Mr_Magic_Remix(Molly).mp3":             "Mr. Magic",
+    "Refrao_O_Sol.mp3":                      "Refrão — O Sol",
+}
+
+HUD_MAP = {
+    "ato1_cap1_dia":       ("Ato 1", "Capítulo 1"),
+    "ato1_cap2_noite":     ("Ato 1", "Capítulo 2"),
+    "ato1_cap2_examinar":  ("Ato 1", "Capítulo 2"),
+    "ato1_cap2_curtidas":  ("Ato 1", "Capítulo 2"),
+    "ato1_cap2_comentario":("Ato 1", "Capítulo 2"),
+    "ato1_cap2_kelly":     ("Ato 1", "Capítulo 2"),
+    "ato1_cap3_dia":       ("Ato 1", "Capítulo 3"),
+    "ato2_cap4_noite":     ("Ato 2", "Capítulo 4"),
+    "ato2_cap4_kelly":     ("Ato 2", "Capítulo 4"),
+    "ato1_cap5_dia":       ("Ato 2", "Capítulo 5"),
+    "ato2_cap6_noite":     ("Ato 2", "Capítulo 6"),
+    "ato3_cap5_dia":       ("Ato 3", "Capítulo 7"),
+    "ato3_cap6_noite":     ("Ato 3", "Capítulo 8"),
+    "ato3_cap7_dia":       ("Ato 3", "Capítulo 9"),
+    "ato3_cap8_dia":       ("Ato 3", "Capítulo 10"),
+    "ato3_cap9_noite":     ("Ato 3", "Capítulo 11"),
+}
+
 def get_trilha_noite():
     idx = session.get("noite_count", 0) % len(TRILHAS_NOITE)
     return TRILHAS_NOITE[idx]
@@ -15,8 +50,14 @@ def get_trilha_noite():
 def incrementar_noite():
     session["noite_count"] = session.get("noite_count", 0) + 1
 
+def trilha_nome(trilha_path):
+    filename = os.path.basename(trilha_path)
+    return TRILHA_NOMES.get(filename, filename.replace(".mp3", "").replace("_", " "))
+
+def hud_info(cap_id):
+    return HUD_MAP.get(cap_id, ("", ""))
+
 app = Flask(__name__)
-import os
 app.secret_key = os.environ.get("SECRET_KEY", "molly2026")
 
 
@@ -54,7 +95,10 @@ def cena():
         trilha = cap.get("trilha", "")
 
     if cap.get("tipo") == "demo":
-        return render_template("fim_demo.html")
+        return render_template("fimdemo.html")
+
+    hud = hud_info(cap_id)
+    tnome = trilha_nome(trilha)
 
     # DIA
     if not cap.get("tem_escolhas"):
@@ -82,7 +126,8 @@ def cena():
             frame=frame_atual, frame_idx=frame_idx,
             total_frames=total, imagem_mudou=imagem_mudou,
             tem_escolhas=False, dados=None,
-            molly_age=False, barra=barra, cena_num=cena_num)
+            molly_age=False, barra=barra, cena_num=cena_num,
+            hud_ato=hud[0], hud_cap=hud[1], trilha_nome=tnome)
 
     # NOITE
     frames_noite = cap.get("frames", [])
@@ -106,7 +151,8 @@ def cena():
         tem_escolhas=True, dados=dados_cena,
         molly_age=age, barra=barra, cena_num=cena_num,
         session_volta=session_volta,
-        sfx_base="/static/journey/ato_1/Cap_2(noite)/Sound/")
+        sfx_base="/static/journey/ato_1/Cap_2(noite)/Sound/",
+        hud_ato=hud[0], hud_cap=hud[1], trilha_nome=tnome)
 
 
 @app.route("/avancar_frame")
@@ -183,6 +229,16 @@ def transicao(tipo):
     return render_template("transicao.html", tipo=tipo)
 
 
+@app.route("/transicao_pesadelo")
+def transicao_pesadelo():
+    return render_template("transicao_pesadelo.html")
+
+
+@app.route("/transicao_sonho_bom")
+def transicao_sonho_bom():
+    return render_template("transicao_sonho_bom.html")
+
+
 @app.route("/iniciar_cap")
 def iniciar_cap():
     cap_id = session.get("cap", "")
@@ -239,10 +295,18 @@ def escolha(opcao):
         session["cena"] = 5
         return redirect(url_for("cena"))
 
-    if acao == "ver_kelly" or acao == "olhar_teto":
+    if acao == "ver_kelly":
         session["cap"] = "ato2_cap4_kelly"
         session["frame"] = 0
         session["cena"] = 1
+        return redirect(url_for("cena"))
+
+    if acao == "olhar_teto":
+        session["cena"] = 4
+        return redirect(url_for("cena"))
+
+    if acao == "dormir_cap4":
+        session["cena"] = 7
         return redirect(url_for("cena"))
 
     if acao == "responder":
@@ -377,6 +441,21 @@ def avancar_data():
         result["session_volta"] = True
         return jsonify(result)
 
+    if dados_cena.get("vai_dormir"):
+        # Determinar tipo de transição baseado na barra: 0-1=sonho, 2-8=linear, 9-10=pesadelo
+        if barra >= 9:
+            session["transicao_tipo"] = "pesadelo"
+            return jsonify({"fim": True, "redirect": "/transicao_pesadelo"})
+        elif barra <= 1:
+            session["transicao_tipo"] = "sonho_bom"
+            return jsonify({"fim": True, "redirect": "/transicao_sonho_bom"})
+        else:
+            prox_dormir = cap.get("proximo_dormir") if cap else None
+            session["cap"] = prox_dormir or "ato1_cap5_dia"
+            session["frame"] = 0
+            session["cena"] = 1
+            return jsonify({"fim": True, "redirect": "/transicao/dia"})
+
     if dados_cena.get("ir_dormir"):
         proximo_cap = get_proximo_capitulo(cap_id)
         if proximo_cap:
@@ -447,17 +526,33 @@ def escolha_data(opcao):
         session["cena"] = 5
         return jsonify(build_cena_json(cap_id, 5, nova_barra))
 
-    if acao == "ver_kelly" or acao == "olhar_teto":
+    if acao == "ver_kelly":
         session["cap"] = "ato2_cap4_kelly"
         session["frame"] = 0
         session["cena"] = 1
         return jsonify(build_cena_json("ato2_cap4_kelly", 1, nova_barra))
+
+    if acao == "olhar_teto":
+        session["cena"] = 4
+        return jsonify(build_cena_json(cap_id, 4, nova_barra))
+
+    if acao == "dormir_cap4":
+        session["cena"] = 7
+        return jsonify(build_cena_json(cap_id, 7, nova_barra))
 
     if acao == "responder":
         session["cena"] = 3
         return jsonify(build_cena_json(cap_id, 3, nova_barra))
 
     if acao == "deixar_pra_la":
+        return jsonify({"fim": True, "redirect": "/final"})
+
+    if acao == "final_aceitar":
+        session["tipo_final"] = "aceitar"
+        return jsonify({"fim": True, "redirect": "/final"})
+
+    if acao == "final_lutar":
+        session["tipo_final"] = "lutar"
         return jsonify({"fim": True, "redirect": "/final"})
 
     cap = get_capitulo(cap_id)
@@ -482,7 +577,8 @@ def escolha_data(opcao):
 @app.route("/final")
 def final():
     barra = session.get("barra", 3)
-    dados = get_final(barra)
+    tipo_final = session.get("tipo_final", None)
+    dados = get_final(barra, tipo_forcado=tipo_final)
     return render_template("final.html", dados=dados)
 
 
@@ -490,6 +586,32 @@ def final():
 def reiniciar():
     session.clear()
     return redirect(url_for("index"))
+
+
+@app.route("/test_transitions")
+def test_transitions():
+    """Página de teste para transições"""
+    return render_template("test_transitions.html")
+
+
+@app.route("/set_barra/<int:valor>")
+def set_barra(valor):
+    """Define a barra para testes - apenas em debug"""
+    if app.debug:
+        session["barra"] = max(0, min(10, valor))
+        return jsonify({"barra": session.get("barra"), "status": "ok"})
+    return jsonify({"status": "erro", "msg": "Apenas em modo debug"})
+
+
+@app.route("/force_sleep")
+def force_sleep():
+    """Força a cena de dormir para testes rápidos"""
+    if app.debug:
+        session["cap"] = "ato2_cap4_kelly"
+        session["cena"] = 7  # Última cena antes de dormir
+        session["frame"] = 0
+        return redirect(url_for("cena"))
+    return jsonify({"status": "erro"})
 
 
 if __name__ == "__main__":
