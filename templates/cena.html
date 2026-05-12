@@ -13,12 +13,12 @@
         *{margin:0;padding:0;box-sizing:border-box;}
         body{width:100vw;height:100vh;overflow:hidden;background:#000;}
 
-        .fundo{position:fixed;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:0;}
+        .fundo{position:fixed;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:0;opacity:1;}
         .fundo.nova-imagem{animation:fadeIn 0.4s ease forwards;}
         .fundo-preto{position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:0;}
 
         /* Narrador */
-        .caixa-narrador{position:fixed;bottom:2.5rem;left:50%;transform:translateX(-50%);width:100%;max-width:760px;z-index:10;padding:0 2rem;pointer-events:none;}
+        .caixa-narrador{position:fixed;bottom:8rem;left:50%;transform:translateX(-50%);width:100%;max-width:760px;z-index:10;padding:0 2rem;pointer-events:none;}
         .narrador-texto{font-family:'Montserrat',sans-serif;font-size:0.95rem;font-weight:300;font-style:italic;color:rgba(255,255,255,0.82);text-align:center;line-height:1.8;text-shadow:0 2px 20px rgba(0,0,0,1),0 0 60px rgba(0,0,0,1);}
 
         /* Caixa Molly */
@@ -26,7 +26,7 @@
         .molly-nome-img{display:block;height:42px;object-fit:contain;object-position:left;margin-bottom:-2px;margin-left:8px;}
         .molly-box-wrap{position:relative;}
         .molly-box-img{width:100%;display:block;}
-        .molly-box-texto{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:82%;font-family:'Montserrat',sans-serif;font-size:0.95rem;font-weight:300;color:rgba(255,255,255,0.92);line-height:1.7;}
+        .molly-box-texto{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:82%;font-family:'Montserrat',sans-serif;font-size:0.9rem;font-weight:300;color:rgba(255,255,255,0.92);line-height:1.6;padding:0.5rem;}
 
         /* Diálogo noite */
         .dialogo{position:fixed;bottom:0;left:0;width:100%;z-index:10;padding:0 2rem 1.5rem;}
@@ -58,6 +58,9 @@
         .opcao-btn.direita{right:2rem;bottom:3rem;animation:fadeInRight 0.5s ease forwards;}
         .opcao-btn.baixo{left:50%;transform:translateX(-50%);bottom:1rem;animation:fadeInUp 0.5s ease 0.3s forwards;}
         .opcao-btn:hover{background:rgba(139,0,0,0.4);border-color:rgba(139,0,0,0.6);color:#fff;}
+        .opcao-btn.opcao-bloqueada{pointer-events:none;}
+        .opcao-btn.sumindo{animation:fadeOut 1.5s ease forwards;pointer-events:none;}
+        @keyframes fadeOut{from{opacity:1;}to{opacity:0;visibility:hidden;}}
         @keyframes fadeInLeft{from{opacity:0;transform:translateX(-20px);}to{opacity:1;transform:translateX(0);}}
         @keyframes fadeInRight{from{opacity:0;transform:translateX(20px);}to{opacity:1;transform:translateX(0);}}
         @keyframes fadeInUp{from{opacity:0;transform:translateX(-50%) translateY(10px);}to{opacity:1;transform:translateX(-50%) translateY(0);}}
@@ -70,11 +73,11 @@
         .easter-egg{position:fixed;top:35%;right:8%;z-index:5;width:110px;opacity:0;cursor:pointer;transition:opacity 2s ease;}
         .easter-egg-noticia{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:6px;padding:0.5rem 0.6rem;font-family:'Montserrat',sans-serif;font-size:0.58rem;color:rgba(255,255,255,0.25);line-height:1.4;}
 
-        /* Borboleta SFX canto inferior direito */
-        .borboleta-sfx{position:fixed;bottom:1rem;right:1rem;z-index:20;width:60px;height:60px;display:none;}
+        /* Borboleta SFX canto superior esquerdo */
+        .borboleta-sfx{position:fixed;top:2rem;left:2rem;z-index:20;width:120px;height:120px;display:none;}
         .borboleta-sfx img{width:100%;height:100%;object-fit:contain;}
-        .borboleta-sfx.ativo{display:block;animation:pulsarBorb 0.3s ease infinite;}
-        @keyframes pulsarBorb{0%,100%{opacity:1;}50%{opacity:0.5;}}
+        .borboleta-sfx.ativo{display:block;animation:pulsarBorb 0.5s ease infinite;}
+        @keyframes pulsarBorb{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.6;transform:scale(1.08);}}
 
         /* Olho fechando */
         .olho-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:50;opacity:0;pointer-events:none;transition:opacity 1.5s ease;}
@@ -102,7 +105,7 @@
     {% if not tem_escolhas %}
     <!-- DIA -->
         {% if frame.imagem %}
-            <img class="fundo {% if imagem_mudou %}nova-imagem{% endif %}" id="fundoImg" src="{{ url_for('static', filename=frame.imagem) }}" alt="">
+            <img class="fundo {% if imagem_mudou %}nova-imagem{% endif %}" id="fundoImg" src="{{ url_for('static', filename=frame.imagem) }}" alt="" onerror="this.style.display='none'">
         {% else %}
             <div class="fundo-preto"></div>
         {% endif %}
@@ -183,11 +186,12 @@
                 <div class="opcoes-container" id="opcoesContainer">
                     {% for opcao in dados.opcoes %}
                         <a href="/escolha/{{ loop.index0 }}"
-                           class="opcao-btn {{ opcao.posicao }}"
+                           class="opcao-btn {{ opcao.posicao }} {% if opcao.get('sumir_apos') %}opcao-bloqueada{% endif %}"
                            style="animation-delay: {{ loop.index0 * 0.15 }}s"
                            {% if opcao.sfx %}data-sfx="{{ opcao.sfx }}"{% endif %}
                            {% if opcao.get('borboleta') %}data-borboleta="true"{% endif %}
-                           {% if opcao.acao in ['dormir','dormir_olho'] %}data-dormir="true"{% endif %}>
+                           {% if opcao.acao in ['dormir','dormir_olho'] %}data-dormir="true"{% endif %}
+                           {% if opcao.get('sumir_apos') %}data-sumir="true"{% endif %}>
                             {{ opcao.texto }}
                         </a>
                     {% endfor %}
@@ -217,6 +221,15 @@
             setInterval(() => { if (!audio.paused && !audio.ended) sessionStorage.setItem(POS_KEY, String(audio.currentTime)); }, 500);
         }
 
+        // ── Fade out de opções que devem sumir (volta de curtidas) ──
+        const opsBloqueadas = document.querySelectorAll('.opcao-btn[data-sumir="true"]');
+        if (opsBloqueadas.length > 0) {
+            // Bloqueia imediatamente, faz fade depois de 1s
+            setTimeout(() => {
+                opsBloqueadas.forEach(btn => btn.classList.add('sumindo'));
+            }, 800);
+        }
+
         // ── SFX da cena (notificação etc) ──
         {% if dados and dados.sfx %}
         const sfxCena = new Audio("/static/journey/ato_1/Cap_2(noite)/Sound/{{ dados.sfx }}");
@@ -244,17 +257,20 @@
         function tocarBorboletaSFX(sfxNome, callback) {
             const div = document.getElementById('borboletaSfx');
             const img = document.getElementById('borboletaImg');
-            const sfx = new Audio('/static/journey/ato_1/Cap_2(noite)/Sound/' + sfxNome);
-            sfx.volume = 1.0;
             div.classList.add('ativo');
             let bi = 0;
             const bInt = setInterval(() => { bi = (bi+1) % BORBOLETAS.length; img.src = BORBOLETAS[bi]; }, 200);
-            sfx.play().catch(()=>{});
-            sfx.onended = () => {
-                clearInterval(bInt);
-                div.classList.remove('ativo');
-                if (callback) callback();
-            };
+            // SFX começa após 5s de suspense
+            setTimeout(() => {
+                const sfx = new Audio('/static/journey/ato_1/Cap_2(noite)/Sound/' + sfxNome);
+                sfx.volume = 1.0;
+                sfx.play().catch(()=>{});
+                sfx.onended = () => {
+                    clearInterval(bInt);
+                    div.classList.remove('ativo');
+                    if (callback) callback();
+                };
+            }, 5000);
         }
 
         // ── Efeito olho fechando ──

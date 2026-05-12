@@ -22,11 +22,12 @@
             width: 100vw;
             height: 100vh;
             overflow: hidden;
-            background: #000;
+            background: {% if tipo == 'dia' %}#fff{% else %}#000{% endif %};
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
+            transition: background 0.5s ease;
         }
 
         .tela {
@@ -42,7 +43,7 @@
         .titulo-periodo {
             font-family: 'Glassure', serif;
             font-size: clamp(5rem, 15vw, 12rem);
-            color: #fff;
+            color: {% if tipo == 'dia' %}#111{% else %}#fff{% endif %};
             letter-spacing: 0.05em;
             line-height: 1;
             opacity: 0;
@@ -53,7 +54,7 @@
         .subtitulo {
             font-family: 'Glassure', serif;
             font-size: clamp(1rem, 3vw, 2rem);
-            color: rgba(255,255,255,0.8);
+            color: {% if tipo == 'dia' %}rgba(0,0,0,0.7){% else %}rgba(255,255,255,0.8){% endif %};
             letter-spacing: 0.1em;
             text-transform: uppercase;
             opacity: 0;
@@ -111,6 +112,7 @@
         /* Variação DIA */
         {% if tipo == 'dia' %}
         .choise { color: #c8a000; }
+        .hint { color: rgba(0,0,0,0.4); }
         {% endif %}
     </style>
 </head>
@@ -125,7 +127,7 @@
             {% if tipo == 'noite' %}
                 A noite foi feita pra se divertir
             {% else %}
-                O dia começa de novo
+                O dia inicia de novo
             {% endif %}
         </div>
 
@@ -135,6 +137,13 @@
     <div class="hint">CLIQUE PARA CONTINUAR</div>
 
     <script>
+        // SFX de transição
+        const sfxTransicao = new Audio(
+            "{% if tipo == 'noite' %}/static/journey/ato_1/Cap_2(noite)/Sound/sfx_day_night.mp3{% else %}/static/journey/ato_1/Cap_2(noite)/Sound/sfx_night_day.mp3{% endif %}"
+        );
+        sfxTransicao.volume = 1.0;
+        setTimeout(() => sfxTransicao.play().catch(()=>{}), 300);
+
         // Animação de caracteres no CHOISE
         const choiseEl = document.getElementById('choise');
         const texto = choiseEl.textContent.trim();

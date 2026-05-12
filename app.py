@@ -241,6 +241,15 @@ def avancar():
     cenas = cap.get("cenas", {}) if cap else {}
 
     dados_cena = cenas.get(cena_num, {})
+
+    # Fim das curtidas: volta para examinar cena 6 (3 opções com fade)
+    if dados_cena.get("fim_curtidas"):
+        session["cap"] = "ato1_cap2_examinar"
+        session["cena"] = 6
+        session["frame"] = 0
+        return redirect(url_for("cena"))
+
+    # Ir dormir: transição para dia
     if dados_cena.get("ir_dormir"):
         proximo_cap = get_proximo_capitulo(cap_id)
         if proximo_cap:

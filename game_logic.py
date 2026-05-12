@@ -194,10 +194,11 @@ CAPITULOS = {
                 "frame_idx": 2, "sfx": None, "molly_age_nivel": None,
                 "texto_automatico": None, "easter_egg": None,
                 "opcoes": [
-                    {"texto": "Deixar pra lá e ir dormir",  "delta": -1, "acao": "dormir_olho",   "posicao": "esquerda"},
-                    {"texto": "Ver as curtidas",            "delta": 1,  "acao": "ver_curtidas",  "posicao": "direita"},
+                    {"texto": "Deixar pra lá e ir dormir",  "delta": -1, "acao": "dormir_olho",   "posicao": "esquerda", "sumir_apos": True},
+                    {"texto": "Ver as curtidas",            "delta": 1,  "acao": "ver_curtidas",  "posicao": "direita",  "sumir_apos": True},
                     {"texto": "Ver o comentário",           "delta": 2,  "acao": "ver_comentario","posicao": "baixo"},
-                ]
+                ],
+                "volta_aqui": True,
             },
         }
     },
@@ -231,7 +232,7 @@ CAPITULOS = {
             },
             3: {
                 "titulo": "As curtidas",
-                "tipo_texto": "narrador",
+                "tipo_texto": "molly",
                 "texto": "Molly H. Quem é essa Molly? Não conheço. E esse Frances? Estranho.",
                 "frame_idx": 2, "sfx": None, "molly_age_nivel": None,
                 "texto_automatico": None, "easter_egg": {
@@ -244,7 +245,8 @@ CAPITULOS = {
                 "tipo_texto": "molly",
                 "texto": "Espera... 32 curtidas? Não eram 8 ou 9? Devo estar com sono.",
                 "frame_idx": 2, "sfx": None, "molly_age_nivel": None,
-                "texto_automatico": None, "easter_egg": None, "opcoes": []
+                "texto_automatico": None, "easter_egg": None, "opcoes": [],
+                "fim_curtidas": True,
             },
         }
     },
@@ -263,7 +265,7 @@ CAPITULOS = {
         "cenas": {
             1: {
                 "titulo": "O comentário",
-                "tipo_texto": "narrador",
+                "tipo_texto": "molly",
                 "texto": "\"menor da zl\".",
                 "frame_idx": 0, "sfx": None, "molly_age_nivel": None,
                 "texto_automatico": None, "easter_egg": None, "opcoes": []
