@@ -239,6 +239,19 @@ def escolha(opcao):
         session["cena"] = 5
         return redirect(url_for("cena"))
 
+    if acao == "ver_kelly" or acao == "olhar_teto":
+        session["cap"] = "ato2_cap4_kelly"
+        session["frame"] = 0
+        session["cena"] = 1
+        return redirect(url_for("cena"))
+
+    if acao == "responder":
+        session["cena"] = 3
+        return redirect(url_for("cena"))
+
+    if acao == "deixar_pra_la":
+        return redirect(url_for("final"))
+
     # Ação padrão: próxima cena
     cap = get_capitulo(cap_id)
     cenas = cap.get("cenas", {}) if cap else {}
@@ -315,6 +328,16 @@ def build_cena_json(cap_id, cena_num, barra):
     frame_idx_cena = dados_cena.get("frame_idx", 0)
     frame_atual = frames_noite[frame_idx_cena] if frame_idx_cena < len(frames_noite) else None
     age = molly_age_sozinha(cap_id, cena_num, barra)
+    
+    # Escolher mensagens baseado na barra (se existirem variações)
+    mensagens = dados_cena.get("mensagens", [])
+    if not mensagens:
+        # Se não tiver mensagens diretas, escolhe entre barra_alta e barra_baixa
+        if barra > 5:
+            mensagens = dados_cena.get("mensagens_barra_alta", [])
+        else:
+            mensagens = dados_cena.get("mensagens_barra_baixa", [])
+    
     return {
         "fim": False,
         "frame": frame_atual,
@@ -322,7 +345,7 @@ def build_cena_json(cap_id, cena_num, barra):
         "texto": dados_cena.get("texto", ""),
         "titulo": dados_cena.get("titulo", ""),
         "remetente": dados_cena.get("remetente", ""),
-        "mensagens": dados_cena.get("mensagens", []),
+        "mensagens": mensagens,
         "sfx": dados_cena.get("sfx"),
         "sfx_base": "/static/journey/ato_1/Cap_2(noite)/Sound/",
         "opcoes": dados_cena.get("opcoes", []),
@@ -423,6 +446,19 @@ def escolha_data(opcao):
     if acao == "apagar_post":
         session["cena"] = 5
         return jsonify(build_cena_json(cap_id, 5, nova_barra))
+
+    if acao == "ver_kelly" or acao == "olhar_teto":
+        session["cap"] = "ato2_cap4_kelly"
+        session["frame"] = 0
+        session["cena"] = 1
+        return jsonify(build_cena_json("ato2_cap4_kelly", 1, nova_barra))
+
+    if acao == "responder":
+        session["cena"] = 3
+        return jsonify(build_cena_json(cap_id, 3, nova_barra))
+
+    if acao == "deixar_pra_la":
+        return jsonify({"fim": True, "redirect": "/final"})
 
     cap = get_capitulo(cap_id)
     cenas = cap.get("cenas", {}) if cap else {}
