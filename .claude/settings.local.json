@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(py -c \"import ast; ast.parse\\(open\\('game_logic.py'\\).read\\(\\)\\); ast.parse\\(open\\('app.py'\\).read\\(\\)\\); print\\('Sintaxe OK'\\)\")"
+    ]
+  }
+}

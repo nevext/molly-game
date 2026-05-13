@@ -115,9 +115,10 @@ CAPITULOS = {
                 "texto_automatico": None,
                 "easter_egg": None,
                 "opcoes": [
-                    {"texto": "Responder \"Não ligo pra essas coisas\"",  "delta": -1, "acao": "conversa_kelly",   "posicao": "esquerda"},
-                    {"texto": "Não responder e ir dormir",                "delta": 0,  "acao": "dormir",          "posicao": "direita"},
-                    {"texto": "Examinar que comentário é esse",           "delta": 1,  "acao": "examinar",        "posicao": "baixo",  "sfx": "sfx_bad_ending(Molly).mp3"},
+                    {"texto": "Responder animada — 'Ai que drama kk'",          "delta": -1, "acao": "conversa_kelly", "posicao": "esquerda",              "flag": {"humor": "animada"}},
+                    {"texto": "Responder com dúvida — 'Será que é verdade?'",   "delta": 0,  "acao": "conversa_kelly", "posicao": "direita",               "flag": {"humor": "insegura"}},
+                    {"texto": "Deixar pra depois e tentar dormir",               "delta": 0,  "acao": "dormir",         "posicao": "baixo"},
+                    {"texto": "Examinar que comentário é esse",                  "delta": 1,  "acao": "examinar",       "posicao": "canto_inferior_direito", "sfx": "sfx_bad_ending(Molly).mp3"},
                 ]
             },
         }
@@ -326,9 +327,9 @@ CAPITULOS = {
                 "frame_idx": 0, "sfx": None, "molly_age_nivel": None,
                 "texto_automatico": None, "easter_egg": None,
                 "opcoes": [],
-                "mensagens": [
+                "mensagens_humor_animada": [
                     {"lado": "deles", "nome": "Kelly", "texto": "Nada a ver oq ele disse sobre sua foto Molly 🙄"},
-                    {"lado": "eu",                     "texto": "Não ligo pra essas coisas"},
+                    {"lado": "eu",                     "texto": "Ai que drama kk nem liguei"},
                     {"lado": "deles", "nome": "Kelly", "texto": "ainda bem!! vc é linda do jeito q é"},
                     {"lado": "deles", "nome": "Kelly", "texto": "ai soube das noticias?"},
                     {"lado": "eu",                     "texto": "q noticias"},
@@ -339,6 +340,21 @@ CAPITULOS = {
                     {"lado": "deles", "nome": "Kelly", "texto": "pois é... fica ligada tá"},
                     {"lado": "deles", "nome": "Kelly", "texto": "vai dormir tá tarde demais"},
                     {"lado": "eu",                     "texto": "tá bom. boa noite kel 🦋"},
+                    {"lado": "deles", "nome": "Kelly", "texto": "boa noite molly 🦋"},
+                ],
+                "mensagens_humor_insegura": [
+                    {"lado": "deles", "nome": "Kelly", "texto": "Nada a ver oq ele disse sobre sua foto Molly 🙄"},
+                    {"lado": "eu",                     "texto": "Será? Não sei não Kel..."},
+                    {"lado": "deles", "nome": "Kelly", "texto": "Molly para. vc é linda do jeito q é"},
+                    {"lado": "deles", "nome": "Kelly", "texto": "não deixa comentário de pessoa sem noção te afetar"},
+                    {"lado": "eu",                     "texto": "é que às vezes bate um negócio sabe"},
+                    {"lado": "deles", "nome": "Kelly", "texto": "eu sei. mas tô aqui tá?"},
+                    {"lado": "deles", "nome": "Kelly", "texto": "ah, soube das noticias?"},
+                    {"lado": "eu",                     "texto": "q noticias"},
+                    {"lado": "deles", "nome": "Kelly", "texto": "tao procurando uma Reporter por ai, parece q ela é perigosa"},
+                    {"lado": "eu",                     "texto": "nossa... q estranho"},
+                    {"lado": "deles", "nome": "Kelly", "texto": "vai dormir tá. amanhã a gente conversa mais"},
+                    {"lado": "eu",                     "texto": "tá. obrigada kel 🦋"},
                     {"lado": "deles", "nome": "Kelly", "texto": "boa noite molly 🦋"},
                 ],
                 "ir_dormir": True,
@@ -799,6 +815,19 @@ def processar_escolha(cap_id, cena_num, opcao_index, barra_atual):
         nova = max(0, min(10, barra_atual + op.get("delta", 0)))
         return nova, op.get("acao", "proximo")
     return barra_atual, None
+
+
+def get_flag_escolha(cap_id, cena_num, opcao_index):
+    cap = CAPITULOS.get(cap_id)
+    if not cap:
+        return {}
+    cena = cap.get("cenas", {}).get(cena_num)
+    if not cena:
+        return {}
+    opcoes = cena.get("opcoes", [])
+    if opcao_index < len(opcoes):
+        return opcoes[opcao_index].get("flag", {})
+    return {}
 
 
 def molly_age_sozinha(cap_id, cena_num, barra):

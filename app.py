@@ -1,7 +1,7 @@
 # app.py
 import os
 from flask import Flask, render_template, session, redirect, url_for, jsonify
-from game_logic import get_capitulo, get_proximo_capitulo, processar_escolha, molly_age_sozinha, get_final
+from game_logic import get_capitulo, get_proximo_capitulo, processar_escolha, molly_age_sozinha, get_final, get_flag_escolha
 
 TRILHAS_NOITE = [
     "journey/ato_1/Cap_2(noite)/Music/Molly_Original_Soundtrack(Night).mp3",
@@ -144,6 +144,15 @@ def cena():
     # Detectar se voltou de curtidas
     session_volta = session.pop("volta_curtidas", False)
 
+    # Resolver mensagens por humor (ato1_cap2_kelly) para render server-side
+    dados_cena = dict(dados_cena)
+    if not dados_cena.get("mensagens") and not dados_cena.get("mensagens_barra_alta"):
+        humor = session.get("humor_kelly", "animada")
+        if humor == "insegura":
+            dados_cena["mensagens"] = dados_cena.get("mensagens_humor_insegura", [])
+        else:
+            dados_cena["mensagens"] = dados_cena.get("mensagens_humor_animada", [])
+
     return render_template("cena.html",
         cap_id=cap_id, tipo="noite", trilha=trilha,
         frame=frame_atual, frame_idx=frame_idx,
@@ -273,6 +282,9 @@ def escolha(opcao):
         return redirect(url_for("cena"))
 
     if acao == "conversa_kelly":
+        flag = get_flag_escolha(cap_id, cena_num, opcao)
+        if "humor" in flag:
+            session["humor_kelly"] = flag["humor"]
         session["cap"] = "ato1_cap2_kelly"
         session["frame"] = 0
         session["cena"] = 1
@@ -401,6 +413,13 @@ def build_cena_json(cap_id, cena_num, barra):
             mensagens = dados_cena.get("mensagens_barra_alta", [])
         else:
             mensagens = dados_cena.get("mensagens_barra_baixa", [])
+    # Roteamento por humor (ato1_cap2_kelly)
+    if not mensagens:
+        humor = session.get("humor_kelly", "animada")
+        if humor == "insegura":
+            mensagens = dados_cena.get("mensagens_humor_insegura", [])
+        else:
+            mensagens = dados_cena.get("mensagens_humor_animada", [])
     
     return {
         "fim": False,
@@ -505,6 +524,9 @@ def escolha_data(opcao):
         return jsonify(build_cena_json("ato1_cap2_examinar", 1, nova_barra))
 
     if acao == "conversa_kelly":
+        flag = get_flag_escolha(cap_id, cena_num, opcao)
+        if "humor" in flag:
+            session["humor_kelly"] = flag["humor"]
         session["cap"] = "ato1_cap2_kelly"
         session["frame"] = 0
         session["cena"] = 1
