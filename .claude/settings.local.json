@@ -1,7 +1,11 @@
 {
   "permissions": {
     "allow": [
-      "Bash(py -c \"import ast; ast.parse\\(open\\('game_logic.py'\\).read\\(\\)\\); ast.parse\\(open\\('app.py'\\).read\\(\\)\\); print\\('Sintaxe OK'\\)\")"
+      "Bash(py -c \"import ast; ast.parse\\(open\\('game_logic.py'\\).read\\(\\)\\); ast.parse\\(open\\('app.py'\\).read\\(\\)\\); print\\('Sintaxe OK'\\)\")",
+      "Bash(python -m py_compile app.py)",
+      "Bash(python -m py_compile game_logic.py)",
+      "Bash(py -m py_compile app.py)",
+      "Bash(py -m py_compile game_logic.py)"
     ]
   }
 }

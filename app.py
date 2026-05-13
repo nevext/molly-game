@@ -74,6 +74,7 @@ def jogar():
     session["barra"] = 3
     session["cena"] = 1
     session["noite_count"] = 0
+    session["contador_kelly"] = 0
     return redirect(url_for("cena"))
 
 
@@ -144,14 +145,23 @@ def cena():
     # Detectar se voltou de curtidas
     session_volta = session.pop("volta_curtidas", False)
 
-    # Resolver mensagens por humor (ato1_cap2_kelly) para render server-side
+    # Resolver mensagens para render server-side
     dados_cena = dict(dados_cena)
-    if not dados_cena.get("mensagens") and not dados_cena.get("mensagens_barra_alta"):
-        humor = session.get("humor_kelly", "animada")
-        if humor == "insegura":
-            dados_cena["mensagens"] = dados_cena.get("mensagens_humor_insegura", [])
+    if not dados_cena.get("mensagens"):
+        contador_kelly = session.get("contador_kelly", 0)
+        if contador_kelly >= 2 and dados_cena.get("mensagens_contador_kelly"):
+            dados_cena["mensagens"] = dados_cena["mensagens_contador_kelly"]
+        elif dados_cena.get("mensagens_barra_alta") or dados_cena.get("mensagens_barra_baixa"):
+            if barra > 5:
+                dados_cena["mensagens"] = dados_cena.get("mensagens_barra_alta", [])
+            else:
+                dados_cena["mensagens"] = dados_cena.get("mensagens_barra_baixa", [])
         else:
-            dados_cena["mensagens"] = dados_cena.get("mensagens_humor_animada", [])
+            humor = session.get("humor_kelly", "animada")
+            if humor == "insegura":
+                dados_cena["mensagens"] = dados_cena.get("mensagens_humor_insegura", [])
+            else:
+                dados_cena["mensagens"] = dados_cena.get("mensagens_humor_animada", [])
 
     return render_template("cena.html",
         cap_id=cap_id, tipo="noite", trilha=trilha,
@@ -266,6 +276,15 @@ def escolha(opcao):
     nova_barra, acao = processar_escolha(cap_id, cena_num, opcao, barra)
     session["barra"] = nova_barra
 
+    # delta_extra por contador_kelly >= 2 (ato2_cap4_kelly cena 3)
+    _cap_def = get_capitulo(cap_id)
+    if _cap_def:
+        _cena_def = _cap_def.get("cenas", {}).get(cena_num, {})
+        _delta_extra = _cena_def.get("delta_extra_contador", 0)
+        if _delta_extra and session.get("contador_kelly", 0) >= 2:
+            nova_barra = max(0, min(10, nova_barra + _delta_extra))
+            session["barra"] = nova_barra
+
     # Ações especiais
     if acao == "dormir" or acao == "dormir_olho":
         proximo_cap = get_proximo_capitulo(cap_id)
@@ -285,6 +304,7 @@ def escolha(opcao):
         flag = get_flag_escolha(cap_id, cena_num, opcao)
         if "humor" in flag:
             session["humor_kelly"] = flag["humor"]
+        session["contador_kelly"] = session.get("contador_kelly", 0) + 1
         session["cap"] = "ato1_cap2_kelly"
         session["frame"] = 0
         session["cena"] = 1
@@ -308,6 +328,11 @@ def escolha(opcao):
         return redirect(url_for("cena"))
 
     if acao == "ver_kelly":
+        _cap_vk = get_capitulo(cap_id)
+        if _cap_vk:
+            _op_vk = _cap_vk.get("cenas", {}).get(cena_num, {}).get("opcoes", [])
+            if opcao < len(_op_vk) and _op_vk[opcao].get("contador_kelly"):
+                session["contador_kelly"] = session.get("contador_kelly", 0) + _op_vk[opcao]["contador_kelly"]
         session["cap"] = "ato2_cap4_kelly"
         session["frame"] = 0
         session["cena"] = 1
@@ -408,8 +433,10 @@ def build_cena_json(cap_id, cena_num, barra):
     # Escolher mensagens baseado na barra (se existirem variações)
     mensagens = dados_cena.get("mensagens", [])
     if not mensagens:
-        # Se não tiver mensagens diretas, escolhe entre barra_alta e barra_baixa
-        if barra > 5:
+        contador_kelly = session.get("contador_kelly", 0)
+        if contador_kelly >= 2 and dados_cena.get("mensagens_contador_kelly"):
+            mensagens = dados_cena.get("mensagens_contador_kelly", [])
+        elif barra > 5:
             mensagens = dados_cena.get("mensagens_barra_alta", [])
         else:
             mensagens = dados_cena.get("mensagens_barra_baixa", [])
@@ -509,6 +536,15 @@ def escolha_data(opcao):
     nova_barra, acao = processar_escolha(cap_id, cena_num, opcao, barra)
     session["barra"] = nova_barra
 
+    # delta_extra por contador_kelly >= 2 (ato2_cap4_kelly cena 3)
+    _cap_def2 = get_capitulo(cap_id)
+    if _cap_def2:
+        _cena_def2 = _cap_def2.get("cenas", {}).get(cena_num, {})
+        _delta_extra2 = _cena_def2.get("delta_extra_contador", 0)
+        if _delta_extra2 and session.get("contador_kelly", 0) >= 2:
+            nova_barra = max(0, min(10, nova_barra + _delta_extra2))
+            session["barra"] = nova_barra
+
     if acao in ("dormir", "dormir_olho"):
         proximo_cap = get_proximo_capitulo(cap_id)
         if proximo_cap:
@@ -527,6 +563,7 @@ def escolha_data(opcao):
         flag = get_flag_escolha(cap_id, cena_num, opcao)
         if "humor" in flag:
             session["humor_kelly"] = flag["humor"]
+        session["contador_kelly"] = session.get("contador_kelly", 0) + 1
         session["cap"] = "ato1_cap2_kelly"
         session["frame"] = 0
         session["cena"] = 1
@@ -549,6 +586,11 @@ def escolha_data(opcao):
         return jsonify(build_cena_json(cap_id, 5, nova_barra))
 
     if acao == "ver_kelly":
+        _cap_vk2 = get_capitulo(cap_id)
+        if _cap_vk2:
+            _op_vk2 = _cap_vk2.get("cenas", {}).get(cena_num, {}).get("opcoes", [])
+            if opcao < len(_op_vk2) and _op_vk2[opcao].get("contador_kelly"):
+                session["contador_kelly"] = session.get("contador_kelly", 0) + _op_vk2[opcao]["contador_kelly"]
         session["cap"] = "ato2_cap4_kelly"
         session["frame"] = 0
         session["cena"] = 1

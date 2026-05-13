@@ -428,8 +428,8 @@ CAPITULOS = {
                 "texto_automatico": None,
                 "easter_egg": None,
                 "opcoes": [
-                    {"texto": "Ver a mensagem", "delta": 0, "acao": "ver_kelly", "posicao": "direita"},
-                    {"texto": "Ir dormir", "delta": 0, "acao": "dormir", "posicao": "esquerda"},
+                    {"texto": "Ver a mensagem", "delta": -1, "acao": "ver_kelly", "posicao": "direita", "contador_kelly": 1},
+                    {"texto": "Ir dormir sem ver", "delta": 0, "acao": "dormir", "posicao": "esquerda"},
                     {"texto": "Ficar olhando para o teto", "delta": 0, "acao": "olhar_teto", "posicao": "baixo"},
                 ]
             },
@@ -467,8 +467,8 @@ CAPITULOS = {
                 "texto_automatico": None,
                 "easter_egg": None,
                 "opcoes": [
-                    {"texto": "Ver a mensagem", "delta": 0, "acao": "ver_kelly", "posicao": "direita"},
-                    {"texto": "Continuar ignorando", "delta": 1, "acao": "dormir", "posicao": "esquerda"},
+                    {"texto": "Ver a mensagem agora", "delta": -1, "acao": "ver_kelly", "posicao": "direita", "contador_kelly": 1},
+                    {"texto": "Continuar ignorando", "delta": 2, "acao": "dormir", "posicao": "esquerda"},
                 ]
             },
         }
@@ -551,7 +551,21 @@ CAPITULOS = {
                     {"lado": "deles", "nome": "Kelly", "texto": "Vc é linda mesmo Molly, acredita em mim?"},
                     {"lado": "deles", "nome": "Kelly", "texto": "Não precisa de filtro pra ninguém gostar de você"},
                     {"lado": "eu", "texto": "Obrigada Kel... 🦋"},
-                ]
+                ],
+                "mensagens_contador_kelly": [
+                    {"lado": "deles", "nome": "Kelly", "texto": "Oi!! Tava esperando vc responder"},
+                    {"lado": "eu", "texto": "Desculpa demorei"},
+                    {"lado": "deles", "nome": "Kelly", "texto": "tudo bem com vc? pergunto pq vc sumiu um pouco"},
+                    {"lado": "eu", "texto": "é... tô pensando em muita coisa"},
+                    {"lado": "deles", "nome": "Kelly", "texto": "sobre a foto? sobre o comentário?"},
+                    {"lado": "eu", "texto": "sobre tudo. filtro, curtida, o que as pessoas pensam"},
+                    {"lado": "deles", "nome": "Kelly", "texto": "Molly... vc não precisa ser perfeita pras pessoas gostarem de vc"},
+                    {"lado": "deles", "nome": "Kelly", "texto": "eu gosto de vc do jeito q vc é. sem filtro nenhum"},
+                    {"lado": "eu", "texto": "obrigada kel... isso ajudou"},
+                    {"lado": "deles", "nome": "Kelly", "texto": "sempre. boa noite 🦋"},
+                    {"lado": "eu", "texto": "boa noite 🦋"},
+                ],
+                "delta_extra_contador": -1,
             },
             4: {
                 "titulo": "Pegando o celular",
