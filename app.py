@@ -61,14 +61,29 @@ app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "molly2026")
 
 
+def preservar_progresso():
+    return {
+        "finais": dict(session.get("finais", {})),
+        "conquistas": dict(session.get("conquistas", {})),
+    }
+
+def restaurar_progresso(dados):
+    if dados.get("finais"):
+        session["finais"] = dados["finais"]
+    if dados.get("conquistas"):
+        session["conquistas"] = dados["conquistas"]
+
+
 @app.route("/")
 def index():
-    return render_template("index.html")
+    return render_template("index.html", finais=session.get("finais", {}))
 
 
 @app.route("/jogar")
 def jogar():
+    progresso = preservar_progresso()
     session.clear()
+    restaurar_progresso(progresso)
     session["cap"] = "ato1_cap1_dia"
     session["frame"] = 0
     session["barra"] = 3
@@ -643,12 +658,17 @@ def final():
     barra = session.get("barra", 3)
     tipo_final = session.get("tipo_final", None)
     dados = get_final(barra, tipo_forcado=tipo_final)
+    finais = session.get("finais", {})
+    finais[dados["tipo"]] = True
+    session["finais"] = finais
     return render_template("final.html", dados=dados)
 
 
 @app.route("/reiniciar")
 def reiniciar():
+    progresso = preservar_progresso()
     session.clear()
+    restaurar_progresso(progresso)
     return redirect(url_for("index"))
 
 

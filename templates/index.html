@@ -179,11 +179,64 @@
                 <span class="tlou-title">FINAIS</span>
             </div>
             <ul class="tlou-list">
-                <li class="tlou-item bloqueado"><span class="tlou-label">Final Bom</span><span class="tlou-lock">Bloqueado</span></li>
-                <li class="tlou-item bloqueado"><span class="tlou-label">Final Ruim</span><span class="tlou-lock">Bloqueado</span></li>
-                <li class="tlou-item bloqueado"><span class="tlou-label">Final Neutro</span><span class="tlou-lock">Bloqueado</span></li>
-                <li class="tlou-item bloqueado"><span class="tlou-label">Final Especial 1</span><span class="tlou-lock">Bloqueado</span></li>
-                <li class="tlou-item bloqueado"><span class="tlou-label">Final Especial 2</span><span class="tlou-lock">Bloqueado</span></li>
+                {% if finais.get('bom') %}
+                <li class="tlou-item conquista-item">
+                    <div class="conquista-info">
+                        <span class="tlou-label">Final Bom</span>
+                        <span class="conquista-desc">Molly encontrou paz dentro de si mesma.</span>
+                    </div>
+                </li>
+                {% else %}
+                <li class="tlou-item bloqueado"><span class="tlou-label">Final Bom</span><span class="tlou-lock">🔒</span></li>
+                {% endif %}
+
+                {% if finais.get('ruim') %}
+                <li class="tlou-item conquista-item">
+                    <div class="conquista-info">
+                        <span class="tlou-label">Final Ruim</span>
+                        <span class="conquista-desc">O peso ficou grande demais para carregar.</span>
+                    </div>
+                </li>
+                {% else %}
+                <li class="tlou-item bloqueado"><span class="tlou-label">Final Ruim</span><span class="tlou-lock">🔒</span></li>
+                {% endif %}
+
+                {% if finais.get('aceitar') %}
+                <li class="tlou-item conquista-item">
+                    <div class="conquista-info">
+                        <span class="tlou-label">Final: Aceitar</span>
+                        <span class="conquista-desc">Molly aprendeu a aceitar o que nao pode mudar.</span>
+                    </div>
+                </li>
+                {% else %}
+                <li class="tlou-item bloqueado"><span class="tlou-label">Final: Aceitar</span><span class="tlou-lock">🔒</span></li>
+                {% endif %}
+
+                {% if finais.get('lutar') %}
+                <li class="tlou-item conquista-item">
+                    <div class="conquista-info">
+                        <span class="tlou-label">Final: Lutar</span>
+                        <span class="conquista-desc">Molly escolheu lutar pelo que acredita.</span>
+                    </div>
+                </li>
+                {% else %}
+                <li class="tlou-item bloqueado"><span class="tlou-label">Final: Lutar</span><span class="tlou-lock">🔒</span></li>
+                {% endif %}
+
+                {% if finais.get('sonho_mae') %}
+                <li class="tlou-item conquista-item">
+                    <div class="conquista-info">
+                        <span class="tlou-label">Final: Sonho da Mae</span>
+                        <span class="conquista-desc">Em sonho, ela encontrou a paz que buscava.</span>
+                    </div>
+                </li>
+                {% else %}
+                <li class="tlou-item bloqueado"><span class="tlou-label">Final: Sonho da Mae</span><span class="tlou-lock">🔒</span></li>
+                {% endif %}
+
+                <li class="tlou-item bloqueado"><span class="tlou-label">Final: Morte</span><span class="tlou-lock">Em desenvolvimento</span></li>
+                <li class="tlou-item bloqueado"><span class="tlou-label">Final Secreto I</span><span class="tlou-lock">Em desenvolvimento</span></li>
+                <li class="tlou-item bloqueado"><span class="tlou-label">Final Secreto II</span><span class="tlou-lock">Em desenvolvimento</span></li>
             </ul>
             <p class="tlou-hint">Complete o jogo para desbloquear os finais.</p>
         </div>
@@ -404,6 +457,8 @@
                 iniciarFase3();
             } else if (fase === 4) {
                 clearInterval(borbInterval);
+                // Pausa a música do menu quando chega em "Os Sonhos"
+                audio.pause();
                 document.getElementById('tutFase4').style.display = 'flex';
             }
         }

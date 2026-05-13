@@ -118,7 +118,7 @@ CAPITULOS = {
                     {"texto": "Responder animada 'Ai que drama kk'",          "delta": -1, "acao": "conversa_kelly", "posicao": "esquerda",              "flag": {"humor": "animada"}},
                     {"texto": "Responder com dúvida 'Será que é verdade?'",   "delta": 0,  "acao": "conversa_kelly", "posicao": "direita",               "flag": {"humor": "insegura"}},
                     {"texto": "Deixar pra depois e tentar dormir",               "delta": 0,  "acao": "dormir",         "posicao": "baixo"},
-                    {"texto": "Examinar que comentário é esse",                  "delta": 1,  "acao": "examinar",       "posicao": "canto_inferior_direito", "sfx": "sfx_bad_ending(Molly).mp3"},
+                    {"texto": "Verificar o comentário",                          "delta": -2, "acao": "examinar",       "posicao": "canto_inferior_direito", "sfx": "sfx_bad_choise.mp3"},
                 ]
             },
         }

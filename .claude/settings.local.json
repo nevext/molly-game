@@ -6,7 +6,8 @@
       "Bash(python -m py_compile game_logic.py)",
       "Bash(py -m py_compile app.py)",
       "Bash(py -m py_compile game_logic.py)",
-      "Bash(python3 *)"
+      "Bash(python3 *)",
+      "Bash(py *)"
     ]
   }
 }

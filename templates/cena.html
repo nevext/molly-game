@@ -231,9 +231,9 @@
 
             {% elif dados.tipo_texto == 'molly' %}
                 <div class="caixa-molly">
-                    <img class="molly-nome-img" src="{{ url_for('static', filename='ui/Molly_Name_Box.png') }}" alt="Molly">
+                    <img class="molly-nome-img" src="{{ url_for('static', filename='ui/box_molly/Molly_Name_Box.png') }}" alt="Molly">
                     <div class="molly-box-wrap">
-                        <img class="molly-box-img" src="{{ url_for('static', filename='ui/box_molly_v2.png') }}" alt="">
+                        <img class="molly-box-img" src="{{ url_for('static', filename='ui/box_molly/box_molly_v2.png') }}" alt="">
                         <div class="molly-box-texto" id="textoAtivo">{{ dados.texto }}</div>
                     </div>
                 </div>
@@ -439,8 +439,8 @@
 
         // ── Dia: fetch sem reload ──
         {% if not tem_escolhas %}
-        const BOX_MOLLY = "{{ url_for('static', filename='ui/box_molly_v2.png') }}";
-        const BOX_NOME  = "{{ url_for('static', filename='ui/Molly_Name_Box.png') }}";
+        const BOX_MOLLY = "{{ url_for('static', filename='ui/box_molly/box_molly_v2.png') }}";
+        const BOX_NOME  = "{{ url_for('static', filename='ui/box_molly/Molly_Name_Box.png') }}";
 
         function avancarFrame() {
             if (aguardandoFetch) return;
@@ -558,8 +558,8 @@
 
         // ── NOITE: sistema fetch sem reload ──
         {% if tem_escolhas %}
-        const BOX_MOLLY_N = "{{ url_for('static', filename='ui/box_molly_v2.png') }}";
-        const BOX_NOME_N  = "{{ url_for('static', filename='ui/Molly_Name_Box.png') }}";
+        const BOX_MOLLY_N = "{{ url_for('static', filename='ui/box_molly/box_molly_v2.png') }}";
+        const BOX_NOME_N  = "{{ url_for('static', filename='ui/box_molly/Molly_Name_Box.png') }}";
         let irDormirFlag = {{ 'true' if dados and dados.ir_dormir else 'false' }};
         let barraAtual = {{ barra }};
         let ultimaEscolhaTinhaBorb = false;
@@ -690,6 +690,14 @@
             d.className = 'caixa-narrador';
             d.innerHTML = '<div class="narrador-texto noite"></div>';
             document.body.appendChild(d);
+            // Toca notificação se o texto mencionar "notificação"
+            if (texto && texto.toLowerCase().includes('notificação')) {
+                const notifSfx = document.getElementById('sfxNotification');
+                if (notifSfx) {
+                    notifSfx.currentTime = 0;
+                    notifSfx.play().catch(err => console.log('Erro ao tocar notificação:', err));
+                }
+            }
             digitarNoite(d.querySelector('.narrador-texto'), texto);
         }
 
@@ -810,12 +818,6 @@
                 renderConversaDinamica(data.mensagens, data.ir_dormir);
             } else if (data.tipo_texto === 'sms') {
                 renderSMSNoite(data.remetente || '', data.texto);
-                // Toca SFX de notificação
-                const notifSfx = document.getElementById('sfxNotification');
-                if (notifSfx) {
-                    notifSfx.currentTime = 0;
-                    notifSfx.play().catch(err => console.log('Erro ao tocar notificação:', err));
-                }
                 criarBtnAvancar(() => fetchAvancar());
             } else if (data.tipo_texto === 'narrador') {
                 renderNarradorNoite(data.texto);
