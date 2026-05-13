@@ -4,9 +4,9 @@ from flask import Flask, render_template, session, redirect, url_for, jsonify
 from game_logic import get_capitulo, get_proximo_capitulo, processar_escolha, molly_age_sozinha, get_final, get_flag_escolha
 
 TRILHAS_NOITE = [
-    "journey/ato_1/Cap_2(noite)/Music/Molly_Original_Soundtrack(Night).mp3",
-    "journey/ato_1/Cap_2(noite)/Music/Molly_Original_Soundtrack(Night_2).mp3",
-    "journey/ato_1/Cap_2(noite)/Music/Molly_Original_Soundtrack(Night_3).mp3",
+    "audio/soundtrack/Night.mp3",
+    "audio/soundtrack/Night_2.mp3",
+    "audio/soundtrack/Night_3.mp3",
 ]
 
 TRILHA_NOMES = {
@@ -170,7 +170,7 @@ def cena():
         tem_escolhas=True, dados=dados_cena,
         molly_age=age, barra=barra, cena_num=cena_num,
         session_volta=session_volta,
-        sfx_base="/static/journey/ato_1/Cap_2(noite)/Sound/",
+        sfx_base="/static/audio/sfx/",
         hud_ato=hud[0], hud_cap=hud[1], trilha_nome=tnome)
 
 
@@ -457,7 +457,7 @@ def build_cena_json(cap_id, cena_num, barra):
         "remetente": dados_cena.get("remetente", ""),
         "mensagens": mensagens,
         "sfx": dados_cena.get("sfx"),
-        "sfx_base": "/static/journey/ato_1/Cap_2(noite)/Sound/",
+        "sfx_base": "/static/audio/sfx/",
         "opcoes": dados_cena.get("opcoes", []),
         "easter_egg": dados_cena.get("easter_egg"),
         "molly_age": age,

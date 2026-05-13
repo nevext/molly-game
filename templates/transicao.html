@@ -139,7 +139,7 @@
     <script>
         // SFX de transição
         const sfxTransicao = new Audio(
-            "{% if tipo == 'noite' %}/static/journey/ato_1/Cap_2(noite)/Sound/sfx_day_night.mp3{% else %}/static/journey/ato_1/Cap_2(noite)/Sound/sfx_night_day.mp3{% endif %}"
+            "{% if tipo == 'noite' %}/static/audio/sfx/sfx_day_night.mp3{% else %}/static/audio/sfx/sfx_night_day.mp3{% endif %}"
         );
         sfxTransicao.volume = 1.0;
         setTimeout(() => sfxTransicao.play().catch(()=>{}), 300);

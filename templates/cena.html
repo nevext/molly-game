@@ -155,6 +155,11 @@
         <source src="{{ url_for('static', filename=trilha) }}" type="audio/mp3">
     </audio>
 
+    <!-- SFX Notificação -->
+    <audio id="sfxNotification">
+        <source src="{{ url_for('static', filename='audio/sfx/sfx_notification.mp3') }}" type="audio/mp3">
+    </audio>
+
     <div id="game-container">
         <div id="game-content">
         <!-- Olho fechando -->
@@ -162,7 +167,7 @@
 
         <!-- Borboleta SFX -->
         <div class="borboleta-sfx" id="borboletaSfx">
-            <img id="borboletaImg" src="{{ url_for('static', filename='fly/BORBOLETA_1.png') }}" alt="">
+            <img id="borboletaImg" src="{{ url_for('static', filename='borboleta/escolha/boa/BORBOLETA_ESCOLHA_BOA_1.png') }}" alt="">
         </div>
 
     {% if not tem_escolhas %}
@@ -177,9 +182,9 @@
             <div class="caixa-narrador"><div class="narrador-texto" id="textoAtivo">{{ frame.texto }}</div></div>
         {% elif frame.tipo_texto == 'molly' %}
             <div class="caixa-molly">
-                <img class="molly-nome-img" src="{{ url_for('static', filename='box/box_molly/Molly_Name_Box.png') }}" alt="Molly">
+                <img class="molly-nome-img" src="{{ url_for('static', filename='ui/Molly_Name_Box.png') }}" alt="Molly">
                 <div class="molly-box-wrap">
-                    <img class="molly-box-img" src="{{ url_for('static', filename='box/box_molly/box_molly_v2.png') }}" alt="">
+                    <img class="molly-box-img" src="{{ url_for('static', filename='ui/box_molly_v2.png') }}" alt="">
                     <div class="molly-box-texto" id="textoAtivo">{{ frame.texto }}</div>
                 </div>
             </div>
@@ -226,9 +231,9 @@
 
             {% elif dados.tipo_texto == 'molly' %}
                 <div class="caixa-molly">
-                    <img class="molly-nome-img" src="{{ url_for('static', filename='box/box_molly/Molly_Name_Box.png') }}" alt="Molly">
+                    <img class="molly-nome-img" src="{{ url_for('static', filename='ui/Molly_Name_Box.png') }}" alt="Molly">
                     <div class="molly-box-wrap">
-                        <img class="molly-box-img" src="{{ url_for('static', filename='box/box_molly/box_molly_v2.png') }}" alt="">
+                        <img class="molly-box-img" src="{{ url_for('static', filename='ui/box_molly_v2.png') }}" alt="">
                         <div class="molly-box-texto" id="textoAtivo">{{ dados.texto }}</div>
                     </div>
                 </div>
@@ -300,7 +305,7 @@
 
         // ── SFX da cena (notificação etc) ──
         {% if dados and dados.sfx %}
-        const sfxCena = new Audio("/static/journey/ato_1/Cap_2(noite)/Sound/{{ dados.sfx }}");
+        const sfxCena = new Audio("/static/audio/sfx/{{ dados.sfx }}");
         sfxCena.volume = 1.0;
         setTimeout(() => sfxCena.play().catch(()=>{}), 600);
         {% endif %}
@@ -315,24 +320,49 @@
         }
 
         // ── Borboleta SFX ──
-        const BORBOLETAS = [
-            "{{ url_for('static', filename='fly/BORBOLETA_1.png') }}",
-            "{{ url_for('static', filename='fly/BORBOLETA_2.png') }}",
-            "{{ url_for('static', filename='fly/BORBOLETA_3.png') }}",
-            "{{ url_for('static', filename='fly/BORBOLETA_4.png') }}",
+        const BORBOLETAS_BOA = [
+            "{{ url_for('static', filename='borboleta/escolha/boa/BORBOLETA_ESCOLHA_BOA_1.png') }}",
+            "{{ url_for('static', filename='borboleta/escolha/boa/BORBOLETA_ESCOLHA_BOA_2.png') }}",
+            "{{ url_for('static', filename='borboleta/escolha/boa/BORBOLETA_ESCOLHA_BOA_3.png') }}",
+            "{{ url_for('static', filename='borboleta/escolha/boa/BORBOLETA_ESCOLHA_BOA_4.png') }}",
         ];
-
+        const BORBOLETAS_RUIM = [
+            "{{ url_for('static', filename='borboleta/escolha/ruim/BORBOLETA_ESCOLHA_RUIM_1.png') }}",
+            "{{ url_for('static', filename='borboleta/escolha/ruim/BORBOLETA_ESCOLHA_RUIM_2.png') }}",
+            "{{ url_for('static', filename='borboleta/escolha/ruim/BORBOLETA_ESCOLHA_RUIM_3.png') }}",
+            "{{ url_for('static', filename='borboleta/escolha/ruim/BORBOLETA_ESCOLHA_RUIM_4.png') }}",
+        ];
+        const BORBOLETAS_ESPECIAL = [
+            "{{ url_for('static', filename='borboleta/escolha/especial/BORBOLETA_ESCOLHA_ESPECIAL_1.png') }}",
+            "{{ url_for('static', filename='borboleta/escolha/especial/BORBOLETA_ESCOLHA_ESPECIAL_2.png') }}",
+            "{{ url_for('static', filename='borboleta/escolha/especial/BORBOLETA_ESCOLHA_ESPECIAL_3.png') }}",
+            "{{ url_for('static', filename='borboleta/escolha/especial/BORBOLETA_ESCOLHA_ESPECIAL_4.png') }}",
+        ];
+        
         function mostrarBorboleta(sfxNome) {
             const div = document.getElementById('borboletaSfx');
             const img = document.getElementById('borboletaImg');
             div.classList.add('ativo');
+
+            let borboletasArray = BORBOLETAS_BOA;
+            let sfxFile = '/static/audio/sfx/sfx_good_choise.mp3';
+
+            if (sfxNome && (sfxNome.includes('bad') || sfxNome.includes('ruim'))) {
+                borboletasArray = BORBOLETAS_RUIM;
+                sfxFile = '/static/audio/sfx/sfx_bad_choise.mp3';
+            } else if (sfxNome && sfxNome.includes('especial')) {
+                borboletasArray = BORBOLETAS_ESPECIAL;
+                sfxFile = '/static/audio/sfx/sfx_especial_choise.mp3';
+            }
+
+            img.src = borboletasArray[0];
             let bi = 0;
-            const bInt = setInterval(() => { bi = (bi+1) % BORBOLETAS.length; img.src = BORBOLETAS[bi]; }, 200);
-            // SFX imediatamente
-            const sfx = new Audio('/static/journey/ato_1/Cap_2(noite)/Sound/' + sfxNome);
-            sfx.volume = 1.0;
-            sfx.play().catch(()=>{});
-            // Remove após 3s
+            const bInt = setInterval(() => { bi = (bi + 1) % borboletasArray.length; img.src = borboletasArray[bi]; }, 200);
+
+            const sfxBorb = new Audio(sfxFile);
+            sfxBorb.volume = 1.0;
+            sfxBorb.play().catch(() => {});
+
             setTimeout(() => {
                 clearInterval(bInt);
                 div.classList.remove('ativo');
@@ -409,8 +439,8 @@
 
         // ── Dia: fetch sem reload ──
         {% if not tem_escolhas %}
-        const BOX_MOLLY = "{{ url_for('static', filename='box/box_molly/box_molly_v2.png') }}";
-        const BOX_NOME  = "{{ url_for('static', filename='box/box_molly/Molly_Name_Box.png') }}";
+        const BOX_MOLLY = "{{ url_for('static', filename='ui/box_molly_v2.png') }}";
+        const BOX_NOME  = "{{ url_for('static', filename='ui/Molly_Name_Box.png') }}";
 
         function avancarFrame() {
             if (aguardandoFetch) return;
@@ -528,8 +558,8 @@
 
         // ── NOITE: sistema fetch sem reload ──
         {% if tem_escolhas %}
-        const BOX_MOLLY_N = "{{ url_for('static', filename='box/box_molly/box_molly_v2.png') }}";
-        const BOX_NOME_N  = "{{ url_for('static', filename='box/box_molly/Molly_Name_Box.png') }}";
+        const BOX_MOLLY_N = "{{ url_for('static', filename='ui/box_molly_v2.png') }}";
+        const BOX_NOME_N  = "{{ url_for('static', filename='ui/Molly_Name_Box.png') }}";
         let irDormirFlag = {{ 'true' if dados and dados.ir_dormir else 'false' }};
         let barraAtual = {{ barra }};
         let ultimaEscolhaTinhaBorb = false;
@@ -647,7 +677,7 @@
                 fecharOlho(fazerEscolha);
             } else if (temBorb) {
                 if (audio) audio.pause();
-                tocarBorboletaSFX('sfx_especial_ending(Molly).mp3', () => setTimeout(fazerEscolha, 1000));
+                tocarBorboletaSFX('sfx_especial_choise.mp3', () => setTimeout(fazerEscolha, 1000));
             } else if (sfxNome) {
                 tocarBorboletaSFX(sfxNome, fazerEscolha);
             } else {
@@ -743,8 +773,8 @@
             if (typeof data.barra === 'number') {
                 const delta = data.barra - barraAtual;
                 if (!ultimaEscolhaTinhaBorb) {
-                    if (delta < 0) setTimeout(() => mostrarBorboleta('sfx_good_ending.mp3'), 300);
-                    else if (delta > 0) setTimeout(() => mostrarBorboleta('sfx_bad_ending(Molly).mp3'), 300);
+                    if (delta < 0) setTimeout(() => mostrarBorboleta('sfx_good_choise.mp3'), 300);
+                    else if (delta > 0) setTimeout(() => mostrarBorboleta('sfx_bad_choise.mp3'), 300);
                 }
                 barraAtual = data.barra;
             }
@@ -780,6 +810,12 @@
                 renderConversaDinamica(data.mensagens, data.ir_dormir);
             } else if (data.tipo_texto === 'sms') {
                 renderSMSNoite(data.remetente || '', data.texto);
+                // Toca SFX de notificação
+                const notifSfx = document.getElementById('sfxNotification');
+                if (notifSfx) {
+                    notifSfx.currentTime = 0;
+                    notifSfx.play().catch(err => console.log('Erro ao tocar notificação:', err));
+                }
                 criarBtnAvancar(() => fetchAvancar());
             } else if (data.tipo_texto === 'narrador') {
                 renderNarradorNoite(data.texto);

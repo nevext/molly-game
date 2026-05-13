@@ -149,7 +149,7 @@
 </head>
 <body>
     <audio id="sfxNightmare" autoplay>
-        <source src="{{ url_for('static', filename='audio/Sound_Effects/sfx_nightmare.mp3') }}" type="audio/mp3">
+        <source src="{{ url_for('static', filename='audio/sfx/sfx_nightmare.mp3') }}" type="audio/mp3">
     </audio>
 
     <div class="pesadelo-bg"></div>
@@ -173,7 +173,7 @@
     <script>
         // Reproduzir som de suspense ao carregar
         function playClickSound() {
-            const audio = new Audio("{{ url_for('static', filename='audio/Sound_Effects/sfx_suspense(Molly).mp3') }}");
+            const audio = new Audio("{{ url_for('static', filename='audio/sfx/sfx_suspense(Molly).mp3') }}");
             audio.play().catch(e => console.log("Erro ao reproduzir SFX:", e));
         }
 

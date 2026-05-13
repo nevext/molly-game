@@ -17,7 +17,7 @@
         }
         @font-face {
             font-family: 'DMSans';
-            src: url("{{ url_for('static', filename='menu/DMSans-Italic-VariableFont_opsz,wgh....ttf') }}") format('truetype');
+            src: url("{{ url_for('static', filename='menu/DMSans-Italic-VariableFont_opsz,wght.ttf') }}") format('truetype');
             font-style: italic;
         }
     </style>
@@ -32,6 +32,17 @@
         <source src="{{ url_for('static', filename='menu/Mr_Magic_Remix(Molly).mp3') }}" type="audio/mp3">
     </audio>
 
+    <!-- Áudios do Tutorial -->
+    <audio id="tutorialSfxBoa">
+        <source src="{{ url_for('static', filename='audio/sfx/sfx_good_choise.mp3') }}" type="audio/mp3">
+    </audio>
+    <audio id="tutorialSfxRuim">
+        <source src="{{ url_for('static', filename='audio/sfx/sfx_bad_choise.mp3') }}" type="audio/mp3">
+    </audio>
+    <audio id="tutorialSfxEspecial">
+        <source src="{{ url_for('static', filename='audio/sfx/sfx_especial_choise.mp3') }}" type="audio/mp3">
+    </audio>
+
     <!-- ── UI MENU ── -->
     <div class="ui" id="uiMenu">
         <div class="logo-area">
@@ -39,7 +50,7 @@
             <div class="logo-beta">BETA</div>
         </div>
         <div class="rodape">
-            <div class="click-hint" id="clickHint">CLIQUE EM QUALQUER LUGAR</div>
+            <div class="click-hint" id="clickHint">CLIQUE AQUI</div>
             <nav class="nav">
                 <a href="#" onclick="abrirSobre(event)">Sobre</a>
                 <a href="#" onclick="abrirCreditos(event)">Creditos</a>
@@ -60,7 +71,7 @@
                 <p class="tut-titulo">Versao Beta</p>
                 <p class="tut-desc">Esta e uma versao DEMO de Molly.<br>Bugs podem existir e a versao completa tem muito mais historia,<br>personagens e momentos que nao cabem aqui ainda.<br><br><em style="opacity:0.5;">Obrigado por jogar.</em></p>
             </div>
-            <div class="tut-pular" onclick="avancarTutorial(0.5)">CLIQUE EM QUALQUER LUGAR PARA CONTINUAR</div>
+            <div class="tut-pular" onclick="avancarTutorial(0.5)">CLIQUE AQUI PARA CONTINUAR</div>
         </div>
 
         <!-- FASE 0.5: fones de ouvido -->
@@ -70,33 +81,7 @@
                 <p class="tut-titulo">Use fones de ouvido</p>
                 <p class="tut-desc">A melhor experiencia jogando Molly e com fones de ouvido.<br>Fique atento aos sons do ambiente.<br><br><em style="opacity:0.5;">O jogo funciona normalmente sem fone tambem.</em></p>
             </div>
-            <div class="tut-pular" onclick="avancarTutorial(3)">CLIQUE EM QUALQUER LUGAR PARA CONTINUAR</div>
-        </div>
-
-        <!-- FASE 1: livro em loop + texto -->
-        <div class="tut-fase" id="tutFase1">
-            <div class="tut-livro-wrap">
-                <img class="tut-livro" id="tutLivro" src="" alt="caderno">
-            </div>
-            <div class="tut-texto">
-                <p class="tut-titulo">O Caderno</p>
-                <p class="tut-desc">Todo mundo já teve um diário. Este é o da Molly.<br>Nele ficam as dicas e as coisas mais importantes que ela carrega.</p>
-            </div>
-            <div class="tut-pular" onclick="avancarTutorial(2)">CLIQUE EM QUALQUER LUGAR PARA CONTINUAR</div>
-        </div>
-
-        <!-- FASE 2: livro abre uma vez + caneta escreve -->
-        <div class="tut-fase" id="tutFase2" style="display:none;">
-            <div class="tut-livro-wrap">
-                <img class="tut-livro" id="tutLivro2" src="" alt="caderno">
-                <div class="tut-caneta-wrap" id="tutCanetaWrap" style="opacity:0;">
-                    <img class="tut-caneta" id="tutCaneta" src="{{ url_for('static', filename='pen/CANETA.png') }}" alt="caneta">
-                </div>
-                <div class="tut-escrito" id="tutEscrito" style="opacity:0;">
-                    Nao se preocupe.<br>Deixa que eu escrevo por voce.
-                </div>
-            </div>
-            <div class="tut-pular" onclick="avancarTutorial(3)">CLIQUE EM QUALQUER LUGAR PARA CONTINUAR</div>
+            <div class="tut-pular" onclick="avancarTutorial(3)">CLIQUE AQUI PARA CONTINUAR</div>
         </div>
 
         <!-- FASE 3: borboleta + sons sequenciais -->
@@ -111,40 +96,23 @@
             <div class="tut-sons" id="tutSons" style="margin-top: 1.5rem; text-align: center; min-height: 60px;">
                 <p class="tut-desc" id="tutSomMsg" style="font-style: italic; opacity: 0; transition: opacity 0.5s;"></p>
             </div>
-            <div class="tut-pular" id="tutBorboletaContinuar" style="display:none;" onclick="avancarTutorial(4)">CLIQUE EM QUALQUER LUGAR PARA CONTINUAR</div>
+            <div class="tut-pular" id="tutBorboletaContinuar" style="display:none;" onclick="avancarTutorial(4)">CLIQUE AQUI PARA CONTINUAR</div>
         </div>
 
         <!-- FASE 4: os sonhos -->
         <div class="tut-fase" id="tutFase4" style="display:none;">
             <div class="tut-livro-wrap">
                 <img class="tut-livro"
-                     src="{{ url_for('static', filename='journey/dream/dream_initial/dream_demo_test.png') }}"
+                     src="{{ url_for('static', filename='jornada/dream/dream_initial/dream_demo_test.png') }}"
                      alt="sonho">
             </div>
             <div class="tut-texto">
                 <p class="tut-titulo">Os Sonhos</p>
                 <p class="tut-desc">Durante sua jornada, podera ter sonhos ou pesadelos<br>ou ate nem sonhar com nada, fique atento e ajude a Molly.<br><br><em style="opacity:0.5;">Seja esperto e guarde energia... ou aproveite o momento.</em></p>
             </div>
-            <div class="tut-pular" onclick="avancarTutorial(5)">CLIQUE EM QUALQUER LUGAR PARA CONTINUAR</div>
+            <div class="tut-pular" onclick="irJogar()">CLIQUE AQUI PARA CONTINUAR</div>
         </div>
 
-        <!-- FASE 5: escolha — ver abertura ou pular -->
-        <div class="tut-fase" id="tutFase5" style="display:none;">
-            <div class="tut-escolha">
-                <p class="tut-titulo" style="margin-bottom: 2rem;">Como deseja comecar?</p>
-                <button class="tut-btn" onclick="verAbertura()">Ver trailer cinematografico</button>
-                <button class="tut-btn tut-btn-sec" onclick="irJogar()">Pular para o jogo</button>
-            </div>
-        </div>
-
-    </div>
-
-    <!-- ── VIDEO ABERTURA ── -->
-    <div class="abertura-video" id="aberturaVideo">
-        <video id="videoAbertura" playsinline>
-            <source src="{{ url_for('static', filename='video/Abertura/Opening_Game.mp4') }}" type="video/mp4">
-        </video>
-        <div class="tut-pular" style="position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);" onclick="irJogar()">CLIQUE PARA PULAR</div>
     </div>
 
     <!-- ── MODAL SOBRE (TLOU) ── -->
@@ -233,7 +201,7 @@
                 <!-- Beta Tester — desbloqueada -->
                 <li class="tlou-item conquista-item">
                     <div class="conquista-gif">
-                        <img src="{{ url_for('static', filename='video/molly/Molly_gif(5s).gif') }}" alt="Molly">
+                        <img src="{{ url_for('static', filename='gifs/Molly_gif(5s).gif') }}" alt="Molly">
                     </div>
                     <div class="conquista-info">
                         <span class="tlou-label">Beta Tester</span>
@@ -243,7 +211,7 @@
                 <!-- Jogador 000 — desbloqueada -->
                 <li class="tlou-item conquista-item">
                     <div class="conquista-gif">
-                        <img src="{{ url_for('static', filename='video/molly/Molly_gif_timida.gif') }}" alt="Molly Timida">
+                        <img src="{{ url_for('static', filename='gifs/Molly_gif_timida.gif') }}" alt="Molly Timida">
                     </div>
                     <div class="conquista-info">
                         <span class="tlou-label">Jogador 000</span>
@@ -309,21 +277,25 @@
         });
 
         // ── Assets do tutorial ──
-        const LIVRO = [
-            "{{ url_for('static', filename='book/CADERNO_FECHADO.png') }}",
-            "{{ url_for('static', filename='book/CADERNO_SEMLACRE.png') }}",
-            "{{ url_for('static', filename='book/CADERNO_SEMIABERTO.png') }}",
-            "{{ url_for('static', filename='book/CADERNO_ABERTO_TOTALMENTE.png') }}"
+        const BORBOLETA_BOA = [
+            "{{ url_for('static', filename='borboleta/escolha/boa/BORBOLETA_ESCOLHA_BOA_1.png') }}",
+            "{{ url_for('static', filename='borboleta/escolha/boa/BORBOLETA_ESCOLHA_BOA_2.png') }}",
+            "{{ url_for('static', filename='borboleta/escolha/boa/BORBOLETA_ESCOLHA_BOA_3.png') }}",
+            "{{ url_for('static', filename='borboleta/escolha/boa/BORBOLETA_ESCOLHA_BOA_4.png') }}"
         ];
-        const BORBOLETA = [
-            "{{ url_for('static', filename='fly/BORBOLETA_1.png') }}",
-            "{{ url_for('static', filename='fly/BORBOLETA_2.png') }}",
-            "{{ url_for('static', filename='fly/BORBOLETA_3.png') }}",
-            "{{ url_for('static', filename='fly/BORBOLETA_4.png') }}"
+        const BORBOLETA_RUIM = [
+            "{{ url_for('static', filename='borboleta/escolha/ruim/BORBOLETA_ESCOLHA_RUIM_1.png') }}",
+            "{{ url_for('static', filename='borboleta/escolha/ruim/BORBOLETA_ESCOLHA_RUIM_2.png') }}",
+            "{{ url_for('static', filename='borboleta/escolha/ruim/BORBOLETA_ESCOLHA_RUIM_3.png') }}",
+            "{{ url_for('static', filename='borboleta/escolha/ruim/BORBOLETA_ESCOLHA_RUIM_4.png') }}"
+        ];
+        const BORBOLETA_ESPECIAL = [
+            "{{ url_for('static', filename='borboleta/escolha/especial/BORBOLETA_ESCOLHA_ESPECIAL_1.png') }}",
+            "{{ url_for('static', filename='borboleta/escolha/especial/BORBOLETA_ESCOLHA_ESPECIAL_2.png') }}",
+            "{{ url_for('static', filename='borboleta/escolha/especial/BORBOLETA_ESCOLHA_ESPECIAL_3.png') }}",
+            "{{ url_for('static', filename='borboleta/escolha/especial/BORBOLETA_ESCOLHA_ESPECIAL_4.png') }}"
         ];
 
-        let livroLoopInterval = null;
-        let livroLoopIdx = 0;
         let borbInterval = null;
         let borbIdx = 0;
 
@@ -343,71 +315,25 @@
             }, 800);
         }
 
-        // ── FASE 1: loop do livro ──
-        function iniciarFase1() {
-            livroLoopIdx = 0;
-            const img = document.getElementById('tutLivro');
-            img.src = LIVRO[0];
-            livroLoopInterval = setInterval(() => {
-                livroLoopIdx = (livroLoopIdx + 1) % LIVRO.length;
-                img.src = LIVRO[livroLoopIdx];
-            }, 400);
-        }
-
-        // ── FASE 2: livro abre uma vez + caneta ──
-        function iniciarFase2() {
-            clearInterval(livroLoopInterval);
-            let idx2 = 0;
-            const img2 = document.getElementById('tutLivro2');
-            img2.src = LIVRO[0];
-
-            const abrirInterval = setInterval(() => {
-                idx2++;
-                img2.src = LIVRO[idx2];
-                if (idx2 >= LIVRO.length - 1) {
-                    clearInterval(abrirInterval);
-                    // Mostra caneta
-                    setTimeout(() => {
-                        const canWrap = document.getElementById('tutCanetaWrap');
-                        canWrap.style.transition = 'opacity 0.4s';
-                        canWrap.style.opacity = '1';
-                        // Anima caneta passando
-                        animarCaneta();
-                        // Depois fade in do texto escrito
-                        setTimeout(() => {
-                            const escrito = document.getElementById('tutEscrito');
-                            escrito.style.transition = 'opacity 1s ease';
-                            escrito.style.opacity = '1';
-                            // Esconde caneta
-                            canWrap.style.opacity = '0';
-                        }, 2000);
-                    }, 500);
-                }
-            }, 350);
-        }
-
-        function animarCaneta() {
-            const can = document.getElementById('tutCaneta');
-            can.style.transition = 'transform 2s ease';
-            can.style.transform = 'translateX(80px) translateY(20px) rotate(-15deg)';
-        }
-
         // ── FASE 3: borboleta + sons sequenciais ──
-        const SFX_BASE = "{{ url_for('static', filename='journey/ato_1/Cap_2(noite)/Sound/') }}";
         const sfxSeq = [
-            { audio: new Audio(SFX_BASE + 'sfx_good_ending.mp3'),           label: 'Quando voce ouvir esse som...', resultado: 'significa que sua ação teve consequência boa.' },
-            { audio: new Audio(SFX_BASE + 'sfx_bad_ending(Molly).mp3'),     label: 'Quando voce ouvir esse som...', resultado: 'significa que sua ação teve consequência ruim.' },
-            { audio: new Audio(SFX_BASE + 'sfx_especial_ending(Molly).mp3'),label: 'Quando voce ouvir esse som...', resultado: 'significa que sua ação teve consequência especial.' },
+            { audioElement: document.getElementById('tutorialSfxBoa'),       label: 'Quando voce ouvir esse som...', resultado: 'significa que sua ação teve consequência boa.' },
+            { audioElement: document.getElementById('tutorialSfxRuim'),      label: 'Quando voce ouvir esse som...', resultado: 'significa que sua ação teve consequência ruim.' },
+            { audioElement: document.getElementById('tutorialSfxEspecial'),  label: 'Quando voce ouvir esse som...', resultado: 'significa que sua ação teve consequência especial.' },
         ];
         let sfxSeqIdx = 0;
 
         function iniciarFase3() {
             borbIdx = 0;
             const img = document.getElementById('tutBorboleta');
-            img.src = BORBOLETA[0];
+            
+            // Determina qual array de borboleta usar baseado no sfxSeqIdx
+            let borboletaAtual = BORBOLETA_BOA;
+            
+            img.src = borboletaAtual[0];
             borbInterval = setInterval(() => {
-                borbIdx = (borbIdx + 1) % BORBOLETA.length;
-                img.src = BORBOLETA[borbIdx];
+                borbIdx = (borbIdx + 1) % borboletaAtual.length;
+                img.src = borboletaAtual[borbIdx];
             }, 200);
 
             // Esconde o continuar ate terminar os sons
@@ -428,6 +354,20 @@
             }
             const item = sfxSeq[idx];
             const msg = document.getElementById('tutSomMsg');
+            
+            // Atualiza borboleta baseado no índice do som
+            const img = document.getElementById('tutBorboleta');
+            let borboletaAtual = BORBOLETA_BOA;
+            if (idx === 1) borboletaAtual = BORBOLETA_RUIM;
+            else if (idx === 2) borboletaAtual = BORBOLETA_ESPECIAL;
+            
+            borbIdx = 0;
+            img.src = borboletaAtual[0];
+            clearInterval(borbInterval);
+            borbInterval = setInterval(() => {
+                borbIdx = (borbIdx + 1) % borboletaAtual.length;
+                img.src = borboletaAtual[borbIdx];
+            }, 200);
 
             // Mostra "Quando voce ouvir esse som..."
             msg.style.opacity = '0';
@@ -436,11 +376,13 @@
                 msg.style.opacity = '1';
             }, 300);
 
-            item.audio.volume = 1.0;
-            item.audio.currentTime = 0;
-            item.audio.play().catch(() => {});
+            item.audioElement.volume = 1.0;
+            item.audioElement.currentTime = 0;
+            item.audioElement.play()
+                .then(() => console.log('✓ Áudio tutorial tocando'))
+                .catch(err => console.error('✗ Erro áudio tutorial:', err));
 
-            item.audio.onended = () => {
+            item.audioElement.onended = () => {
                 // Mostra o resultado apos tocar
                 msg.style.opacity = '0';
                 setTimeout(() => {
@@ -457,42 +399,13 @@
 
             if (fase === 0.5) {
                 document.getElementById('tutFase05').style.display = 'flex';
-            } else if (fase === 2) {
-                document.getElementById('tutFase2').style.display = 'flex';
-                iniciarFase2();
             } else if (fase === 3) {
-                clearInterval(livroLoopInterval);
                 document.getElementById('tutFase3').style.display = 'flex';
                 iniciarFase3();
             } else if (fase === 4) {
                 clearInterval(borbInterval);
                 document.getElementById('tutFase4').style.display = 'flex';
-            } else if (fase === 5) {
-                document.getElementById('tutFase5').style.display = 'flex';
             }
-        }
-
-        // ── Escolha final do tutorial ──
-        function verAbertura() {
-            document.getElementById('tutorialScreen').classList.remove('ativo');
-            const aberturaDiv = document.getElementById('aberturaVideo');
-            const video = document.getElementById('videoAbertura');
-            aberturaDiv.classList.add('ativo');
-            // Para o áudio do menu antes de tocar o vídeo
-            const menuAudio = document.getElementById('menuAudio');
-            if (menuAudio) { menuAudio.pause(); menuAudio.currentTime = 0; }
-            // O clique do usuário no botão garante que o som funciona
-            video.muted = false;
-            video.volume = 1.0;
-            const playPromise = video.play();
-            if (playPromise !== undefined) {
-                playPromise.catch(() => {
-                    // Fallback: toca mutado se ainda bloquear
-                    video.muted = true;
-                    video.play();
-                });
-            }
-            video.addEventListener('ended', irJogar);
         }
 
         function irJogar() {

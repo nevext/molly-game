@@ -313,22 +313,23 @@ Ocorrências: 2x em cena.html + 2x em JavaScript constantes
 
 ```
 Arquivo: templates/index.html (linhas 319-322)
-Caminhos:
-- fly/BORBOLETA_1.png
-- fly/BORBOLETA_2.png
-- fly/BORBOLETA_3.png
-- fly/BORBOLETA_4.png
+Caminhos (ATUALIZADOS):
+- borboleta/escolha/boa/BORBOLETA_1.png
+- borboleta/escolha/boa/BORBOLETA_2.png
+- borboleta/escolha/boa/BORBOLETA_3.png
+- borboleta/escolha/boa/BORBOLETA_4.png
 
 Arquivo: templates/cena.html (linhas 165, 319-322)
-Caminhos: (repetidos)
-- fly/BORBOLETA_1.png
-- fly/BORBOLETA_2.png
-- fly/BORBOLETA_3.png
-- fly/BORBOLETA_4.png
+Caminhos: (mesmos caminhos - sincronizados)
+- borboleta/escolha/boa/BORBOLETA_1.png
+- borboleta/escolha/boa/BORBOLETA_2.png
+- borboleta/escolha/boa/BORBOLETA_3.png
+- borboleta/escolha/boa/BORBOLETA_4.png
 
-Localização esperada: static/fly/
-Status: ✓ Animação de borboleta (4 frames)
+Localização esperada: static/borboleta/escolha/boa/
+Status: ✓ Animação de borboleta (4 frames) — REORGANIZADA
 Ocorrências: index.html (4x) + cena.html (5x)
+Nota: Caminho migrado de static/fly/ para static/borboleta/escolha/boa/
 ```
 
 ### Caneta (Pen)

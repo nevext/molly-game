@@ -1,46 +1,46 @@
-# game_logic.py
+﻿# game_logic.py
 
-SFX_BASE = "journey/ato_1/Cap_2(noite)/Sound/"
+SFX_BASE = "audio/sfx/"
 
 CAPITULOS = {
     "ato1_cap1_dia": {
         "tipo": "dia",
-        "trilha": "journey/ato_1/Cap_1(dia)/Music/Molly_Original_Soundtrack(Day).mp3",
+        "trilha": "audio/soundtrack/Day.mp3",
         "proximo": "ato1_cap2_noite",
         "tem_escolhas": False,
         "frames": [
             {"imagem": None,                                        "tipo_texto": "narrador", "texto": "Era uma terça-feira comum. Molly acabou de chegar da escola."},
-            {"imagem": "journey/ato_1/Cap_1(dia)/Molly_1.png",     "tipo_texto": "narrador", "texto": "Ela ainda estava de mochila. O celular já estava na mão antes mesmo de sentar."},
-            {"imagem": "journey/ato_1/Cap_1(dia)/Molly_1.png",     "tipo_texto": "narrador", "texto": "Tinha tirado a foto no intervalo. Ajustou o filtro por quinze minutos antes de postar."},
-            {"imagem": "journey/ato_1/Cap_1(dia)/Molly_1.png",     "tipo_texto": "molly",    "texto": "Ficou boa. Ficou, né?"},
-            {"imagem": "journey/ato_1/Cap_1(dia)/Molly_2.png",     "tipo_texto": "narrador", "texto": "Ela abriu o aplicativo. 8 curtidas. O número ficou parado na cabeça dela."},
-            {"imagem": "journey/ato_1/Cap_1(dia)/Molly_2.png",     "tipo_texto": "narrador", "texto": "Parecia pouco. Ou era bom pra 10 minutos? Ela não sabia mais."},
-            {"imagem": "journey/ato_1/Cap_1(dia)/Molly_2.png",     "tipo_texto": "molly",    "texto": "As pessoas que importam nem curtiram ainda."},
-            {"imagem": "journey/ato_1/Cap_1(dia)/Molly_3.png",     "tipo_texto": "narrador", "texto": "Ela foi olhar a foto de novo. O ângulo. O filtro. Algo estava errado."},
-            {"imagem": "journey/ato_1/Cap_1(dia)/Molly_3.png",     "tipo_texto": "molly",    "texto": "Os olhos. São sempre os olhos."},
-            {"imagem": "journey/ato_1/Cap_1(dia)/Molly_4.png",     "tipo_texto": "narrador", "texto": "Ela desviou o olhar. Não era pra tela era pra lugar nenhum."},
-            {"imagem": "journey/ato_1/Cap_1(dia)/Molly_4.png",     "tipo_texto": "molly",    "texto": "Queria que eu fosse assim. Do jeito que o filtro faz."},
-            {"imagem": "journey/ato_1/Cap_1(dia)/Molly_5.png",     "tipo_texto": "narrador", "texto": "Ela trocou o filtro. Melhorou. Pelo menos era o que ela achava."},
-            {"imagem": "journey/ato_1/Cap_1(dia)/Molly_5.png",     "tipo_texto": "molly",    "texto": "Assim está melhor. Assim parece mais... eu."},
-            {"imagem": "journey/ato_1/Cap_1(dia)/Molly_6.png",     "tipo_texto": "narrador", "texto": "Ela postou. O coração acelerou um pouco quando apertou o botão."},
-            {"imagem": "journey/ato_1/Cap_1(dia)/Molly_6.png",     "tipo_texto": "narrador", "texto": "Mas ela apertou mesmo assim."},
-            {"imagem": "journey/ato_1/Cap_1(dia)/Molly_6.png",     "tipo_texto": "molly",    "texto": "Agora é só esperar."},
+            {"imagem": "jornada/ato_1/Cap_1(dia)/Molly_1.png",     "tipo_texto": "narrador", "texto": "Ela ainda estava de mochila. O celular já estava na mão antes mesmo de sentar."},
+            {"imagem": "jornada/ato_1/Cap_1(dia)/Molly_1.png",     "tipo_texto": "narrador", "texto": "Tinha tirado a foto no intervalo. Ajustou o filtro por quinze minutos antes de postar."},
+            {"imagem": "jornada/ato_1/Cap_1(dia)/Molly_1.png",     "tipo_texto": "molly",    "texto": "Ficou boa. Ficou, né?"},
+            {"imagem": "jornada/ato_1/Cap_1(dia)/Molly_2.png",     "tipo_texto": "narrador", "texto": "Ela abriu o aplicativo. 8 curtidas. O número ficou parado na cabeça dela."},
+            {"imagem": "jornada/ato_1/Cap_1(dia)/Molly_2.png",     "tipo_texto": "narrador", "texto": "Parecia pouco. Ou era bom pra 10 minutos? Ela não sabia mais."},
+            {"imagem": "jornada/ato_1/Cap_1(dia)/Molly_2.png",     "tipo_texto": "molly",    "texto": "As pessoas que importam nem curtiram ainda."},
+            {"imagem": "jornada/ato_1/Cap_1(dia)/Molly_3.png",     "tipo_texto": "narrador", "texto": "Ela foi olhar a foto de novo. O ângulo. O filtro. Algo estava errado."},
+            {"imagem": "jornada/ato_1/Cap_1(dia)/Molly_3.png",     "tipo_texto": "molly",    "texto": "Os olhos. São sempre os olhos."},
+            {"imagem": "jornada/ato_1/Cap_1(dia)/Molly_4.png",     "tipo_texto": "narrador", "texto": "Ela desviou o olhar. Não era pra tela era pra lugar nenhum."},
+            {"imagem": "jornada/ato_1/Cap_1(dia)/Molly_4.png",     "tipo_texto": "molly",    "texto": "Queria que eu fosse assim. Do jeito que o filtro faz."},
+            {"imagem": "jornada/ato_1/Cap_1(dia)/Molly_5.png",     "tipo_texto": "narrador", "texto": "Ela trocou o filtro. Melhorou. Pelo menos era o que ela achava."},
+            {"imagem": "jornada/ato_1/Cap_1(dia)/Molly_5.png",     "tipo_texto": "molly",    "texto": "Assim está melhor. Assim parece mais... eu."},
+            {"imagem": "jornada/ato_1/Cap_1(dia)/Molly_6.png",     "tipo_texto": "narrador", "texto": "Ela postou. O coração acelerou um pouco quando apertou o botão."},
+            {"imagem": "jornada/ato_1/Cap_1(dia)/Molly_6.png",     "tipo_texto": "narrador", "texto": "Mas ela apertou mesmo assim."},
+            {"imagem": "jornada/ato_1/Cap_1(dia)/Molly_6.png",     "tipo_texto": "molly",    "texto": "Agora é só esperar."},
         ]
     },
 
     "ato1_cap2_noite": {
         "tipo": "noite",
-        "trilha": "journey/ato_1/Cap_2(noite)/Music/Molly_Original_Soundtrack(Night_2).mp3",
+        "trilha": "audio/soundtrack/Night_2.mp3",
         "proximo": "ato1_cap3_dia",
         "tem_escolhas": True,
         "barra_inicial": None,
         "frames": [
-            "journey/ato_1/Cap_2(noite)/Molly_1.png",
-            "journey/ato_1/Cap_2(noite)/Molly_2.png",
-            "journey/ato_1/Cap_2(noite)/Molly_3.png",
-            "journey/ato_1/Cap_2(noite)/Molly_4.png",
-            "journey/ato_1/Cap_2(noite)/Molly_5.png",
-            "journey/ato_1/Cap_2(noite)/Molly_6.png",
+            "jornada/ato_1/Cap_2(noite)/Molly_1.png",
+            "jornada/ato_1/Cap_2(noite)/Molly_2.png",
+            "jornada/ato_1/Cap_2(noite)/Molly_3.png",
+            "jornada/ato_1/Cap_2(noite)/Molly_4.png",
+            "jornada/ato_1/Cap_2(noite)/Molly_5.png",
+            "jornada/ato_1/Cap_2(noite)/Molly_6.png",
         ],
         "cenas": {
             # Cena 1: narrador introduz, sem escolhas ainda
@@ -115,8 +115,8 @@ CAPITULOS = {
                 "texto_automatico": None,
                 "easter_egg": None,
                 "opcoes": [
-                    {"texto": "Responder animada — 'Ai que drama kk'",          "delta": -1, "acao": "conversa_kelly", "posicao": "esquerda",              "flag": {"humor": "animada"}},
-                    {"texto": "Responder com dúvida — 'Será que é verdade?'",   "delta": 0,  "acao": "conversa_kelly", "posicao": "direita",               "flag": {"humor": "insegura"}},
+                    {"texto": "Responder animada 'Ai que drama kk'",          "delta": -1, "acao": "conversa_kelly", "posicao": "esquerda",              "flag": {"humor": "animada"}},
+                    {"texto": "Responder com dúvida 'Será que é verdade?'",   "delta": 0,  "acao": "conversa_kelly", "posicao": "direita",               "flag": {"humor": "insegura"}},
                     {"texto": "Deixar pra depois e tentar dormir",               "delta": 0,  "acao": "dormir",         "posicao": "baixo"},
                     {"texto": "Examinar que comentário é esse",                  "delta": 1,  "acao": "examinar",       "posicao": "canto_inferior_direito", "sfx": "sfx_bad_ending(Molly).mp3"},
                 ]
@@ -127,20 +127,20 @@ CAPITULOS = {
     # Rota: Examinar o comentário
     "ato1_cap2_examinar": {
         "tipo": "noite",
-        "trilha": "journey/ato_1/Cap_2(noite)/Music/Molly_Original_Soundtrack(Night_2).mp3",
+        "trilha": "audio/soundtrack/Night_2.mp3",
         "proximo": "ato1_cap3_dia",
         "tem_escolhas": True,
         "barra_inicial": None,
         "frames": [
-            "journey/ato_1/Cap_2(noite)/Clicou_Examinar/Molly_1.png",
-            "journey/ato_1/Cap_2(noite)/Clicou_Examinar/Molly_2.png",
-            "journey/ato_1/Cap_2(noite)/Clicou_Examinar/Molly_3.png",
-            "journey/ato_1/Cap_2(noite)/Clicou_Examinar/Molly_4.png",
-            "journey/ato_1/Cap_2(noite)/Clicou_Examinar/Molly_5.png",
-            "journey/ato_1/Cap_2(noite)/Clicou_Examinar/Molly_6.png",
+            "jornada/ato_1/Cap_2(noite)/Clicou_Examinar/Molly_1.png",
+            "jornada/ato_1/Cap_2(noite)/Clicou_Examinar/Molly_2.png",
+            "jornada/ato_1/Cap_2(noite)/Clicou_Examinar/Molly_3.png",
+            "jornada/ato_1/Cap_2(noite)/Clicou_Examinar/Molly_4.png",
+            "jornada/ato_1/Cap_2(noite)/Clicou_Examinar/Molly_5.png",
+            "jornada/ato_1/Cap_2(noite)/Clicou_Examinar/Molly_6.png",
             None,  # placeholder Molly_7
-            "journey/ato_1/Cap_2(noite)/Clicou_Examinar/Molly_8.png",
-            "journey/ato_1/Cap_2(noite)/Clicou_Examinar/Molly_9.png",
+            "jornada/ato_1/Cap_2(noite)/Clicou_Examinar/Molly_8.png",
+            "jornada/ato_1/Cap_2(noite)/Clicou_Examinar/Molly_9.png",
         ],
         "cenas": {
             # Molly_1 embaçado — ansiedade
@@ -207,14 +207,14 @@ CAPITULOS = {
     # Sub-rota: ver curtidas
     "ato1_cap2_curtidas": {
         "tipo": "noite",
-        "trilha": "journey/ato_1/Cap_2(noite)/Music/Molly_Original_Soundtrack(Night_2).mp3",
+        "trilha": "audio/soundtrack/Night_2.mp3",
         "proximo": "ato1_cap2_examinar",
         "tem_escolhas": True,
         "barra_inicial": None,
         "frames": [
-            "journey/ato_1/Cap_2(noite)/Clicou_Examinar/Molly_4.png",
-            "journey/ato_1/Cap_2(noite)/Clicou_Examinar/Molly_5.png",
-            "journey/ato_1/Cap_2(noite)/Clicou_Examinar/Molly_6.png",
+            "jornada/ato_1/Cap_2(noite)/Clicou_Examinar/Molly_4.png",
+            "jornada/ato_1/Cap_2(noite)/Clicou_Examinar/Molly_5.png",
+            "jornada/ato_1/Cap_2(noite)/Clicou_Examinar/Molly_6.png",
         ],
         "cenas": {
             1: {
@@ -255,13 +255,13 @@ CAPITULOS = {
     # Sub-rota: ver comentário
     "ato1_cap2_comentario": {
         "tipo": "noite",
-        "trilha": "journey/ato_1/Cap_2(noite)/Music/Molly_Original_Soundtrack(Night_2).mp3",
+        "trilha": "audio/soundtrack/Night_2.mp3",
         "proximo": "ato1_cap3_dia",
         "tem_escolhas": True,
         "barra_inicial": None,
         "frames": [
-            "journey/ato_1/Cap_2(noite)/Clicou_Examinar/Molly_8.png",
-            "journey/ato_1/Cap_2(noite)/Clicou_Examinar/Molly_9.png",
+            "jornada/ato_1/Cap_2(noite)/Clicou_Examinar/Molly_8.png",
+            "jornada/ato_1/Cap_2(noite)/Clicou_Examinar/Molly_9.png",
         ],
         "cenas": {
             1: {
@@ -313,12 +313,12 @@ CAPITULOS = {
     # Rota: conversa com Kelly
     "ato1_cap2_kelly": {
         "tipo": "noite",
-        "trilha": "journey/ato_1/Cap_2(noite)/Music/Molly_Original_Soundtrack(Night_2).mp3",
+        "trilha": "audio/soundtrack/Night_2.mp3",
         "proximo": "ato1_cap3_dia",
         "tem_escolhas": True,
         "barra_inicial": None,
         "frames": [
-            "journey/ato_1/Cap_2(noite)/Molly_5.png",
+            "jornada/ato_1/Cap_2(noite)/Molly_5.png",
         ],
         "cenas": {
             1: {
@@ -364,36 +364,36 @@ CAPITULOS = {
 
     "ato1_cap3_dia": {
         "tipo": "dia",
-        "trilha": "journey/ato_1/Cap_1(dia)/Music/Molly_Original_Soundtrack(Day).mp3",
+        "trilha": "audio/soundtrack/Day.mp3",
         "proximo": "ato2_cap4_noite",
         "tem_escolhas": False,
         "frames": [
-            {"imagem": "journey/ato_1/Cap_3(dia)/Molly_1.png", "tipo_texto": "narrador", "texto": "Ela acabou de chegar da escola. O celular estava ali, esperando. Os amigos dela nem tocaram no assunto do post, a não ser a Kelly. Será que era pra tanto?"},
-            {"imagem": "journey/ato_1/Cap_3(dia)/Molly_1.png", "tipo_texto": "molly", "texto": "Será que exagerei? Ou foi só um dia ruim?"},
-            {"imagem": "journey/ato_1/Cap_3(dia)/Molly_2.png", "tipo_texto": "narrador", "texto": "Ela pegou o celular. Uma notificação chegou. Era Kelly."},
-            {"imagem": "journey/ato_1/Cap_3(dia)/Molly_2.png", "tipo_texto": "sms", "texto": "Ei Molly, posta mais fotos hoje! Você é bonita demais, vai arrasar!"},
-            {"imagem": "journey/ato_1/Cap_3(dia)/Molly_2.png", "tipo_texto": "narrador", "texto": "Ela hesitou, mas Kelly insistiu. 'Você merece mostrar o quão incrível é'. Molly se convenceu."},
-            {"imagem": "journey/ato_1/Cap_3(dia)/Molly_3.png", "tipo_texto": "molly", "texto": "Ela tem razão... talvez eu deva tentar de novo. Vou fazer direito dessa vez."},
-            {"imagem": "journey/ato_1/Cap_3(dia)/Molly_4.png", "tipo_texto": "narrador", "texto": "Ela ajustou o ângulo, o filtro. Tudo tinha que ser perfeito."},
-            {"imagem": "journey/ato_1/Cap_3(dia)/Molly_4.png", "tipo_texto": "molly", "texto": "Assim... não, espera. Melhor assim."},
-            {"imagem": "journey/ato_1/Cap_3(dia)/Molly_5.png", "tipo_texto": "narrador", "texto": "A tela mostrou a imagem. Não era o que ela esperava. Os olhos, o sorriso... algo errado."},
-            {"imagem": "journey/ato_1/Cap_3(dia)/Molly_5.png", "tipo_texto": "molly", "texto": "Não ficou boa. De novo não. Por que eu não consigo?"},
-            {"imagem": "journey/ato_1/Cap_3(dia)/Molly_6.png", "tipo_texto": "narrador", "texto": "Ela baixou o celular. O cansaço venceu. Talvez amanhã."},
-            {"imagem": "journey/ato_1/Cap_3(dia)/Molly_6.png", "tipo_texto": "molly", "texto": "Estou cansada disso. Tudo bem, deixa pra lá."},
+            {"imagem": "jornada/ato_1/Cap_3(dia)/Molly_1.png", "tipo_texto": "narrador", "texto": "Ela acabou de chegar da escola. O celular estava ali, esperando. Os amigos dela nem tocaram no assunto do post, a não ser a Kelly. Será que era pra tanto?"},
+            {"imagem": "jornada/ato_1/Cap_3(dia)/Molly_1.png", "tipo_texto": "molly", "texto": "Será que exagerei? Ou foi só um dia ruim?"},
+            {"imagem": "jornada/ato_1/Cap_3(dia)/Molly_2.png", "tipo_texto": "narrador", "texto": "Ela pegou o celular. Uma notificação chegou. Era Kelly."},
+            {"imagem": "jornada/ato_1/Cap_3(dia)/Molly_2.png", "tipo_texto": "sms", "texto": "Ei Molly, posta mais fotos hoje! Você é bonita demais, vai arrasar!"},
+            {"imagem": "jornada/ato_1/Cap_3(dia)/Molly_2.png", "tipo_texto": "narrador", "texto": "Ela hesitou, mas Kelly insistiu. 'Você merece mostrar o quão incrível é'. Molly se convenceu."},
+            {"imagem": "jornada/ato_1/Cap_3(dia)/Molly_3.png", "tipo_texto": "molly", "texto": "Ela tem razão... talvez eu deva tentar de novo. Vou fazer direito dessa vez."},
+            {"imagem": "jornada/ato_1/Cap_3(dia)/Molly_4.png", "tipo_texto": "narrador", "texto": "Ela ajustou o ângulo, o filtro. Tudo tinha que ser perfeito."},
+            {"imagem": "jornada/ato_1/Cap_3(dia)/Molly_4.png", "tipo_texto": "molly", "texto": "Assim... não, espera. Melhor assim."},
+            {"imagem": "jornada/ato_1/Cap_3(dia)/Molly_5.png", "tipo_texto": "narrador", "texto": "A tela mostrou a imagem. Não era o que ela esperava. Os olhos, o sorriso... algo errado."},
+            {"imagem": "jornada/ato_1/Cap_3(dia)/Molly_5.png", "tipo_texto": "molly", "texto": "Não ficou boa. De novo não. Por que eu não consigo?"},
+            {"imagem": "jornada/ato_1/Cap_3(dia)/Molly_6.png", "tipo_texto": "narrador", "texto": "Ela baixou o celular. O cansaço venceu. Talvez amanhã."},
+            {"imagem": "jornada/ato_1/Cap_3(dia)/Molly_6.png", "tipo_texto": "molly", "texto": "Estou cansada disso. Tudo bem, deixa pra lá."},
         ]
     },
 
     "ato2_cap4_noite": {
         "tipo": "noite",
-        "trilha": "journey/ato_2/Cap_4(noite)/Music/Molly_Original_Soundtrack(Night).mp3",
+        "trilha": "audio/soundtrack/Night.mp3",
         "proximo": "fim_demo",
         "tem_escolhas": True,
         "barra_inicial": None,
         "frames": [
-            "journey/ato_2/Cap_4(noite)/Molly_1.png",
-            "journey/ato_2/Cap_4(noite)/Molly_2.png",
-            "journey/ato_2/Cap_4(noite)/Molly_3.png",
-            "journey/ato_2/Cap_4(noite)/Molly_4.png",
+            "jornada/ato_2/Cap_4(noite)/Molly_1.png",
+            "jornada/ato_2/Cap_4(noite)/Molly_2.png",
+            "jornada/ato_2/Cap_4(noite)/Molly_3.png",
+            "jornada/ato_2/Cap_4(noite)/Molly_4.png",
         ],
         "cenas": {
             1: {
@@ -476,17 +476,17 @@ CAPITULOS = {
 
     "ato2_cap4_kelly": {
         "tipo": "noite",
-        "trilha": "journey/ato_2/Cap_4(noite)/Music/Molly_Original_Soundtrack(Night).mp3",
+        "trilha": "audio/soundtrack/Night.mp3",
         "proximo": "transicao_sono",
         "tem_escolhas": True,
         "barra_inicial": None,
         "frames": [
-            "journey/ato_2/Cap_4(noite)/Molly_1.png",
-            "journey/ato_2/Cap_4(noite)/Molly_2.png",
-            "journey/ato_2/Cap_4(noite)/Molly_3.png",
-            "journey/ato_2/Cap_4(noite)/Molly_4.png",
-            "journey/ato_2/Cap_4(noite)/Molly_5.png",
-            "journey/ato_2/Cap_4(noite)/Molly_6.png",
+            "jornada/ato_2/Cap_4(noite)/Molly_1.png",
+            "jornada/ato_2/Cap_4(noite)/Molly_2.png",
+            "jornada/ato_2/Cap_4(noite)/Molly_3.png",
+            "jornada/ato_2/Cap_4(noite)/Molly_4.png",
+            "jornada/ato_2/Cap_4(noite)/Molly_5.png",
+            "jornada/ato_2/Cap_4(noite)/Molly_6.png",
         ],
         "cenas": {
             1: {
@@ -618,7 +618,7 @@ CAPITULOS = {
 
     "fim_demo": {
         "tipo": "demo",
-        "trilha": "journey/ato_1/Cap_2(noite)/Music/Molly_Original_Soundtrack(Night_2).mp3",
+        "trilha": "audio/soundtrack/Night_2.mp3",
         "proximo": None,
         "tem_escolhas": False,
         "frames": []
@@ -626,60 +626,60 @@ CAPITULOS = {
 
     "ato1_cap5_dia": {
         "tipo": "dia",
-        "trilha": "journey/ato_2/Cap_5(dia)/Music/Molly_Original_Soundtrack(Day).mp3",
+        "trilha": "audio/soundtrack/Day.mp3",
         "proximo": "ato3_cap5_dia",
         "tem_escolhas": False,
         "frames": [
-            {"imagem": "journey/ato_2/Cap_5(dia)/Molly_1.png", "tipo_texto": "narrador", "texto": "Pela manhã. O dia começou normal, mas na cabeça de Molly tudo era caos."},
-            {"imagem": "journey/ato_2/Cap_5(dia)/Molly_2.png", "tipo_texto": "narrador", "texto": "Ela pegou o celular. Tinha que postar algo. Tinha que provar que estava tudo bem."},
-            {"imagem": "journey/ato_2/Cap_5(dia)/Molly_3.png", "tipo_texto": "molly",    "texto": "Mais uma foto. Dessa vez vai sair perfeita."},
-            {"imagem": "journey/ato_2/Cap_5(dia)/Molly_4.png", "tipo_texto": "narrador", "texto": "Tirou. Não gostou. Tirou de novo. Estava irritada. Nada saía como queria."},
-            {"imagem": "journey/ato_2/Cap_5(dia)/Molly_5.png", "tipo_texto": "molly",    "texto": "Por que eu não consigo ser como a câmera mostra?"},
-            {"imagem": "journey/ato_2/Cap_5(dia)/Molly_6.png", "tipo_texto": "narrador", "texto": "Ela percebeu uma verdade dura: dependia dos filtros para se sentir real. Sem eles, se sentia vazia."},
+            {"imagem": "jornada/ato_2/Cap_5(dia)/Molly_1.png", "tipo_texto": "narrador", "texto": "Pela manhã. O dia começou normal, mas na cabeça de Molly tudo era caos."},
+            {"imagem": "jornada/ato_2/Cap_5(dia)/Molly_2.png", "tipo_texto": "narrador", "texto": "Ela pegou o celular. Tinha que postar algo. Tinha que provar que estava tudo bem."},
+            {"imagem": "jornada/ato_2/Cap_5(dia)/Molly_3.png", "tipo_texto": "molly",    "texto": "Mais uma foto. Dessa vez vai sair perfeita."},
+            {"imagem": "jornada/ato_2/Cap_5(dia)/Molly_4.png", "tipo_texto": "narrador", "texto": "Tirou. Não gostou. Tirou de novo. Estava irritada. Nada saía como queria."},
+            {"imagem": "jornada/ato_2/Cap_5(dia)/Molly_5.png", "tipo_texto": "molly",    "texto": "Por que eu não consigo ser como a câmera mostra?"},
+            {"imagem": "jornada/ato_2/Cap_5(dia)/Molly_6.png", "tipo_texto": "narrador", "texto": "Ela percebeu uma verdade dura: dependia dos filtros para se sentir real. Sem eles, se sentia vazia."},
         ]
     },
 
     "ato3_cap5_dia": {
         "tipo": "dia",
-        "trilha": "journey/ato_3/Cap_7(dia)/Music/Molly_Original_Soundtrack(Day).mp3",
+        "trilha": "audio/soundtrack/Day.mp3",
         "proximo": "ato3_cap6_noite",
         "tem_escolhas": False,
         "frames": [
             # Molly_1: ainda dormindo, olhos fechados
-            {"imagem": "journey/ato_3/Cap_7(dia)/Molly_1.png", "tipo_texto": "narrador", "texto": "Molly está deitada. Imóvel. Os olhos fechados, o quarto em silêncio."},
-            {"imagem": "journey/ato_3/Cap_7(dia)/Molly_1.png", "tipo_texto": "narrador", "texto": "A noite ainda não foi embora completamente."},
-            {"imagem": "journey/ato_3/Cap_7(dia)/Molly_1.png", "tipo_texto": "narrador", "texto": "Mas algo dentro dela já está tentando acordar."},
+            {"imagem": "jornada/ato_3/Cap_7(dia)/Molly_1.png", "tipo_texto": "narrador", "texto": "Molly está deitada. Imóvel. Os olhos fechados, o quarto em silêncio."},
+            {"imagem": "jornada/ato_3/Cap_7(dia)/Molly_1.png", "tipo_texto": "narrador", "texto": "A noite ainda não foi embora completamente."},
+            {"imagem": "jornada/ato_3/Cap_7(dia)/Molly_1.png", "tipo_texto": "narrador", "texto": "Mas algo dentro dela já está tentando acordar."},
             # Molly_2: acordando
-            {"imagem": "journey/ato_3/Cap_7(dia)/Molly_2.png", "tipo_texto": "narrador", "texto": "Os olhos se abrem. Devagar. Como se resistissem à luz."},
-            {"imagem": "journey/ato_3/Cap_7(dia)/Molly_2.png", "tipo_texto": "molly",    "texto": "..."},
-            {"imagem": "journey/ato_3/Cap_7(dia)/Molly_2.png", "tipo_texto": "narrador", "texto": "Ela pisca algumas vezes. O teto está ali. Igual."},
+            {"imagem": "jornada/ato_3/Cap_7(dia)/Molly_2.png", "tipo_texto": "narrador", "texto": "Os olhos se abrem. Devagar. Como se resistissem à luz."},
+            {"imagem": "jornada/ato_3/Cap_7(dia)/Molly_2.png", "tipo_texto": "molly",    "texto": "..."},
+            {"imagem": "jornada/ato_3/Cap_7(dia)/Molly_2.png", "tipo_texto": "narrador", "texto": "Ela pisca algumas vezes. O teto está ali. Igual."},
             # Molly_3: sentada pensativa
-            {"imagem": "journey/ato_3/Cap_7(dia)/Molly_3.png", "tipo_texto": "narrador", "texto": "Ela se senta na cama. Não por vontade — por reflexo."},
-            {"imagem": "journey/ato_3/Cap_7(dia)/Molly_3.png", "tipo_texto": "narrador", "texto": "A cabeça pesada. Os pensamentos ainda nebulosos."},
-            {"imagem": "journey/ato_3/Cap_7(dia)/Molly_3.png", "tipo_texto": "molly",    "texto": "Que horas são? Quanto tempo eu dormi?"},
+            {"imagem": "jornada/ato_3/Cap_7(dia)/Molly_3.png", "tipo_texto": "narrador", "texto": "Ela se senta na cama. Não por vontade — por reflexo."},
+            {"imagem": "jornada/ato_3/Cap_7(dia)/Molly_3.png", "tipo_texto": "narrador", "texto": "A cabeça pesada. Os pensamentos ainda nebulosos."},
+            {"imagem": "jornada/ato_3/Cap_7(dia)/Molly_3.png", "tipo_texto": "molly",    "texto": "Que horas são? Quanto tempo eu dormi?"},
             # Molly_4: coçando os olhos
-            {"imagem": "journey/ato_3/Cap_7(dia)/Molly_4.png", "tipo_texto": "narrador", "texto": "Ela esfrega os olhos com as mãos. Tentando tirar a névoa."},
-            {"imagem": "journey/ato_3/Cap_7(dia)/Molly_4.png", "tipo_texto": "molly",    "texto": "Tô cansada. Como assim tô cansada se acabei de acordar?"},
-            {"imagem": "journey/ato_3/Cap_7(dia)/Molly_4.png", "tipo_texto": "narrador", "texto": "Tem algo errado. Ela sente. Não consegue nomear."},
+            {"imagem": "jornada/ato_3/Cap_7(dia)/Molly_4.png", "tipo_texto": "narrador", "texto": "Ela esfrega os olhos com as mãos. Tentando tirar a névoa."},
+            {"imagem": "jornada/ato_3/Cap_7(dia)/Molly_4.png", "tipo_texto": "molly",    "texto": "Tô cansada. Como assim tô cansada se acabei de acordar?"},
+            {"imagem": "jornada/ato_3/Cap_7(dia)/Molly_4.png", "tipo_texto": "narrador", "texto": "Tem algo errado. Ela sente. Não consegue nomear."},
             # Molly_5: levantando com expressão de suspeita
-            {"imagem": "journey/ato_3/Cap_7(dia)/Molly_5.png", "tipo_texto": "narrador", "texto": "Ela se levanta. Para no meio do caminho."},
-            {"imagem": "journey/ato_3/Cap_7(dia)/Molly_5.png", "tipo_texto": "narrador", "texto": "Olha pro quarto. A janela. A cama. O celular na mesa."},
-            {"imagem": "journey/ato_3/Cap_7(dia)/Molly_5.png", "tipo_texto": "molly",    "texto": "Esse quarto... tá igual. Igual demais."},
-            {"imagem": "journey/ato_3/Cap_7(dia)/Molly_5.png", "tipo_texto": "molly",    "texto": "Como se nada tivesse mudado. Como se eu tivesse voltado."},
+            {"imagem": "jornada/ato_3/Cap_7(dia)/Molly_5.png", "tipo_texto": "narrador", "texto": "Ela se levanta. Para no meio do caminho."},
+            {"imagem": "jornada/ato_3/Cap_7(dia)/Molly_5.png", "tipo_texto": "narrador", "texto": "Olha pro quarto. A janela. A cama. O celular na mesa."},
+            {"imagem": "jornada/ato_3/Cap_7(dia)/Molly_5.png", "tipo_texto": "molly",    "texto": "Esse quarto... tá igual. Igual demais."},
+            {"imagem": "jornada/ato_3/Cap_7(dia)/Molly_5.png", "tipo_texto": "molly",    "texto": "Como se nada tivesse mudado. Como se eu tivesse voltado."},
             # Molly_6: indo embora mas ainda suspeitando
-            {"imagem": "journey/ato_3/Cap_7(dia)/Molly_6.png", "tipo_texto": "narrador", "texto": "Ela olha mais uma vez. Devagar. Procurando uma falha."},
-            {"imagem": "journey/ato_3/Cap_7(dia)/Molly_6.png", "tipo_texto": "narrador", "texto": "Depois se move em direção à saída. A suspeita vai junto."},
-            {"imagem": "journey/ato_3/Cap_7(dia)/Molly_6.png", "tipo_texto": "molly",    "texto": "Não sei o que tá acontecendo. Mas vou descobrir."},
+            {"imagem": "jornada/ato_3/Cap_7(dia)/Molly_6.png", "tipo_texto": "narrador", "texto": "Ela olha mais uma vez. Devagar. Procurando uma falha."},
+            {"imagem": "jornada/ato_3/Cap_7(dia)/Molly_6.png", "tipo_texto": "narrador", "texto": "Depois se move em direção à saída. A suspeita vai junto."},
+            {"imagem": "jornada/ato_3/Cap_7(dia)/Molly_6.png", "tipo_texto": "molly",    "texto": "Não sei o que tá acontecendo. Mas vou descobrir."},
         ]
     },
 
     "ato3_cap6_noite": {
         "tipo": "noite",
-        "trilha": "journey/ato_3/Cap_8(dia)/Music/Molly_Original_Soundtrack(Night_2).mp3",
+        "trilha": "audio/soundtrack/Night_2.mp3",
         "proximo": "ato3_cap7_dia",
         "tem_escolhas": True,
         "frames": [
-            "journey/ato_3/Cap_8(dia)/Fundo_Noite.png",
+            "jornada/ato_3/Cap_8(dia)/Fundo_Noite.png",
         ],
         "cenas": {
             1: {
@@ -723,45 +723,45 @@ CAPITULOS = {
 
     "ato3_cap7_dia": {
         "tipo": "dia",
-        "trilha": "journey/ato_3/Cap_9(noite)/Music/Molly_Original_Soundtrack(Day).mp3",
+        "trilha": "audio/soundtrack/Day.mp3",
         "proximo": "ato3_cap8_dia",
         "tem_escolhas": False,
         "frames": [
-            {"imagem": "journey/ato_3/Cap_9(noite)/Molly_1.png", "tipo_texto": "narrador", "texto": "Pela manhã. Molly saiu da cama com propósito. Precisava confirmar sua teoria."},
-            {"imagem": "journey/ato_3/Cap_9(noite)/Molly_2.png", "tipo_texto": "narrador", "texto": "Tentou caminhar para fora da sala. Mas a porta... a porta não abria."},
-            {"imagem": "journey/ato_3/Cap_9(noite)/Molly_3.png", "tipo_texto": "molly", "texto": "Não... não é possível."},
-            {"imagem": "journey/ato_3/Cap_9(noite)/Molly_4.png", "tipo_texto": "narrador", "texto": "Ela voltou para a cama e abriu o celular. Na câmera, viu algo que não deveria estar lá."},
-            {"imagem": "journey/ato_3/Cap_9(noite)/Molly_5.png", "tipo_texto": "narrador", "texto": "Linhas. Código. Glitches. Tudo piscando como um erro de programação."},
-            {"imagem": "journey/ato_3/Cap_9(noite)/Molly_6.png", "tipo_texto": "molly", "texto": "Eu não sou real. Nenhum disso é real."},
-            {"imagem": "journey/ato_3/Cap_9(noite)/Molly_7.png", "tipo_texto": "narrador", "texto": "E então, a voz familiar de um narrador ressoa..."},
-            {"imagem": "journey/ato_3/Cap_9(noite)/Molly_8.png", "tipo_texto": "narrador", "texto": "Você finalmente descobriu. Bem-vinda ao jogo, Molly."},
+            {"imagem": "jornada/ato_3/Cap_9(noite)/Molly_1.png", "tipo_texto": "narrador", "texto": "Pela manhã. Molly saiu da cama com propósito. Precisava confirmar sua teoria."},
+            {"imagem": "jornada/ato_3/Cap_9(noite)/Molly_2.png", "tipo_texto": "narrador", "texto": "Tentou caminhar para fora da sala. Mas a porta... a porta não abria."},
+            {"imagem": "jornada/ato_3/Cap_9(noite)/Molly_3.png", "tipo_texto": "molly", "texto": "Não... não é possível."},
+            {"imagem": "jornada/ato_3/Cap_9(noite)/Molly_4.png", "tipo_texto": "narrador", "texto": "Ela voltou para a cama e abriu o celular. Na câmera, viu algo que não deveria estar lá."},
+            {"imagem": "jornada/ato_3/Cap_9(noite)/Molly_5.png", "tipo_texto": "narrador", "texto": "Linhas. Código. Glitches. Tudo piscando como um erro de programação."},
+            {"imagem": "jornada/ato_3/Cap_9(noite)/Molly_6.png", "tipo_texto": "molly", "texto": "Eu não sou real. Nenhum disso é real."},
+            {"imagem": "jornada/ato_3/Cap_9(noite)/Molly_7.png", "tipo_texto": "narrador", "texto": "E então, a voz familiar de um narrador ressoa..."},
+            {"imagem": "jornada/ato_3/Cap_9(noite)/Molly_8.png", "tipo_texto": "narrador", "texto": "Você finalmente descobriu. Bem-vinda ao jogo, Molly."},
         ]
     },
 
     "ato3_cap8_dia": {
         "tipo": "dia",
-        "trilha": "journey/ato_3/Cap_9(noite)/Music/Molly_Original_Soundtrack(Day).mp3",
+        "trilha": "audio/soundtrack/Day.mp3",
         "proximo": "ato3_cap9_noite",
         "tem_escolhas": False,
         "frames": [
-            {"imagem": "journey/ato_3/Cap_9(noite)/Molly_1.png", "tipo_texto": "narrador", "texto": "O narrador continua, como se fosse óbvio o tempo todo."},
-            {"imagem": "journey/ato_3/Cap_9(noite)/Molly_2.png", "tipo_texto": "narrador", "texto": "Você é Molly. Você tem 16 anos. Você está lutando contra a ansiedade causada pelas redes sociais."},
-            {"imagem": "journey/ato_3/Cap_9(noite)/Molly_3.png", "tipo_texto": "molly", "texto": "Quem está falando? Por favor... me digam que isso é um sonho."},
-            {"imagem": "journey/ato_3/Cap_9(noite)/Molly_4.png", "tipo_texto": "narrador", "texto": "Você teve muitas oportunidades para escolher. Você sabia que cada escolha deixava cicatrizes?"},
-            {"imagem": "journey/ato_3/Cap_9(noite)/Molly_5.png", "tipo_texto": "narrador", "texto": "Alguns de seus passos pioraram as coisas. Outros ajudaram. Mas sempre volta ao mesmo ponto."},
-            {"imagem": "journey/ato_3/Cap_9(noite)/Molly_6.png", "tipo_texto": "molly", "texto": "Por quê? Por que você está me contando isso agora?"},
-            {"imagem": "journey/ato_3/Cap_9(noite)/Molly_7.png", "tipo_texto": "narrador", "texto": "Porque você chegou ao fim. E agora... você tem uma última escolha."},
-            {"imagem": "journey/ato_3/Cap_9(noite)/Molly_8.png", "tipo_texto": "narrador", "texto": "Uma escolha que será seu verdadeiro teste."},
+            {"imagem": "jornada/ato_3/Cap_9(noite)/Molly_1.png", "tipo_texto": "narrador", "texto": "O narrador continua, como se fosse óbvio o tempo todo."},
+            {"imagem": "jornada/ato_3/Cap_9(noite)/Molly_2.png", "tipo_texto": "narrador", "texto": "Você é Molly. Você tem 16 anos. Você está lutando contra a ansiedade causada pelas redes sociais."},
+            {"imagem": "jornada/ato_3/Cap_9(noite)/Molly_3.png", "tipo_texto": "molly", "texto": "Quem está falando? Por favor... me digam que isso é um sonho."},
+            {"imagem": "jornada/ato_3/Cap_9(noite)/Molly_4.png", "tipo_texto": "narrador", "texto": "Você teve muitas oportunidades para escolher. Você sabia que cada escolha deixava cicatrizes?"},
+            {"imagem": "jornada/ato_3/Cap_9(noite)/Molly_5.png", "tipo_texto": "narrador", "texto": "Alguns de seus passos pioraram as coisas. Outros ajudaram. Mas sempre volta ao mesmo ponto."},
+            {"imagem": "jornada/ato_3/Cap_9(noite)/Molly_6.png", "tipo_texto": "molly", "texto": "Por quê? Por que você está me contando isso agora?"},
+            {"imagem": "jornada/ato_3/Cap_9(noite)/Molly_7.png", "tipo_texto": "narrador", "texto": "Porque você chegou ao fim. E agora... você tem uma última escolha."},
+            {"imagem": "jornada/ato_3/Cap_9(noite)/Molly_8.png", "tipo_texto": "narrador", "texto": "Uma escolha que será seu verdadeiro teste."},
         ]
     },
 
     "ato3_cap9_noite": {
         "tipo": "noite",
-        "trilha": "journey/ato_3/Cap_9(noite)/Music/Molly_Original_Soundtrack(Night_3).mp3",
+        "trilha": "audio/soundtrack/Night_3.mp3",
         "proximo": None,
         "tem_escolhas": True,
         "frames": [
-            "journey/ato_3/Cap_9(noite)/Fundo_Noite_Final.png",
+            "jornada/ato_3/Cap_9(noite)/Fundo_Noite_Final.png",
         ],
         "cenas": {
             1: {
@@ -867,31 +867,31 @@ def get_final(barra, tipo_forcado=None):
             "tipo": "bom",
             "texto": "São 23h. O celular está na mão. Você olha para ele por um segundo e coloca na gaveta. Não checou as curtidas uma última vez. Não abriu o feed. Só fechou a gaveta. A tela apaga. Pela primeira vez em semanas, você dorme antes da meia noite.",
             "mensagem": "Desconectar não é fraqueza. É escolha. E escolhas pequenas mudam padrões grandes.",
-            "frame": "journey/ato_1/Cap_2(noite)/Molly_1.png",
+            "frame": "jornada/ato_1/Cap_2(noite)/Molly_1.png",
         },
         "ruim": {
             "tipo": "ruim",
             "texto": "São 2h da manhã. Você ainda está checando. A foto tem 89 curtidas agora. Parece pouco. Parece sempre pouco. Você dorme às 3h. No dia seguinte acorda cansada. No outro também.",
             "mensagem": "Ansiedade digital não some sozinha. Se isso parece familiar, você não está sozinha. CVV: 188.",
-            "frame": "journey/ato_1/Cap_2(noite)/Molly_6.png",
+            "frame": "jornada/ato_1/Cap_2(noite)/Molly_6.png",
         },
         "aceitar": {
             "tipo": "aceitar",
             "texto": "Molly respirou fundo. Aceitou o jogo. Aceitou a mentira confortável. E de repente, tudo ficou... normal? Não. Familiar. Ela conhece esse padrão agora. Tudo se repete. Sempre igual.",
             "mensagem": "A paz da ignorância é uma escolha. Uma escolha que você pode fazer todos os dias. E fará.",
-            "frame": "journey/final/ruim/Molly_1.png",
+            "frame": "final/ruim/Molly_1.png",
         },
         "lutar": {
             "tipo": "lutar",
             "texto": "Molly gritou. Pediu para sair. Para parar. Para acordar. As paredes começaram a piscar. O código apareceu. Ela estava quebrando o jogo. E ninguém poderia pará-la agora.",
             "mensagem": "Nem tudo que é real é confortável. Nem tudo que é mentira é pacífico. Você escolheu acordar.",
-            "frame": "journey/final/ruim/Molly_6.png",
+            "frame": "final/ruim/Molly_6.png",
         },
         "sonho_mae": {
             "tipo": "sonho_mae",
             "texto": "Sua mãe estava lá. Realmente. Não era ilusão. Ela sussurrou: 'Você não está sozinha, querida. Mesmo em um jogo, você não está sozinha.'",
             "mensagem": "O amor transcende código. E às vezes, até mesmo em mundos falsos, encontramos o que é real.",
-            "frame": "journey/final/ruim/Molly_2.png",
+            "frame": "final/ruim/Molly_2.png",
         },
     }
     return finais.get(tipo, finais["ruim"])
