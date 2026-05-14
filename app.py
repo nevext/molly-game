@@ -1,12 +1,20 @@
 # app.py
 import os
-from flask import Flask, render_template, session, redirect, url_for, jsonify
+from flask import Flask, render_template, render_template_string, session, redirect, url_for, jsonify
 from game_logic import get_capitulo, get_proximo_capitulo, processar_escolha, molly_age_sozinha, get_final, get_flag_escolha
 
 TRILHAS_NOITE = [
     "audio/soundtrack/Night.mp3",
     "audio/soundtrack/Night_2.mp3",
     "audio/soundtrack/Night_3.mp3",
+]
+
+TODAS_CONQUISTAS = [
+    'teve_sonho', 'entrou_pesadelo', 'sobreviveu_pesadelo', 'venceu_pesadelo',
+    'morreu_pesadelo', 'sonho_bom', 'final_mae', 'melhor_amiga',
+    'final_ruim', 'viu_frances', 'descobriu_segredo_kelly', 'relaxante',
+    'ouvinte', 'viu_alucinacao', 'confiou_molly', 'confiou_narrador',
+    'beta_tester', 'jogador_000',
 ]
 
 TRILHA_NOMES = {
@@ -74,9 +82,46 @@ def restaurar_progresso(dados):
         session["conquistas"] = dados["conquistas"]
 
 
+def _build_conquistas():
+    conquistas = dict(session.get("conquistas", {}))
+    conquistas['beta_tester'] = True
+    conquistas['jogador_000'] = True
+    if session.get('afinidade_kelly', 0) >= 2 or session.get('contador_kelly', 0) >= 2:
+        conquistas['melhor_amiga'] = True
+    finais = session.get("finais", {})
+    if finais.get('ruim'):
+        conquistas['final_ruim'] = True
+    if finais.get('sonho_mae'):
+        conquistas['final_mae'] = True
+    if all(conquistas.get(c) for c in TODAS_CONQUISTAS):
+        conquistas['ela_agradece'] = True
+    return conquistas
+
+
 @app.route("/")
 def index():
-    return render_template("index.html", finais=session.get("finais", {}))
+    finais = session.get("finais", {})
+    return render_template("index.html", finais=finais, conquistas=_build_conquistas())
+
+
+@app.route("/conquista/<nome>")
+def salvar_conquista(nome):
+    conquistas = dict(session.get("conquistas", {}))
+    if nome in TODAS_CONQUISTAS:
+        conquistas[nome] = True
+    if session.get('afinidade_kelly', 0) >= 2 or session.get('contador_kelly', 0) >= 2:
+        conquistas['melhor_amiga'] = True
+    conquistas['beta_tester'] = True
+    conquistas['jogador_000'] = True
+    finais = session.get("finais", {})
+    if finais.get('ruim'):
+        conquistas['final_ruim'] = True
+    if finais.get('sonho_mae'):
+        conquistas['final_mae'] = True
+    if all(conquistas.get(c) for c in TODAS_CONQUISTAS):
+        conquistas['ela_agradece'] = True
+    session["conquistas"] = conquistas
+    return jsonify({"ok": True, "conquista": nome, "ela_agradece": conquistas.get('ela_agradece', False)})
 
 
 @app.route("/jogar")
@@ -90,6 +135,7 @@ def jogar():
     session["cena"] = 1
     session["noite_count"] = 0
     session["contador_kelly"] = 0
+    session["afinidade_kelly"] = 0
     return redirect(url_for("cena"))
 
 
@@ -263,14 +309,60 @@ def transicao(tipo):
     return render_template("transicao.html", tipo=tipo)
 
 
+_TRANSICAO_DREAM_HTML = """<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Molly</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{width:100vw;height:100vh;overflow:hidden;background:#000;}
+        .fundo{position:fixed;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:0;animation:fadeIn 1.5s ease forwards;}
+        @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+        .btn-continuar{position:fixed;bottom:2rem;right:2.5rem;z-index:20;background:none;border:none;border-bottom:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.3);font-family:'Montserrat',sans-serif;font-size:0.6rem;font-weight:300;letter-spacing:0.25em;text-transform:uppercase;cursor:pointer;padding:0.3rem 0;opacity:0;animation:apareceBtn 3s ease forwards;}
+        @keyframes apareceBtn{0%,80%{opacity:0;}100%{opacity:1;}}
+        .btn-continuar:hover{color:rgba(255,255,255,0.8);}
+        .overlay-fim{position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:30;display:flex;justify-content:center;align-items:center;opacity:0;pointer-events:none;transition:opacity 1s ease;}
+        .overlay-fim.visivel{opacity:1;pointer-events:auto;}
+        .fim-texto{font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:300;color:rgba(255,255,255,0.6);text-align:center;line-height:2;letter-spacing:0.05em;}
+    </style>
+</head>
+<body>
+    <img class="fundo" src="{{ imagem }}" alt="">
+    <audio autoplay loop>
+        <source src="{{ som }}" type="audio/mp3">
+    </audio>
+    <button class="btn-continuar" id="btnCont">continuar &rarr;</button>
+    <div class="overlay-fim" id="overlayFim">
+        <p class="fim-texto">Obrigado por jogar.<br>Esta rota está em desenvolvimento.</p>
+    </div>
+    <script>
+        document.getElementById('btnCont').addEventListener('click', function() {
+            document.getElementById('overlayFim').classList.add('visivel');
+        });
+    </script>
+</body>
+</html>"""
+
+
 @app.route("/transicao_pesadelo")
 def transicao_pesadelo():
-    return render_template("transicao_pesadelo.html")
+    return render_template_string(
+        _TRANSICAO_DREAM_HTML,
+        imagem=url_for('static', filename='jornada/dream/bad/NIGHTMARE.png'),
+        som=url_for('static', filename='jornada/dream/bad/pesadelo_soundtrack_img.mp3'),
+    )
 
 
 @app.route("/transicao_sonho_bom")
 def transicao_sonho_bom():
-    return render_template("transicao_sonho_bom.html")
+    return render_template_string(
+        _TRANSICAO_DREAM_HTML,
+        imagem=url_for('static', filename='jornada/dream/good/dream_good_2.png'),
+        som=url_for('static', filename='audio/sfx/sfx_dream_cool.mp3'),
+    )
 
 
 @app.route("/iniciar_cap")
@@ -299,6 +391,25 @@ def escolha(opcao):
         if _delta_extra and session.get("contador_kelly", 0) >= 2:
             nova_barra = max(0, min(10, nova_barra + _delta_extra))
             session["barra"] = nova_barra
+        # afinidade_kelly delta
+        _opcoes_def = _cena_def.get("opcoes", [])
+        if opcao < len(_opcoes_def):
+            _afin = _opcoes_def[opcao].get("afinidade", 0)
+            if _afin:
+                session["afinidade_kelly"] = session.get("afinidade_kelly", 0) + _afin
+
+    # Ações kelly
+    _kelly_cena_map = {
+        "kelly_animada": 2, "kelly_perguntar_bonita": 3, "kelly_aula": 4,
+        "kelly_silencio": 5, "kelly_filme": 6, "kelly_aula_ok": 8,
+        "kelly_flash": 7, "kelly_monster_ok": 8,
+        "kelly_continuar_pos_flash": 9, "kelly_encerrar": 11, "kelly_cobra": 10,
+    }
+    if acao in _kelly_cena_map:
+        if acao == "kelly_flash":
+            session["descobriu_segredo_kelly"] = True
+        session["cena"] = _kelly_cena_map[acao]
+        return redirect(url_for("cena"))
 
     # Ações especiais
     if acao == "dormir" or acao == "dormir_olho":
@@ -308,6 +419,12 @@ def escolha(opcao):
             session["frame"] = 0
             session["cena"] = 1
         return redirect(url_for("transicao", tipo="dia"))
+
+    if acao == "naoligar":
+        session["cap"] = "ato1_cap2_naoligar"
+        session["frame"] = 0
+        session["cena"] = 1
+        return redirect(url_for("cena"))
 
     if acao == "examinar":
         session["cap"] = "ato1_cap2_examinar"
@@ -398,10 +515,10 @@ def avancar():
 
     dados_cena = cenas.get(cena_num, {})
 
-    # Fim das curtidas: volta para examinar cena 6 (3 opções com fade)
+    # Fim das curtidas: volta para examinar cena 7 (3 opções com fade)
     if dados_cena.get("fim_curtidas"):
         session["cap"] = "ato1_cap2_examinar"
-        session["cena"] = 6
+        session["cena"] = 7
         session["frame"] = 0
         session["volta_curtidas"] = True
         return redirect(url_for("cena"))
@@ -482,6 +599,7 @@ def build_cena_json(cap_id, cena_num, barra):
         "ir_dormir": dados_cena.get("ir_dormir", False),
         "fim_curtidas": dados_cena.get("fim_curtidas", False),
         "cortar_musica": dados_cena.get("cortar_musica", False),
+        "conquista": dados_cena.get("conquista"),
     }
 
 
@@ -496,9 +614,9 @@ def avancar_data():
 
     if dados_cena.get("fim_curtidas"):
         session["cap"] = "ato1_cap2_examinar"
-        session["cena"] = 6
+        session["cena"] = 7
         session["frame"] = 0
-        result = build_cena_json("ato1_cap2_examinar", 6, barra)
+        result = build_cena_json("ato1_cap2_examinar", 7, barra)
         result["session_volta"] = True
         return jsonify(result)
 
@@ -559,6 +677,25 @@ def escolha_data(opcao):
         if _delta_extra2 and session.get("contador_kelly", 0) >= 2:
             nova_barra = max(0, min(10, nova_barra + _delta_extra2))
             session["barra"] = nova_barra
+        # afinidade_kelly delta
+        _opcoes_def2 = _cena_def2.get("opcoes", [])
+        if opcao < len(_opcoes_def2):
+            _afin2 = _opcoes_def2[opcao].get("afinidade", 0)
+            if _afin2:
+                session["afinidade_kelly"] = session.get("afinidade_kelly", 0) + _afin2
+
+    # Ações kelly
+    _kelly_cena_map2 = {
+        "kelly_animada": 2, "kelly_perguntar_bonita": 3, "kelly_aula": 4,
+        "kelly_silencio": 5, "kelly_filme": 6, "kelly_aula_ok": 8,
+        "kelly_flash": 7, "kelly_monster_ok": 8,
+        "kelly_continuar_pos_flash": 9, "kelly_encerrar": 11, "kelly_cobra": 10,
+    }
+    if acao in _kelly_cena_map2:
+        if acao == "kelly_flash":
+            session["descobriu_segredo_kelly"] = True
+        session["cena"] = _kelly_cena_map2[acao]
+        return jsonify(build_cena_json(cap_id, _kelly_cena_map2[acao], nova_barra))
 
     if acao in ("dormir", "dormir_olho"):
         proximo_cap = get_proximo_capitulo(cap_id)
@@ -567,6 +704,12 @@ def escolha_data(opcao):
             session["frame"] = 0
             session["cena"] = 1
         return jsonify({"fim": True, "redirect": "/transicao/dia", "dormir": True})
+
+    if acao == "naoligar":
+        session["cap"] = "ato1_cap2_naoligar"
+        session["frame"] = 0
+        session["cena"] = 1
+        return jsonify(build_cena_json("ato1_cap2_naoligar", 1, nova_barra))
 
     if acao == "examinar":
         session["cap"] = "ato1_cap2_examinar"

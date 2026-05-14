@@ -43,19 +43,19 @@
         .fundo-preto{position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:0;}
 
         /* Narrador */
-        .caixa-narrador{position:fixed;bottom:8rem;left:50%;transform:translateX(-50%);width:100%;max-width:760px;z-index:10;padding:0 2rem;pointer-events:none;}
+        .caixa-narrador{position:fixed;bottom:8rem;left:50%;transform:translateX(-50%);width:100%;max-width:760px;z-index:10;padding:0 2rem;cursor:pointer;}
         .narrador-texto{font-family:'Montserrat',sans-serif;font-size:0.95rem;font-weight:300;font-style:italic;color:rgba(255,255,255,0.9);text-align:center;line-height:1.8;text-shadow:0 1px 4px rgba(0,0,0,1),0 0 20px rgba(0,0,0,1),0 0 60px rgba(0,0,0,0.9);background:rgba(0,0,0,0.45);padding:0.6rem 1.2rem;border-radius:6px;}
         .narrador-texto.noite{color:#f5e642;text-shadow:0 1px 4px rgba(0,0,0,1),0 0 20px rgba(0,0,0,1);background:rgba(0,0,0,0.5);}
 
         /* Caixa Molly */
-        .caixa-molly{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:900px;max-width:96vw;z-index:10;}
+        .caixa-molly{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:900px;max-width:96vw;z-index:10;cursor:pointer;}
         .molly-nome-img{display:block;height:42px;object-fit:contain;object-position:left;margin-bottom:-2px;margin-left:8px;}
         .molly-box-wrap{position:relative;}
         .molly-box-img{width:100%;display:block;}
         .molly-box-texto{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:82%;font-family:'Montserrat',sans-serif;font-size:0.9rem;font-weight:300;color:rgba(255,255,255,0.92);line-height:1.6;padding:0.5rem;}
 
         /* Diálogo noite */
-        .dialogo{position:fixed;bottom:0;left:0;width:100%;z-index:10;padding:0 2rem 1.5rem;}
+        .dialogo{position:fixed;bottom:0;left:0;width:100%;z-index:10;padding:0 2rem 1.5rem;cursor:pointer;}
         .dialogo-inner{background:rgba(5,5,15,0.92);border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:1.4rem 2rem;max-width:860px;margin:0 auto;backdrop-filter:blur(12px);}
         .dialogo-nome{font-family:'DMSans',sans-serif;font-size:0.62rem;color:rgba(255,255,255,0.35);letter-spacing:0.3em;text-transform:uppercase;margin-bottom:0.4rem;}
         .dialogo-titulo{font-family:'Glassure',serif;font-size:0.9rem;color:rgba(255,255,255,0.5);letter-spacing:0.1em;margin-bottom:0.7rem;}
@@ -63,16 +63,23 @@
         .dialogo-texto.automatico{color:#c8a8e9;font-style:italic;}
 
         /* SMS balão */
-        .sms-bubble-wrap{position:fixed;bottom:6rem;left:50%;transform:translateX(-50%);z-index:10;display:flex;flex-direction:column;align-items:flex-start;gap:0.4rem;max-width:420px;width:90%;animation:slideUp 0.4s ease forwards;}
+        .sms-bubble-wrap{position:fixed;bottom:6rem;left:50%;transform:translateX(-50%);z-index:10;display:flex;flex-direction:column;align-items:flex-start;gap:0.4rem;max-width:420px;width:90%;animation:slideUp 0.4s ease forwards;cursor:pointer;}
         .sms-nome{font-family:'DMSans',sans-serif;font-size:0.65rem;color:rgba(255,255,255,0.4);letter-spacing:0.2em;text-transform:uppercase;margin-bottom:0.2rem;margin-left:0.5rem;}
         .sms-bubble{background:rgba(40,40,60,0.95);border:1px solid rgba(255,255,255,0.1);border-radius:18px 18px 18px 4px;padding:0.8rem 1.2rem;font-family:'Montserrat',sans-serif;font-size:0.88rem;font-weight:300;color:rgba(255,255,255,0.9);line-height:1.5;max-width:100%;backdrop-filter:blur(8px);}
         @keyframes slideUp{from{opacity:0;transform:translateX(-50%) translateY(10px);}to{opacity:1;transform:translateX(-50%) translateY(0);}}
 
-        /* Conversa estilo iMessage */
-        .conversa-wrap{position:fixed;top:0;left:0;width:100%;height:100%;z-index:10;display:flex;flex-direction:column;justify-content:flex-end;padding:2rem;background:rgba(0,0,0,0.7);backdrop-filter:blur(4px);}
-        .conversa-inner{max-width:480px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:0.5rem;max-height:70vh;overflow:hidden;}
-        .conversa-header{font-family:'DMSans',sans-serif;font-size:0.65rem;color:rgba(255,255,255,0.3);letter-spacing:0.2em;text-transform:uppercase;text-align:center;margin-bottom:0.5rem;}
-        .msg{max-width:78%;padding:0.6rem 1rem;border-radius:18px;font-family:'Montserrat',sans-serif;font-size:0.85rem;font-weight:300;line-height:1.5;opacity:0;animation:msgAppear 0.4s ease forwards;}
+        /* Celular UI para conversas */
+        .celular-wrap{position:fixed;top:0;left:0;width:100%;height:100%;z-index:10;display:flex;flex-direction:column;justify-content:center;align-items:center;background:rgba(0,0,0,0.75);backdrop-filter:blur(4px);gap:0.75rem;}
+        .celular-corpo{width:320px;max-width:90vw;background:#0a0a12;border-radius:32px;border:1.5px solid rgba(255,255,255,0.1);box-shadow:0 0 80px rgba(0,0,0,0.9),inset 0 0 0 1px rgba(255,255,255,0.04);display:flex;flex-direction:column;overflow:hidden;}
+        .celular-barra-topo{background:rgba(255,255,255,0.04);padding:0.65rem 1.2rem;display:flex;align-items:center;gap:0.5rem;border-bottom:1px solid rgba(255,255,255,0.06);}
+        .celular-contato{font-family:'DMSans',sans-serif;font-size:0.72rem;color:rgba(255,255,255,0.65);letter-spacing:0.05em;}
+        .celular-tela{padding:0.8rem 0.9rem;display:flex;flex-direction:column;gap:0.45rem;min-height:180px;max-height:48vh;overflow-y:auto;scrollbar-width:none;}
+        .celular-tela::-webkit-scrollbar{display:none;}
+        .celular-hint{font-family:'Montserrat',sans-serif;font-size:0.5rem;color:rgba(255,255,255,0.18);text-align:center;letter-spacing:0.18em;text-transform:uppercase;padding:0.4rem 0.9rem 0.6rem;border-top:1px solid rgba(255,255,255,0.04);}
+        .celular-opcoes{width:320px;max-width:90vw;display:flex;flex-direction:column;gap:0.35rem;}
+        .celular-opcao-btn{background:rgba(5,5,15,0.88);border:1px solid rgba(255,255,255,0.12);border-radius:4px;color:rgba(255,255,255,0.8);font-family:'Montserrat',sans-serif;font-size:0.78rem;font-weight:300;padding:0.65rem 1rem;cursor:pointer;text-align:left;width:100%;transition:all 0.2s ease;opacity:0;animation:fadeInUp 0.4s ease forwards;}
+        .celular-opcao-btn:hover{background:rgba(139,0,0,0.4);border-color:rgba(139,0,0,0.6);color:#fff;}
+        .msg{max-width:82%;padding:0.55rem 0.9rem;border-radius:18px;font-family:'Montserrat',sans-serif;font-size:0.82rem;font-weight:300;line-height:1.5;opacity:0;animation:msgAppear 0.3s ease forwards;}
         .msg.deles{background:rgba(50,50,70,0.95);color:rgba(255,255,255,0.88);border-radius:18px 18px 18px 4px;align-self:flex-start;}
         .msg.eu{background:rgba(139,0,0,0.7);color:rgba(255,255,255,0.92);border-radius:18px 18px 4px 18px;align-self:flex-end;}
         @keyframes msgAppear{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
@@ -83,6 +90,7 @@
         .opcao-btn.esquerda{left:2rem;bottom:3rem;animation:fadeInLeft 0.5s ease forwards;}
         .opcao-btn.direita{right:2rem;bottom:3rem;animation:fadeInRight 0.5s ease forwards;}
         .opcao-btn.baixo{left:50%;transform:translateX(-50%);bottom:1rem;animation:fadeInUp 0.5s ease 0.3s forwards;}
+        .opcao-btn.canto_inferior_direito{right:2rem;bottom:1rem;animation:fadeInRight 0.5s ease 0.45s forwards;}
         .opcao-btn:hover{background:rgba(139,0,0,0.4);border-color:rgba(139,0,0,0.6);color:#fff;}
         /* opcao-bloqueada: sem pointer-events apenas quando sumindo */
         .opcao-btn.sumindo{animation:fadeOut 1.5s ease forwards;pointer-events:none;}
@@ -214,12 +222,7 @@
                 <button class="btn-avancar" id="btnAvancar">continuar →</button>
 
             {% elif dados.tipo_texto == 'conversa' %}
-                <!-- Conversa iMessage -->
-                <div class="conversa-wrap">
-                    <div class="conversa-inner" id="conversaInner">
-                        <div class="conversa-header">{{ dados.get('remetente', 'Kelly') }}</div>
-                    </div>
-                </div>
+                <!-- Celular UI gerado pelo JS -->
 
             {% elif molly_age %}
                 <div class="dialogo"><div class="dialogo-inner">
@@ -249,8 +252,8 @@
                 {% endif %}
             {% endif %}
 
-            <!-- Opções -->
-            {% if dados.opcoes %}
+            <!-- Opções (não para conversa — o celular UI as mostra abaixo) -->
+            {% if dados.opcoes and dados.tipo_texto != 'conversa' %}
                 <div class="opcoes-container" id="opcoesContainer">
                     {% for opcao in dados.opcoes %}
                         <a href="/escolha/{{ loop.index0 }}"
@@ -315,6 +318,7 @@
         if (egg) setTimeout(() => { egg.style.opacity = '1'; }, 4000);
         function abrirEasterEgg() {
             {% if dados and dados.easter_egg %}
+            fetch('/conquista/viu_frances').catch(() => {});
             window.open('{{ dados.easter_egg.url }}', '_blank');
             {% endif %}
         }
@@ -325,18 +329,49 @@
             "{{ url_for('static', filename='borboleta/escolha/boa/BORBOLETA_ESCOLHA_BOA_2.png') }}",
             "{{ url_for('static', filename='borboleta/escolha/boa/BORBOLETA_ESCOLHA_BOA_3.png') }}",
             "{{ url_for('static', filename='borboleta/escolha/boa/BORBOLETA_ESCOLHA_BOA_4.png') }}",
+            "{{ url_for('static', filename='borboleta/escolha/boa/BORBOLETA_ESCOLHA_BOA_5.png') }}",
         ];
         const BORBOLETAS_RUIM = [
             "{{ url_for('static', filename='borboleta/escolha/ruim/BORBOLETA_ESCOLHA_RUIM_1.png') }}",
             "{{ url_for('static', filename='borboleta/escolha/ruim/BORBOLETA_ESCOLHA_RUIM_2.png') }}",
             "{{ url_for('static', filename='borboleta/escolha/ruim/BORBOLETA_ESCOLHA_RUIM_3.png') }}",
             "{{ url_for('static', filename='borboleta/escolha/ruim/BORBOLETA_ESCOLHA_RUIM_4.png') }}",
+            "{{ url_for('static', filename='borboleta/escolha/ruim/BORBOLETA_ESCOLHA_RUIM_5.png') }}",
         ];
         const BORBOLETAS_ESPECIAL = [
             "{{ url_for('static', filename='borboleta/escolha/especial/BORBOLETA_ESCOLHA_ESPECIAL_1.png') }}",
             "{{ url_for('static', filename='borboleta/escolha/especial/BORBOLETA_ESCOLHA_ESPECIAL_2.png') }}",
             "{{ url_for('static', filename='borboleta/escolha/especial/BORBOLETA_ESCOLHA_ESPECIAL_3.png') }}",
             "{{ url_for('static', filename='borboleta/escolha/especial/BORBOLETA_ESCOLHA_ESPECIAL_4.png') }}",
+            "{{ url_for('static', filename='borboleta/escolha/especial/BORBOLETA_ESCOLHA_ESPECIAL_5.png') }}",
+        ];
+        const BORBOLETAS_SECRETA = [
+            "{{ url_for('static', filename='borboleta/escolha/secreta/BORBOLETA_ESCOLHA_SECRETA_1.png') }}",
+            "{{ url_for('static', filename='borboleta/escolha/secreta/BORBOLETA_ESCOLHA_SECRETA_2.png') }}",
+            "{{ url_for('static', filename='borboleta/escolha/secreta/BORBOLETA_ESCOLHA_SECRETO_3.png') }}",
+            "{{ url_for('static', filename='borboleta/escolha/secreta/BORBOLETA_ESCOLHA_SECRETO_4.png') }}",
+            "{{ url_for('static', filename='borboleta/escolha/secreta/BORBOLETA_ESCOLHA_SECRETO_5.png') }}",
+        ];
+        const BORBOLETAS_ATO_VERDE = [
+            "{{ url_for('static', filename='borboleta/ato/verde/BORBOLETA_STATUS_BEM_1.png') }}",
+            "{{ url_for('static', filename='borboleta/ato/verde/BORBOLETA_STATUS_BEM_2.png') }}",
+            "{{ url_for('static', filename='borboleta/ato/verde/BORBOLETA_STATUS_BEM_3.png') }}",
+            "{{ url_for('static', filename='borboleta/ato/verde/BORBOLETA_STATUS_BEM_4.png') }}",
+            "{{ url_for('static', filename='borboleta/ato/verde/BORBOLETA_STATUS_BEM_5.png') }}",
+        ];
+        const BORBOLETAS_ATO_AMARELA = [
+            "{{ url_for('static', filename='borboleta/ato/amarela/BORBOLETA_STATUS_ESTAVEL_1.png') }}",
+            "{{ url_for('static', filename='borboleta/ato/amarela/BORBOLETA_STATUS_ESTAVEL_2.png') }}",
+            "{{ url_for('static', filename='borboleta/ato/amarela/BORBOLETA_STATUS_ESTAVEL_3.png') }}",
+            "{{ url_for('static', filename='borboleta/ato/amarela/BORBOLETA_STATUS_ESTAVEL_4.png') }}",
+            "{{ url_for('static', filename='borboleta/ato/amarela/BORBOLETA_STATUS_ESTAVEL_5.png') }}",
+        ];
+        const BORBOLETAS_ATO_VERMELHA = [
+            "{{ url_for('static', filename='borboleta/ato/vermelha/BORBOLETA_STATUS_CRISE_1.png') }}",
+            "{{ url_for('static', filename='borboleta/ato/vermelha/BORBOLETA_STATUS_CRISE_2.png') }}",
+            "{{ url_for('static', filename='borboleta/ato/vermelha/BORBOLETA_STATUS_CRISE_3.png') }}",
+            "{{ url_for('static', filename='borboleta/ato/vermelha/BORBOLETA_STATUS_CRISE_4.png') }}",
+            "{{ url_for('static', filename='borboleta/ato/vermelha/BORBOLETA_STATUS_CRISE_5.png') }}",
         ];
         
         function mostrarBorboleta(sfxNome) {
@@ -352,6 +387,9 @@
                 sfxFile = '/static/audio/sfx/sfx_bad_choise.mp3';
             } else if (sfxNome && sfxNome.includes('especial')) {
                 borboletasArray = BORBOLETAS_ESPECIAL;
+                sfxFile = '/static/audio/sfx/sfx_especial_choise.mp3';
+            } else if (sfxNome && sfxNome.includes('secreta')) {
+                borboletasArray = BORBOLETAS_SECRETA;
                 sfxFile = '/static/audio/sfx/sfx_especial_choise.mp3';
             }
 
@@ -382,29 +420,17 @@
             setTimeout(() => { if (callback) callback(); }, 1600);
         }
 
-        // ── Conversa Kelly (cena inicial via Jinja2) ──
+        // ── Conversa Kelly (cena inicial via Jinja2) — click-driven ──
         {% if dados and dados.tipo_texto == 'conversa' %}
         (function() {
-            const mensagensInit = {{ dados.mensagens | tojson }};
-            const innerInit = document.getElementById('conversaInner');
-            let miInit = 0;
-            function mostrarMsgInit() {
-                if (miInit >= mensagensInit.length) {
-                    {% if dados.ir_dormir %}
-                    setTimeout(() => fecharOlho(() => fetchAvancar(true)), 1500);
-                    {% endif %}
-                    return;
-                }
-                const m = mensagensInit[miInit++];
-                const div = document.createElement('div');
-                div.className = 'msg ' + m.lado;
-                div.textContent = m.texto;
-                div.style.animationDelay = '0s';
-                innerInit.appendChild(div);
-                innerInit.scrollTop = innerInit.scrollHeight;
-                setTimeout(mostrarMsgInit, m.lado === 'eu' ? 800 : 1400);
-            }
-            setTimeout(mostrarMsgInit, 500);
+            var mensagensInit = {{ dados.mensagens | tojson }};
+            var opcoesInit    = {{ dados.opcoes | tojson }};
+            var irDormirInit  = {{ 'true' if dados.ir_dormir else 'false' }};
+            var remetenteInit = {{ (dados.get('remetente', 'Kelly')) | tojson }};
+            {% if dados.conquista %}
+            fetch('/conquista/{{ dados.conquista }}').catch(function(){});
+            {% endif %}
+            renderConversaDinamica(mensagensInit, irDormirInit, opcoesInit, remetenteInit);
         })();
         {% endif %}
 
@@ -412,6 +438,7 @@
         let digitandoAtual = false;
         let completarAtual = null;
         let aguardandoFetch = false;
+        let conversaAtiva = null; // { mostrarProxima, opcoesShown }
 
         // ── Digitação ──
         const textoEl = document.getElementById('textoAtivo');
@@ -565,8 +592,9 @@
         let ultimaEscolhaTinhaBorb = false;
 
         function limparUI() {
+            conversaAtiva = null;
             ['.caixa-narrador', '.caixa-molly', '.sms-bubble-wrap',
-             '.conversa-wrap', '.dialogo', '#opcoesContainer', '#btnAvancar'].forEach(sel => {
+             '.celular-wrap', '.conversa-wrap', '.dialogo', '#opcoesContainer', '#btnAvancar'].forEach(sel => {
                 const el = document.querySelector(sel);
                 if (el) el.remove();
             });
@@ -720,18 +748,47 @@
             digitarNoite(d.querySelector('.sms-bubble'), texto);
         }
 
-        function renderConversaDinamica(mensagens, irDormir) {
+        function renderConversaDinamica(mensagens, irDormir, opcoes, remetente) {
             const wrap = document.createElement('div');
-            wrap.className = 'conversa-wrap';
-            wrap.innerHTML = '<div class="conversa-inner" id="conversaInner">' +
-                '<div class="conversa-header">Kelly</div></div>';
+            wrap.className = 'celular-wrap';
+            wrap.innerHTML =
+                '<div class="celular-corpo">' +
+                    '<div class="celular-barra-topo"><div class="celular-contato">' + (remetente || 'Kelly') + '</div></div>' +
+                    '<div class="celular-tela" id="celularTela"></div>' +
+                    '<div class="celular-hint" id="celularHint">clique ou espaço para avançar</div>' +
+                '</div>' +
+                '<div class="celular-opcoes" id="celularOpcoes" style="display:none;"></div>';
             document.body.appendChild(wrap);
-            const inner = document.getElementById('conversaInner');
+            const tela = wrap.querySelector('#celularTela');
+            const hint = wrap.querySelector('#celularHint');
+            const opcoesDiv = wrap.querySelector('#celularOpcoes');
             let mi = 0;
-            function mostrarMsg() {
+
+            function mostrarProxima() {
                 if (mi >= mensagens.length) {
-                    if (irDormir) {
-                        setTimeout(() => fecharOlho(() => fetchAvancar(true)), 1500);
+                    hint.style.display = 'none';
+                    conversaAtiva = { mostrarProxima: null, opcoesShown: true };
+                    if (opcoes && opcoes.length > 0) {
+                        opcoesDiv.style.display = 'flex';
+                        opcoesDiv.style.flexDirection = 'column';
+                        opcoesDiv.style.gap = '0.35rem';
+                        opcoes.forEach(function(op, idx) {
+                            const btn = document.createElement('button');
+                            btn.className = 'celular-opcao-btn';
+                            btn.style.animationDelay = (idx * 0.1) + 's';
+                            btn.textContent = op.texto;
+                            btn.addEventListener('click', function(e) {
+                                e.preventDefault();
+                                if (aguardandoFetch) return;
+                                const vaiDormir = op.acao === 'dormir' || op.acao === 'dormir_olho';
+                                escolherOpcao(idx, op.sfx || null, !!op.borboleta, vaiDormir);
+                            });
+                            opcoesDiv.appendChild(btn);
+                        });
+                    } else if (irDormir) {
+                        setTimeout(function() { fecharOlho(function() { fetchAvancar(true); }); }, 1500);
+                    } else {
+                        criarBtnAvancar(function() { fetchAvancar(); });
                     }
                     return;
                 }
@@ -740,11 +797,12 @@
                 div.className = 'msg ' + m.lado;
                 div.textContent = m.texto;
                 div.style.animationDelay = '0s';
-                inner.appendChild(div);
-                inner.scrollTop = inner.scrollHeight;
-                setTimeout(mostrarMsg, m.lado === 'eu' ? 800 : 1400);
+                tela.appendChild(div);
+                tela.scrollTop = tela.scrollHeight;
             }
-            setTimeout(mostrarMsg, 500);
+
+            conversaAtiva = { mostrarProxima: mostrarProxima, opcoesShown: false };
+            mostrarProxima();
         }
 
         function renderOpcoesNoite(opcoes, sessionVolta) {
@@ -814,8 +872,12 @@
 
             const hasOpcoes = data.opcoes && data.opcoes.length > 0;
 
+            if (data.conquista) {
+                fetch('/conquista/' + data.conquista).catch(function() {});
+            }
+
             if (data.tipo_texto === 'conversa') {
-                renderConversaDinamica(data.mensagens, data.ir_dormir);
+                renderConversaDinamica(data.mensagens, data.ir_dormir, data.opcoes || [], data.remetente || 'Kelly');
             } else if (data.tipo_texto === 'sms') {
                 renderSMSNoite(data.remetente || '', data.texto);
                 criarBtnAvancar(() => fetchAvancar());
@@ -833,7 +895,7 @@
                 }
             }
 
-            if (hasOpcoes) renderOpcoesNoite(data.opcoes, !!data.session_volta);
+            if (hasOpcoes && data.tipo_texto !== 'conversa') renderOpcoesNoite(data.opcoes, !!data.session_volta);
         }
 
         // Inicialização: primeira cena (Jinja2)
@@ -860,6 +922,93 @@
             });
         });
         {% endif %}
+
+        // ── Borboleta de Ato ──
+        (function() {
+            const CAPS_PRINCIPAIS = new Set([
+                'ato1_cap1_dia','ato1_cap2_noite','ato1_cap3_dia',
+                'ato2_cap4_noite','ato3_cap5_dia','ato3_cap6_noite',
+                'ato3_cap7_dia','ato3_cap8_dia','ato3_cap9_noite'
+            ]);
+            const capAtual = {{ cap_id | tojson }};
+            const barraAto = {{ barra }};
+            const atoKey  = 'borb_ato_' + capAtual;
+
+            if (!CAPS_PRINCIPAIS.has(capAtual)) return;
+            if (sessionStorage.getItem(atoKey)) return;
+            sessionStorage.setItem(atoKey, '1');
+
+            let arr = BORBOLETAS_ATO_VERDE;
+            if (barraAto >= 7) arr = BORBOLETAS_ATO_VERMELHA;
+            else if (barraAto >= 3) arr = BORBOLETAS_ATO_AMARELA;
+
+            setTimeout(function() {
+                const div = document.getElementById('borboletaSfx');
+                const img = document.getElementById('borboletaImg');
+                div.classList.add('ativo');
+                img.src = arr[0];
+                let bi = 0;
+                const bInt = setInterval(function() {
+                    bi = (bi + 1) % arr.length;
+                    img.src = arr[bi];
+                }, 200);
+                setTimeout(function() {
+                    clearInterval(bInt);
+                    div.classList.remove('ativo');
+                }, 3000);
+            }, 1500);
+        })();
+
+        // ── Clicar na caixa de texto ou SPACE avança o diálogo ──
+        (function() {
+            const TEXT_SELS = '.caixa-narrador,.narrador-texto,.caixa-molly,.molly-box-wrap,.molly-box-texto,.sms-bubble-wrap,.sms-bubble,.dialogo,.dialogo-inner,.dialogo-texto';
+
+            function tentarAvancar() {
+                if (digitandoAtual && completarAtual) { completarAtual(); return; }
+                if (conversaAtiva && !conversaAtiva.opcoesShown && conversaAtiva.mostrarProxima) {
+                    conversaAtiva.mostrarProxima();
+                    return;
+                }
+                const btn = document.getElementById('btnAvancar');
+                if (btn) btn.click();
+            }
+
+            document.addEventListener('click', function(e) {
+                if (e.target.closest('button') || e.target.closest('a') || e.target.closest('#opcoesContainer')) return;
+                if (!e.target.closest(TEXT_SELS)) return;
+                tentarAvancar();
+            });
+
+            document.addEventListener('keydown', function(e) {
+                if (e.key !== ' ' && e.key !== 'Spacebar') return;
+                const tag = document.activeElement && document.activeElement.tagName;
+                if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+                e.preventDefault();
+                tentarAvancar();
+            });
+        })();
+
+        // ── Conquistas de tempo ──
+        // Ouvinte: 5 minutos (300s) na mesma cena
+        setTimeout(function() {
+            fetch('/conquista/ouvinte').catch(() => {});
+        }, 300000);
+
+        // Relaxante: detectar quando a musica faz loop
+        (function() {
+            if (!audio) return;
+            let _lastTime = 0;
+            let _salvo = false;
+            audio.addEventListener('timeupdate', function() {
+                const t = audio.currentTime;
+                const dur = audio.duration;
+                if (!_salvo && dur > 10 && _lastTime > dur * 0.8 && t < 3) {
+                    _salvo = true;
+                    fetch('/conquista/relaxante').catch(() => {});
+                }
+                _lastTime = t;
+            });
+        })();
 
         // ── Notificação musical estilo Spotify ──
         (function() {

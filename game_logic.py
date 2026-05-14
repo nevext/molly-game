@@ -104,7 +104,7 @@ CAPITULOS = {
                 "easter_egg": None,
                 "opcoes": []
             },
-            # Cena 6: Molly_4 repetido — com 3 opções
+            # Cena 6: Molly_4 repetido — com 4 opções
             6: {
                 "titulo": "A mensagem",
                 "tipo_texto": "narrador",
@@ -117,8 +117,8 @@ CAPITULOS = {
                 "opcoes": [
                     {"texto": "Responder animada 'Ai que drama kk'",          "delta": -1, "acao": "conversa_kelly", "posicao": "esquerda",              "flag": {"humor": "animada"}},
                     {"texto": "Responder com dúvida 'Será que é verdade?'",   "delta": 0,  "acao": "conversa_kelly", "posicao": "direita",               "flag": {"humor": "insegura"}},
-                    {"texto": "Deixar pra depois e tentar dormir",               "delta": 0,  "acao": "dormir",         "posicao": "baixo"},
-                    {"texto": "Verificar o comentário",                          "delta": -2, "acao": "examinar",       "posicao": "canto_inferior_direito", "sfx": "sfx_bad_choise.mp3"},
+                    {"texto": "Deixar pra depois e tentar dormir",             "delta": 0,  "acao": "naoligar",       "posicao": "baixo"},
+                    {"texto": "Examinar que foto é essa",                      "delta": 1,  "acao": "examinar",       "posicao": "canto_inferior_direito", "sfx": "sfx_bad_choise.mp3"},
                 ]
             },
         }
@@ -138,7 +138,7 @@ CAPITULOS = {
             "jornada/ato_1/Cap_2(noite)/Clicou_Examinar/Molly_4.png",
             "jornada/ato_1/Cap_2(noite)/Clicou_Examinar/Molly_5.png",
             "jornada/ato_1/Cap_2(noite)/Clicou_Examinar/Molly_6.png",
-            None,  # placeholder Molly_7
+            "jornada/ato_1/Cap_2(noite)/Clicou_Examinar/Molly_7.png",
             "jornada/ato_1/Cap_2(noite)/Clicou_Examinar/Molly_8.png",
             "jornada/ato_1/Cap_2(noite)/Clicou_Examinar/Molly_9.png",
         ],
@@ -180,7 +180,7 @@ CAPITULOS = {
                 "frame_idx": 1, "sfx": None, "molly_age_nivel": None,
                 "texto_automatico": None, "easter_egg": None, "opcoes": []
             },
-            5: {
+            6: {
                 "titulo": "O post",
                 "tipo_texto": "molly",
                 "texto": "Quem comentou?",
@@ -188,7 +188,7 @@ CAPITULOS = {
                 "texto_automatico": None, "easter_egg": None, "opcoes": []
             },
             # Molly_3 — vê o comentário com clareza, 3 opções
-            6: {
+            7: {
                 "titulo": "O comentário",
                 "tipo_texto": "narrador",
                 "texto": "Ela conseguiu ver. Tinha um comentário ali.",
@@ -200,6 +200,36 @@ CAPITULOS = {
                     {"texto": "Ver o comentário",           "delta": 1,  "acao": "ver_comentario","posicao": "baixo"},
                 ],
                 "volta_aqui": True,
+            },
+        }
+    },
+
+    # Rota: Não ligar — escolheu não responder e vai dormir
+    "ato1_cap2_naoligar": {
+        "tipo": "noite",
+        "trilha": "audio/soundtrack/Night_2.mp3",
+        "proximo": "ato1_cap3_dia",
+        "tem_escolhas": True,
+        "barra_inicial": None,
+        "frames": [
+            "jornada/ato_1/Cap_2(noite)/Clicou_Naoligar/Molly_1.png",
+            "jornada/ato_1/Cap_2(noite)/Clicou_Naoligar/Molly_2.png",
+        ],
+        "cenas": {
+            1: {
+                "titulo": "Não ligar",
+                "tipo_texto": "narrador",
+                "texto": "Ela virou o celular de cabeça pra baixo. Não precisava saber agora.",
+                "frame_idx": 0, "sfx": None, "molly_age_nivel": None,
+                "texto_automatico": None, "easter_egg": None, "opcoes": []
+            },
+            2: {
+                "titulo": "Dormir",
+                "tipo_texto": "molly",
+                "texto": "Amanhã eu vejo.",
+                "frame_idx": 1, "sfx": None, "molly_age_nivel": None,
+                "texto_automatico": None, "easter_egg": None, "opcoes": [],
+                "ir_dormir": True,
             },
         }
     },
@@ -310,52 +340,196 @@ CAPITULOS = {
         }
     },
 
-    # Rota: conversa com Kelly
+    # Rota: conversa com Kelly — sistema de afinidade
     "ato1_cap2_kelly": {
         "tipo": "noite",
         "trilha": "audio/soundtrack/Night_2.mp3",
         "proximo": "ato1_cap3_dia",
         "tem_escolhas": True,
         "barra_inicial": None,
-        "frames": [
-            "jornada/ato_1/Cap_2(noite)/Molly_5.png",
-        ],
+        "frames": ["jornada/ato_1/Cap_2(noite)/Molly_5.png"],
         "cenas": {
+            # Cena 1: Kelly abre — 4 opções de resposta
             1: {
                 "titulo": "Kelly",
                 "tipo_texto": "conversa",
                 "frame_idx": 0, "sfx": None, "molly_age_nivel": None,
                 "texto_automatico": None, "easter_egg": None,
-                "opcoes": [],
-                "mensagens_humor_animada": [
+                "mensagens": [
                     {"lado": "deles", "nome": "Kelly", "texto": "Nada a ver oq ele disse sobre sua foto Molly 🙄"},
-                    {"lado": "eu",                     "texto": "Ai que drama kk nem liguei"},
+                    {"lado": "deles", "nome": "Kelly", "texto": "você tá bem?"},
+                ],
+                "opcoes": [
+                    {"texto": "Ai que drama kk",         "delta": -1, "acao": "kelly_animada",          "posicao": "baixo", "afinidade": 1,  "sfx": "sfx_good_choise.mp3"},
+                    {"texto": "Você se acha bonita?",     "delta": 1,  "acao": "kelly_perguntar_bonita", "posicao": "baixo", "afinidade": -2, "sfx": "sfx_bad_choise.mp3"},
+                    {"texto": "Como foi a aula hoje?",    "delta": 0,  "acao": "kelly_aula",             "posicao": "baixo", "afinidade": 0},
+                    {"texto": "não sei o que responder",  "delta": 0,  "acao": "kelly_silencio",         "posicao": "baixo", "afinidade": 0},
+                ],
+            },
+            # Cena 2: rota animada
+            2: {
+                "titulo": "Kelly",
+                "tipo_texto": "conversa",
+                "frame_idx": 0, "sfx": None, "molly_age_nivel": None,
+                "texto_automatico": None, "easter_egg": None, "opcoes": [],
+                "mensagens": [
+                    {"lado": "eu",    "texto": "Ai que drama kk nem liguei"},
                     {"lado": "deles", "nome": "Kelly", "texto": "ainda bem!! vc é linda do jeito q é"},
                     {"lado": "deles", "nome": "Kelly", "texto": "ai soube das noticias?"},
-                    {"lado": "eu",                     "texto": "q noticias"},
+                    {"lado": "eu",    "texto": "q noticias"},
                     {"lado": "deles", "nome": "Kelly", "texto": "tao procurando uma Reporter por ai"},
                     {"lado": "deles", "nome": "Kelly", "texto": "parece q ela é perigosa"},
-                    {"lado": "deles", "nome": "Kelly", "texto": "a tv disse q se ver ela tem q chamar as autoridades"},
-                    {"lado": "eu",                     "texto": "sério?? q assustador"},
-                    {"lado": "deles", "nome": "Kelly", "texto": "pois é... fica ligada tá"},
                     {"lado": "deles", "nome": "Kelly", "texto": "vai dormir tá tarde demais"},
-                    {"lado": "eu",                     "texto": "tá bom. boa noite kel 🦋"},
+                    {"lado": "eu",    "texto": "tá bom. boa noite kel 🦋"},
                     {"lado": "deles", "nome": "Kelly", "texto": "boa noite molly 🦋"},
                 ],
-                "mensagens_humor_insegura": [
-                    {"lado": "deles", "nome": "Kelly", "texto": "Nada a ver oq ele disse sobre sua foto Molly 🙄"},
-                    {"lado": "eu",                     "texto": "Será? Não sei não Kel..."},
-                    {"lado": "deles", "nome": "Kelly", "texto": "Molly para. vc é linda do jeito q é"},
-                    {"lado": "deles", "nome": "Kelly", "texto": "não deixa comentário de pessoa sem noção te afetar"},
-                    {"lado": "eu",                     "texto": "é que às vezes bate um negócio sabe"},
-                    {"lado": "deles", "nome": "Kelly", "texto": "eu sei. mas tô aqui tá?"},
-                    {"lado": "deles", "nome": "Kelly", "texto": "ah, soube das noticias?"},
-                    {"lado": "eu",                     "texto": "q noticias"},
-                    {"lado": "deles", "nome": "Kelly", "texto": "tao procurando uma Reporter por ai, parece q ela é perigosa"},
-                    {"lado": "eu",                     "texto": "nossa... q estranho"},
-                    {"lado": "deles", "nome": "Kelly", "texto": "vai dormir tá. amanhã a gente conversa mais"},
-                    {"lado": "eu",                     "texto": "tá. obrigada kel 🦋"},
-                    {"lado": "deles", "nome": "Kelly", "texto": "boa noite molly 🦋"},
+                "ir_dormir": True,
+            },
+            # Cena 3: rota "se acha bonita" — Kelly corta conversa
+            3: {
+                "titulo": "Kelly",
+                "tipo_texto": "conversa",
+                "frame_idx": 0, "sfx": None, "molly_age_nivel": None,
+                "texto_automatico": None, "easter_egg": None, "opcoes": [],
+                "mensagens": [
+                    {"lado": "eu",    "texto": "Você se acha bonita?"},
+                    {"lado": "deles", "nome": "Kelly", "texto": "..."},
+                    {"lado": "deles", "nome": "Kelly", "texto": "molly para"},
+                    {"lado": "deles", "nome": "Kelly", "texto": "vou dormir"},
+                ],
+                "ir_dormir": True,
+            },
+            # Cena 4: rota "como foi a aula" — Kelly menciona cinema
+            4: {
+                "titulo": "Kelly",
+                "tipo_texto": "conversa",
+                "frame_idx": 0, "sfx": None, "molly_age_nivel": None,
+                "texto_automatico": None, "easter_egg": None,
+                "mensagens": [
+                    {"lado": "eu",    "texto": "Como foi a aula hoje?"},
+                    {"lado": "deles", "nome": "Kelly", "texto": "ah foi ok, a prof de geo tava horrível"},
+                    {"lado": "deles", "nome": "Kelly", "texto": "mas fomos no cinema depois das aulas"},
+                    {"lado": "deles", "nome": "Kelly", "texto": "o filme foi... intenso"},
+                ],
+                "opcoes": [
+                    {"texto": "Que filme você viu?",        "delta": 0, "acao": "kelly_filme",   "posicao": "baixo", "afinidade": 0},
+                    {"texto": "Que legal! Conta mais",      "delta": 0, "acao": "kelly_aula_ok", "posicao": "baixo", "afinidade": 0},
+                    {"texto": "Intenso como?",              "delta": 0, "acao": "kelly_aula_ok", "posicao": "baixo", "afinidade": 0},
+                    {"texto": "Cinema na semana, inveja",   "delta": 0, "acao": "kelly_aula_ok", "posicao": "baixo", "afinidade": 0},
+                ],
+            },
+            # Cena 5: silêncio — Molly não responde
+            5: {
+                "titulo": "Kelly",
+                "tipo_texto": "conversa",
+                "frame_idx": 0, "sfx": None, "molly_age_nivel": None,
+                "texto_automatico": None, "easter_egg": None, "opcoes": [],
+                "mensagens": [
+                    {"lado": "eu",    "texto": "..."},
+                    {"lado": "deles", "nome": "Kelly", "texto": "Molly? tá aí?"},
+                    {"lado": "deles", "nome": "Kelly", "texto": "tá bom, vai dormir tá"},
+                    {"lado": "eu",    "texto": "boa noite kel 🦋"},
+                ],
+                "ir_dormir": True,
+            },
+            # Cena 6: descrição do monstro
+            6: {
+                "titulo": "Kelly",
+                "tipo_texto": "conversa",
+                "frame_idx": 0, "sfx": None, "molly_age_nivel": None,
+                "texto_automatico": None, "easter_egg": None,
+                "mensagens": [
+                    {"lado": "eu",    "texto": "Que filme você viu?"},
+                    {"lado": "deles", "nome": "Kelly", "texto": "um de terror independente, sem nome famoso"},
+                    {"lado": "deles", "nome": "Kelly", "texto": "tinha um monstro que era horrível"},
+                    {"lado": "deles", "nome": "Kelly", "texto": "pele cheia de cobras, um olho só, grande, dentes afiados"},
+                    {"lado": "deles", "nome": "Kelly", "texto": "se alimenta de medo"},
+                    {"lado": "deles", "nome": "Kelly", "texto": "quase saí do cinema, tenho tripofobia"},
+                ],
+                "opcoes": [
+                    {"texto": "E como venceram essa coisa?",    "delta": 0, "acao": "kelly_flash",      "posicao": "baixo", "afinidade": 0},
+                    {"texto": "Nossa que perturbador",           "delta": 0, "acao": "kelly_monster_ok", "posicao": "baixo", "afinidade": 0},
+                    {"texto": "É baseado em algo real?",         "delta": 0, "acao": "kelly_monster_ok", "posicao": "baixo", "afinidade": 0},
+                    {"texto": "Isso é inspirado em quadrinho?",  "delta": 0, "acao": "kelly_monster_ok", "posicao": "baixo", "afinidade": 0},
+                ],
+            },
+            # Cena 7: resposta do flash — conquista Leitor de Quadrinhos
+            7: {
+                "titulo": "Kelly",
+                "tipo_texto": "conversa",
+                "frame_idx": 0, "sfx": None, "molly_age_nivel": None,
+                "texto_automatico": None, "easter_egg": None,
+                "conquista": "descobriu_segredo_kelly",
+                "mensagens": [
+                    {"lado": "eu",    "texto": "E como venceram essa coisa?"},
+                    {"lado": "deles", "nome": "Kelly", "texto": "não venceram..."},
+                    {"lado": "deles", "nome": "Kelly", "texto": "a protagonista foi burra"},
+                    {"lado": "deles", "nome": "Kelly", "texto": "dava pra ver que ele não gostava de flash ou luz"},
+                    {"lado": "deles", "nome": "Kelly", "texto": "mas morreram e perderam tudo no caminho"},
+                ],
+                "opcoes": [
+                    {"texto": "Continuar a conversa",         "delta": -1, "acao": "kelly_continuar_pos_flash", "posicao": "baixo", "afinidade": 1},
+                    {"texto": "Ir dormir (está muito tarde)", "delta": 0,  "acao": "kelly_encerrar",            "posicao": "baixo", "afinidade": 0},
+                ],
+            },
+            # Cena 8: resposta simulada (outras opções do monstro)
+            8: {
+                "titulo": "Kelly",
+                "tipo_texto": "conversa",
+                "frame_idx": 0, "sfx": None, "molly_age_nivel": None,
+                "texto_automatico": None, "easter_egg": None, "opcoes": [],
+                "mensagens": [
+                    {"lado": "eu",    "texto": "Nossa que perturbador"},
+                    {"lado": "deles", "nome": "Kelly", "texto": "pois é mas foi bom sabe"},
+                    {"lado": "deles", "nome": "Kelly", "texto": "vai dormir tá. boa noite 🦋"},
+                    {"lado": "eu",    "texto": "boa noite kel 🦋"},
+                ],
+                "ir_dormir": True,
+            },
+            # Cena 9: sub-conversa cobra
+            9: {
+                "titulo": "Kelly",
+                "tipo_texto": "conversa",
+                "frame_idx": 0, "sfx": None, "molly_age_nivel": None,
+                "texto_automatico": None, "easter_egg": None,
+                "mensagens": [
+                    {"lado": "deles", "nome": "Kelly", "texto": "por que perguntou?"},
+                ],
+                "opcoes": [
+                    {"texto": "Eu sei quem entende de cobra...", "delta": -1, "acao": "kelly_cobra",   "posicao": "baixo", "afinidade": 1},
+                    {"texto": "Só curiosidade",                  "delta": 0,  "acao": "kelly_encerrar","posicao": "baixo", "afinidade": 0},
+                    {"texto": "A história do monstro foi boa",   "delta": 0,  "acao": "kelly_encerrar","posicao": "baixo", "afinidade": 0},
+                    {"texto": "Ir dormir (está muito tarde)",    "delta": 0,  "acao": "kelly_encerrar","posicao": "baixo", "afinidade": 0},
+                ],
+            },
+            # Cena 10: sequência da cobra — despedida
+            10: {
+                "titulo": "Kelly",
+                "tipo_texto": "conversa",
+                "frame_idx": 0, "sfx": None, "molly_age_nivel": None,
+                "texto_automatico": None, "easter_egg": None, "opcoes": [],
+                "mensagens": [
+                    {"lado": "eu",    "texto": "Eu sei quem entende de cobra..."},
+                    {"lado": "deles", "nome": "Kelly", "texto": "quem?"},
+                    {"lado": "eu",    "texto": "a menina lá da sala"},
+                    {"lado": "deles", "nome": "Kelly", "texto": "ah kkk pensei que era outra coisa nossa"},
+                    {"lado": "eu",    "texto": "oq"},
+                    {"lado": "deles", "nome": "Kelly", "texto": "nada nada kkk"},
+                    {"lado": "deles", "nome": "Kelly", "texto": "vai dormir Molly, tá tarde demais 🦋"},
+                    {"lado": "eu",    "texto": "boa noite kel 🦋"},
+                ],
+                "ir_dormir": True,
+            },
+            # Cena 11: encerrar conversa
+            11: {
+                "titulo": "Kelly",
+                "tipo_texto": "conversa",
+                "frame_idx": 0, "sfx": None, "molly_age_nivel": None,
+                "texto_automatico": None, "easter_egg": None, "opcoes": [],
+                "mensagens": [
+                    {"lado": "eu",    "texto": "Ir dormir (está muito tarde)"},
+                    {"lado": "deles", "nome": "Kelly", "texto": "tá bom. boa noite 🦋"},
+                    {"lado": "eu",    "texto": "boa noite kel 🦋"},
                 ],
                 "ir_dormir": True,
             },
