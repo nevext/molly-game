@@ -1035,7 +1035,7 @@ def get_final(barra, tipo_forcado=None):
         tipo = tipo_forcado
     else:
         tipo = "bom" if barra <= BARRA_FINAL_BOM else "ruim"
-    
+
     finais = {
         "bom": {
             "tipo": "bom",
@@ -1069,3 +1069,52 @@ def get_final(barra, tipo_forcado=None):
         },
     }
     return finais.get(tipo, finais["ruim"])
+
+
+def get_final_data(tipo):
+    """Return ending data for non-barra-dependent endings (demo, mae, amiga, etc)"""
+    finais = {
+        "demo": {
+            "tipo": "demo",
+            "texto": "A história de Molly ainda está sendo escrita.",
+            "mensagem": "O que você viveu aqui é apenas o começo.\n\nObrigado por jogar a demo.",
+            "frame": None,
+        },
+        "mae": {
+            "tipo": "mae",
+            "texto": "Molly acordou diferente. Lembrou que não estava sozinha.",
+            "mensagem": "Às vezes a pessoa mais importante já está do seu lado.",
+            "frame": "final/ruim/Molly_2.png",
+        },
+        "amiga": {
+            "tipo": "amiga",
+            "texto": "Kelly apareceu na porta com um sorriso.",
+            "mensagem": "Às vezes a amizade chega antes que você peça.",
+            "frame": "jornada/ato_1/Cap_2(noite)/Molly_5.png",
+        },
+        "desabafa": {
+            "tipo": "desabafa",
+            "texto": "Molly digitou tudo. Mandou. Respirou fundo.",
+            "mensagem": "Falar é o primeiro passo.",
+            "frame": "jornada/ato_1/Cap_2(noite)/Molly_5.png",
+        },
+        "amadurece": {
+            "tipo": "amadurece",
+            "texto": "Ela fechou o celular. Não precisou de ninguém dessa vez.",
+            "mensagem": "Às vezes crescer é um processo solitário.",
+            "frame": "jornada/ato_1/Cap_2(noite)/Molly_1.png",
+        },
+        "morte": {
+            "tipo": "morte",
+            "texto": "Você morreu dormindo.",
+            "mensagem": "O fim chegou quando você menos esperava.",
+            "frame": None,
+        },
+        "secreto_1": {
+            "tipo": "secreto_1",
+            "texto": "Molly acordou suando. Contou tudo pra amiga. A amiga ficou quieta por um segundo.",
+            "mensagem": "'Cara... vi um filme igualzinho semana passada. Parece que ele se alimenta do medo da pessoa... mas é só um filme né kkk'",
+            "frame": "jornada/ato_1/Cap_2(noite)/Molly_5.png",
+        },
+    }
+    return finais.get(tipo, finais["demo"])

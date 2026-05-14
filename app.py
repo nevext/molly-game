@@ -1,7 +1,7 @@
 # app.py
 import os
-from flask import Flask, render_template, render_template_string, session, redirect, url_for, jsonify
-from game_logic import get_capitulo, get_proximo_capitulo, processar_escolha, molly_age_sozinha, get_final, get_flag_escolha
+from flask import Flask, render_template, render_template_string, session, redirect, url_for, jsonify, request
+from game_logic import get_capitulo, get_proximo_capitulo, processar_escolha, molly_age_sozinha, get_final, get_flag_escolha, get_final_data
 
 TRILHAS_NOITE = [
     "audio/soundtrack/Night.mp3",
@@ -72,12 +72,15 @@ app.secret_key = os.environ.get("SECRET_KEY", "molly2026")
 def preservar_progresso():
     return {
         "finais": dict(session.get("finais", {})),
+        "finais_vistos": session.get("finais_vistos", []),
         "conquistas": dict(session.get("conquistas", {})),
     }
 
 def restaurar_progresso(dados):
     if dados.get("finais"):
         session["finais"] = dados["finais"]
+    if dados.get("finais_vistos"):
+        session["finais_vistos"] = dados["finais_vistos"]
     if dados.get("conquistas"):
         session["conquistas"] = dados["conquistas"]
 
@@ -177,7 +180,7 @@ def cena():
                     return redirect(url_for("cena"))
                 tipo = cap_prox.get("tipo", "noite")
                 return redirect(url_for("transicao", tipo=tipo))
-            return redirect(url_for("final"))
+            return redirect(url_for("fim_demo", tipo="ruim"))
 
         frame_atual = frames[frame_idx]
         frame_ant   = frames[frame_idx - 1] if frame_idx > 0 else None
@@ -271,7 +274,7 @@ def frame_data():
     cap = get_capitulo(cap_id)
 
     if not cap or cap.get("tem_escolhas"):
-        return jsonify({"fim": True, "redirect": "/final"})
+        return jsonify({"fim": True, "redirect": "/fim_demo?tipo=ruim"})
 
     frames = cap.get("frames", [])
     total  = len(frames)
@@ -289,7 +292,7 @@ def frame_data():
                 return jsonify({"fim": True, "redirect": "/cena"})
             tipo = cap_prox.get("tipo", "noite")
             return jsonify({"fim": True, "redirect": f"/transicao/{tipo}"})
-        return jsonify({"fim": True, "redirect": "/final"})
+        return jsonify({"fim": True, "redirect": "/fim_demo?tipo=ruim"})
 
     frame_ant   = frames[frame_idx]
     frame_atual = frames[proximo]
@@ -557,7 +560,7 @@ def build_cena_json(cap_id, cena_num, barra):
     cenas = cap.get("cenas", {})
     dados_cena = cenas.get(cena_num)
     if not dados_cena:
-        return {"fim": True, "redirect": "/final"}
+        return {"fim": True, "redirect": "/fim_demo?tipo=ruim"}
     frame_idx_cena = dados_cena.get("frame_idx", 0)
     frame_atual = frames_noite[frame_idx_cena] if frame_idx_cena < len(frames_noite) else None
     age = molly_age_sozinha(cap_id, cena_num, barra)
@@ -654,7 +657,7 @@ def avancar_data():
             if not cap_prox or cap_prox.get("tipo") == "demo":
                 return jsonify({"fim": True, "redirect": "/cena"})
             return jsonify({"fim": True, "redirect": f"/transicao/{cap_prox.get('tipo', 'noite')}"})
-        return jsonify({"fim": True, "redirect": "/final"})
+        return jsonify({"fim": True, "redirect": "/fim_demo?tipo=ruim"})
 
     session["cena"] = proxima
     return jsonify(build_cena_json(cap_id, proxima, barra))
@@ -767,15 +770,15 @@ def escolha_data(opcao):
         return jsonify(build_cena_json(cap_id, 3, nova_barra))
 
     if acao == "deixar_pra_la":
-        return jsonify({"fim": True, "redirect": "/final"})
+        return jsonify({"fim": True, "redirect": "/fim_demo?tipo=ruim"})
 
     if acao == "final_aceitar":
         session["tipo_final"] = "aceitar"
-        return jsonify({"fim": True, "redirect": "/final"})
+        return jsonify({"fim": True, "redirect": "/fim_demo?tipo=aceitar"})
 
     if acao == "final_lutar":
         session["tipo_final"] = "lutar"
-        return jsonify({"fim": True, "redirect": "/final"})
+        return jsonify({"fim": True, "redirect": "/fim_demo?tipo=lutar"})
 
     cap = get_capitulo(cap_id)
     cenas = cap.get("cenas", {}) if cap else {}
@@ -790,21 +793,34 @@ def escolha_data(opcao):
             if not cap_prox or cap_prox.get("tipo") == "demo":
                 return jsonify({"fim": True, "redirect": "/cena"})
             return jsonify({"fim": True, "redirect": f"/transicao/{cap_prox.get('tipo', 'noite')}"})
-        return jsonify({"fim": True, "redirect": "/final"})
+        return jsonify({"fim": True, "redirect": "/fim_demo?tipo=ruim"})
 
     session["cena"] = proxima
     return jsonify(build_cena_json(cap_id, proxima, nova_barra))
 
 
-@app.route("/final")
-def final():
-    barra = session.get("barra", 3)
-    tipo_final = session.get("tipo_final", None)
-    dados = get_final(barra, tipo_forcado=tipo_final)
-    finais = session.get("finais", {})
-    finais[dados["tipo"]] = True
-    session["finais"] = finais
-    return render_template("final.html", dados=dados)
+@app.route("/fim_demo")
+def fim_demo():
+    tipo = request.args.get('tipo', 'demo')
+
+    if tipo in ('bom', 'ruim', 'aceitar', 'lutar', 'sonho_mae'):
+        barra = session.get("barra", 3)
+        tipo_final = session.get("tipo_final", None)
+        dados = get_final(barra, tipo_forcado=tipo_final)
+    else:
+        dados = get_final_data(tipo)
+
+    finais_vistos = session.get('finais_vistos', [])
+    if tipo not in finais_vistos:
+        finais_vistos.append(tipo)
+    session['finais_vistos'] = finais_vistos
+
+    if tipo in ('bom', 'ruim', 'aceitar', 'lutar', 'sonho_mae'):
+        finais = session.get("finais", {})
+        finais[dados["tipo"]] = True
+        session["finais"] = finais
+
+    return render_template("fimdemo.html", dados=dados, tipo=tipo)
 
 
 @app.route("/reiniciar")
