@@ -16,7 +16,8 @@
             font-weight: 100 900;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; pointer-events: none; }
+        a, button, body { pointer-events: auto; }
 
         body {
             width: 100vw;
@@ -61,8 +62,8 @@
             animation: aparecer 1s ease 1s forwards;
         }
 
-        /* CHOISE em vermelho */
-        .choise {
+        /* CHOICE em vermelho */
+        .choice {
             font-family: 'Glassure', serif;
             font-size: clamp(1.5rem, 4vw, 3rem);
             color: #8b0000;
@@ -111,7 +112,7 @@
 
         /* Variação DIA */
         {% if tipo == 'dia' %}
-        .choise { color: #c8a000; }
+        .choice { color: #c8a000; }
         .hint { color: rgba(0,0,0,0.4); }
         {% endif %}
     </style>
@@ -131,7 +132,7 @@
             {% endif %}
         </div>
 
-        <div class="choise" id="choise">CHOISE</div>
+        <div class="choice" id="choice">CHOICE</div>
     </div>
 
     <div class="hint">CLIQUE PARA CONTINUAR</div>
@@ -144,17 +145,17 @@
         sfxTransicao.volume = 1.0;
         setTimeout(() => sfxTransicao.play().catch(()=>{}), 300);
 
-        // Animação de caracteres no CHOISE
-        const choiseEl = document.getElementById('choise');
-        const texto = choiseEl.textContent.trim();
-        choiseEl.textContent = '';
+        // Animação de caracteres no CHOICE
+        const choiceEl = document.getElementById('choice');
+        const texto = choiceEl.textContent.trim();
+        choiceEl.textContent = '';
 
         texto.split('').forEach((char, i) => {
             const span = document.createElement('span');
             span.className = 'char';
             span.textContent = char;
             span.style.animation = `aparecer 0.4s ease ${1.8 + i * 0.12}s forwards`;
-            choiseEl.appendChild(span);
+            choiceEl.appendChild(span);
         });
 
         // Clique para continuar
@@ -169,6 +170,13 @@
                 window.location.href = '/iniciar_cap';
             }, 600);
         }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') {
+                e.preventDefault();
+                continuar();
+            }
+        });
     </script>
 
 </body>

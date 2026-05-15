@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Molly</title>
     <style>
+        * { -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
         @font-face {
             font-family: 'Glassure';
             src: url("{{ url_for('static', filename='menu/Glassure.otf') }}") format('opentype');
@@ -34,13 +35,13 @@
 
     <!-- Áudios do Tutorial -->
     <audio id="tutorialSfxBoa">
-        <source src="{{ url_for('static', filename='audio/sfx/sfx_good_choise.mp3') }}" type="audio/mp3">
+        <source src="{{ url_for('static', filename='audio/sfx/sfx_good_choice.mp3') }}" type="audio/mp3">
     </audio>
     <audio id="tutorialSfxRuim">
-        <source src="{{ url_for('static', filename='audio/sfx/sfx_bad_choise.mp3') }}" type="audio/mp3">
+        <source src="{{ url_for('static', filename='audio/sfx/sfx_bad_choice.mp3') }}" type="audio/mp3">
     </audio>
     <audio id="tutorialSfxEspecial">
-        <source src="{{ url_for('static', filename='audio/sfx/sfx_especial_choise.mp3') }}" type="audio/mp3">
+        <source src="{{ url_for('static', filename='audio/sfx/sfx_especial_choice.mp3') }}" type="audio/mp3">
     </audio>
 
     <!-- ── UI MENU ── -->
@@ -224,7 +225,7 @@
                     </div>
                 </li>
                 {% else %}
-                <li class="tlou-item bloqueado"><span class="tlou-label">Final Bom</span><span class="tlou-lock">🔒</span></li>
+                <li class="tlou-item bloqueado"><span class="tlou-label">Final Bom</span><span class="tlou-lock">—</span></li>
                 {% endif %}
 
                 {% if finais.get('ruim') %}
@@ -235,7 +236,7 @@
                     </div>
                 </li>
                 {% else %}
-                <li class="tlou-item bloqueado"><span class="tlou-label">Final Ruim</span><span class="tlou-lock">🔒</span></li>
+                <li class="tlou-item bloqueado"><span class="tlou-label">Final Ruim</span><span class="tlou-lock">—</span></li>
                 {% endif %}
 
                 {% if finais.get('aceitar') %}
@@ -246,7 +247,7 @@
                     </div>
                 </li>
                 {% else %}
-                <li class="tlou-item bloqueado"><span class="tlou-label">Final: Aceitar</span><span class="tlou-lock">🔒</span></li>
+                <li class="tlou-item bloqueado"><span class="tlou-label">Final: Aceitar</span><span class="tlou-lock">—</span></li>
                 {% endif %}
 
                 {% if finais.get('lutar') %}
@@ -257,7 +258,7 @@
                     </div>
                 </li>
                 {% else %}
-                <li class="tlou-item bloqueado"><span class="tlou-label">Final: Lutar</span><span class="tlou-lock">🔒</span></li>
+                <li class="tlou-item bloqueado"><span class="tlou-label">Final: Lutar</span><span class="tlou-lock">—</span></li>
                 {% endif %}
 
                 {% if finais.get('sonho_mae') %}
@@ -268,7 +269,7 @@
                     </div>
                 </li>
                 {% else %}
-                <li class="tlou-item bloqueado"><span class="tlou-label">Final: Sonho da Mae</span><span class="tlou-lock">🔒</span></li>
+                <li class="tlou-item bloqueado"><span class="tlou-label">Final: Sonho da Mae</span><span class="tlou-lock">—</span></li>
                 {% endif %}
 
                 <li class="tlou-item bloqueado"><span class="tlou-label">Final: Morte</span><span class="tlou-lock">Em desenvolvimento</span></li>
@@ -317,7 +318,7 @@
                     </div>
                 </li>
                 {% else %}
-                <li class="tlou-item bloqueado"><span class="tlou-label">Primeiro Sonho</span><span class="tlou-lock">🔒</span></li>
+                <li class="tlou-item bloqueado"><span class="tlou-label">Primeiro Sonho</span><span class="tlou-lock">—</span></li>
                 {% endif %}
 
                 <!-- Pesadelo -->
@@ -330,7 +331,7 @@
                     </div>
                 </li>
                 {% else %}
-                <li class="tlou-item bloqueado"><span class="tlou-label">Pesadelo</span><span class="tlou-lock">🔒</span></li>
+                <li class="tlou-item bloqueado"><span class="tlou-label">Pesadelo</span><span class="tlou-lock">—</span></li>
                 {% endif %}
 
                 <!-- Sobrevivente -->
@@ -343,7 +344,7 @@
                     </div>
                 </li>
                 {% else %}
-                <li class="tlou-item bloqueado"><span class="tlou-label">Sobrevivente</span><span class="tlou-lock">🔒</span></li>
+                <li class="tlou-item bloqueado"><span class="tlou-label">Sobrevivente</span><span class="tlou-lock">—</span></li>
                 {% endif %}
 
                 <!-- Cacadora -->
@@ -356,7 +357,7 @@
                     </div>
                 </li>
                 {% else %}
-                <li class="tlou-item bloqueado"><span class="tlou-label">Cacadora</span><span class="tlou-lock">🔒</span></li>
+                <li class="tlou-item bloqueado"><span class="tlou-label">Cacadora</span><span class="tlou-lock">—</span></li>
                 {% endif %}
 
                 <!-- Morreu Dormindo -->
@@ -369,7 +370,7 @@
                     </div>
                 </li>
                 {% else %}
-                <li class="tlou-item bloqueado"><span class="tlou-label">Morreu Dormindo</span><span class="tlou-lock">🔒</span></li>
+                <li class="tlou-item bloqueado"><span class="tlou-label">Morreu Dormindo</span><span class="tlou-lock">—</span></li>
                 {% endif %}
 
                 <!-- Sonho Bom -->
@@ -382,7 +383,7 @@
                     </div>
                 </li>
                 {% else %}
-                <li class="tlou-item bloqueado"><span class="tlou-label">Sonho Bom</span><span class="tlou-lock">🔒</span></li>
+                <li class="tlou-item bloqueado"><span class="tlou-label">Sonho Bom</span><span class="tlou-lock">—</span></li>
                 {% endif %}
 
                 <!-- Com a Mae -->
@@ -395,7 +396,7 @@
                     </div>
                 </li>
                 {% else %}
-                <li class="tlou-item bloqueado"><span class="tlou-label">Com a Mae</span><span class="tlou-lock">🔒</span></li>
+                <li class="tlou-item bloqueado"><span class="tlou-label">Com a Mae</span><span class="tlou-lock">—</span></li>
                 {% endif %}
 
                 <!-- Melhor Amiga -->
@@ -408,7 +409,7 @@
                     </div>
                 </li>
                 {% else %}
-                <li class="tlou-item bloqueado"><span class="tlou-label">Melhor Amiga</span><span class="tlou-lock">🔒</span></li>
+                <li class="tlou-item bloqueado"><span class="tlou-label">Melhor Amiga</span><span class="tlou-lock">—</span></li>
                 {% endif %}
 
                 <!-- Viciada em Celular -->
@@ -421,7 +422,7 @@
                     </div>
                 </li>
                 {% else %}
-                <li class="tlou-item bloqueado"><span class="tlou-label">Viciada em Celular</span><span class="tlou-lock">🔒</span></li>
+                <li class="tlou-item bloqueado"><span class="tlou-label">Viciada em Celular</span><span class="tlou-lock">—</span></li>
                 {% endif %}
 
                 <!-- Reporter -->
@@ -434,7 +435,7 @@
                     </div>
                 </li>
                 {% else %}
-                <li class="tlou-item bloqueado"><span class="tlou-label">Reporter</span><span class="tlou-lock">🔒</span></li>
+                <li class="tlou-item bloqueado"><span class="tlou-label">Reporter</span><span class="tlou-lock">—</span></li>
                 {% endif %}
 
                 <!-- Leitor de Quadrinhos -->
@@ -447,7 +448,7 @@
                     </div>
                 </li>
                 {% else %}
-                <li class="tlou-item bloqueado"><span class="tlou-label">Leitor de Quadrinhos</span><span class="tlou-lock">🔒</span></li>
+                <li class="tlou-item bloqueado"><span class="tlou-label">Leitor de Quadrinhos</span><span class="tlou-lock">—</span></li>
                 {% endif %}
 
                 <!-- Relaxante -->
@@ -460,7 +461,7 @@
                     </div>
                 </li>
                 {% else %}
-                <li class="tlou-item bloqueado"><span class="tlou-label">Relaxante</span><span class="tlou-lock">🔒</span></li>
+                <li class="tlou-item bloqueado"><span class="tlou-label">Relaxante</span><span class="tlou-lock">—</span></li>
                 {% endif %}
 
                 <!-- Ouvinte -->
@@ -473,7 +474,7 @@
                     </div>
                 </li>
                 {% else %}
-                <li class="tlou-item bloqueado"><span class="tlou-label">Ouvinte</span><span class="tlou-lock">🔒</span></li>
+                <li class="tlou-item bloqueado"><span class="tlou-label">Ouvinte</span><span class="tlou-lock">—</span></li>
                 {% endif %}
 
                 <!-- Alucinacao -->
@@ -486,7 +487,7 @@
                     </div>
                 </li>
                 {% else %}
-                <li class="tlou-item bloqueado"><span class="tlou-label">Alucinacao</span><span class="tlou-lock">🔒</span></li>
+                <li class="tlou-item bloqueado"><span class="tlou-label">Alucinacao</span><span class="tlou-lock">—</span></li>
                 {% endif %}
 
                 <!-- Com Ela -->
@@ -499,7 +500,7 @@
                     </div>
                 </li>
                 {% else %}
-                <li class="tlou-item bloqueado"><span class="tlou-label">Com Ela</span><span class="tlou-lock">🔒</span></li>
+                <li class="tlou-item bloqueado"><span class="tlou-label">Com Ela</span><span class="tlou-lock">—</span></li>
                 {% endif %}
 
                 <!-- Com El? -->
@@ -512,7 +513,7 @@
                     </div>
                 </li>
                 {% else %}
-                <li class="tlou-item bloqueado"><span class="tlou-label">Com El?</span><span class="tlou-lock">🔒</span></li>
+                <li class="tlou-item bloqueado"><span class="tlou-label">Com El?</span><span class="tlou-lock">—</span></li>
                 {% endif %}
 
                 <!-- Ela Agradece -->
@@ -525,7 +526,7 @@
                     </div>
                 </li>
                 {% else %}
-                <li class="tlou-item bloqueado"><span class="tlou-label">Ela Agradece</span><span class="tlou-lock">🔒</span></li>
+                <li class="tlou-item bloqueado"><span class="tlou-label">Ela Agradece</span><span class="tlou-lock">—</span></li>
                 {% endif %}
 
             </ul>

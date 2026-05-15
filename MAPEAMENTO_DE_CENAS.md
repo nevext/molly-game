@@ -38,25 +38,56 @@
 ```
 "O que você faz?"
 
-OPÇÃO 1: "Responder \"Não ligo pra essas coisas\""
+OPÇÃO 1: "Responder \"Ai que drama kk\""
   delta: -1 ✓ (REDUZ ANSIEDADE)
   acao: "conversa_kelly"
   posicao: esquerda
+  flag: {"humor": "animada"}
   → vai para: ato1_cap2_kelly
 
-OPÇÃO 2: "Não responder e ir dormir"
+OPÇÃO 2: "Responder com dúvida 'Será que é verdade?'"
   delta: 0 (NEUTRO)
-  acao: "dormir"
+  acao: "conversa_kelly"
   posicao: direita
-  → vai para: ato1_cap3_dia
+  flag: {"humor": "insegura"}
+  → vai para: ato1_cap2_kelly
 
-OPÇÃO 3: "Examinar que comentário é esse"
+OPÇÃO 3: "Deixar pra depois e tentar dormir"
+  delta: 0 (NEUTRO)
+  acao: "naoligar"
+  posicao: baixo
+  → vai para: ato1_cap2_naoligar
+
+OPÇÃO 4: "Examinar que foto é essa"
   delta: +1 ✗ (AUMENTA ANSIEDADE)
   acao: "examinar"
-  posicao: baixo
-  sfx: "sfx_bad_ending(Molly).mp3"
+  posicao: canto_inferior_direito
+  sfx: "sfx_bad_choice.mp3"
   → vai para: ato1_cap2_examinar
 ```
+
+---
+
+### 3-B️⃣ **ato1_cap2_naoligar** ⚡ ROTA CURTA - Não Ligar
+**Tipo**: noite | **Próximo**: ato1_cap3_dia
+
+**Descrição**: Molly vira o celular de cabeça para baixo e tenta dormir sem responder para Kelly.
+
+**Cenas** (2 cenas, nenhuma com escolhas):
+
+#### Cena 1: Ignorando o celular
+```
+"Ela virou o celular de cabeça pra baixo. Não precisava saber agora."
+(sem escolhas)
+```
+
+#### Cena 2: Dormindo
+```
+"Amanhã eu vejo."
+Propriedade: ir_dormir: True
+```
+
+**Delta resultante**: 0 (neutro)
 
 ---
 
@@ -497,15 +528,16 @@ OPÇÃO 2: "Lutar. Preciso escapar."
 
 ## 📊 RESUMO GERAL
 
-### Total de Capítulos: 16
-- **Com escolhas (⚡)**: 7
+### Total de Capítulos: 17
+- **Com escolhas (⚡)**: 8
 - **Sem escolhas (✗)**: 9
 
 ### Cenas com Escolhas por Capítulo:
 
 | Capítulo | Total Cenas | Cenas com Escolhas | Deltas |
 |----------|-------------|-------------------|--------|
-| ato1_cap2_noite | 6 | 1 (Cena 6) | -1, 0, +1 |
+| ato1_cap2_noite | 6 | 1 (Cena 6) | -1, 0, 0, +1 |
+| ato1_cap2_naoligar | 2 | 0 | (rota curta) |
 | ato1_cap2_examinar | 6 | 1 (Cena 6) | -1, +1, +1 |
 | ato1_cap2_curtidas | 4 | 0 | (sub-rota) |
 | ato1_cap2_comentario | 5 | 1 (Cena 4) | -1, +2 |
@@ -545,9 +577,10 @@ OPÇÃO 2: "Lutar. Preciso escapar."
 Barra Inicial: 0
 
 ATO 1 - Cap 2 (Noite):
-  └─ Escolha 1: -1 → Barra = 0
-  └─ Escolha 2: 0 → Barra = 0
-  └─ Escolha 3: +1 → Barra = 1
+  └─ Escolha 1: -1 → Barra = 0 (Responder animada)
+  └─ Escolha 2: 0 → Barra = 0 (Responder com dúvida)
+  └─ Escolha 3: 0 → Barra = 0 (Deixar pra depois - naoligar)
+  └─ Escolha 4: +1 → Barra = 1 (Examinar)
      ├─ Sub: -1 → Barra = 0
      ├─ Sub: +1 → Barra = 2
      └─ Sub: +1 → Barra = 2
@@ -555,7 +588,7 @@ ATO 1 - Cap 2 (Noite):
         └─ Ver comentário: +2 → Barra = 4
 
 POSSÍVEIS ESTADOS ANTES ATO 3:
-  - Barra 0 (escolhas boas)
+  - Barra 0 (escolhas boas ou neutras)
   - Barra 1 (exame mas deixou pra lá)
   - Barra 2 (examinou e viu curtidas/comentário)
   - Barra 3+ (escolhas ruins)
@@ -658,6 +691,8 @@ Você escolheu acordar."
 ### Fluxo 1: Ignorar tudo (Final BOM)
 1. ato1_cap1_dia (sem escolhas)
 2. ato1_cap2_noite → Opção 1 (-1) → ato1_cap2_kelly
+   OU
+   ato1_cap2_noite → Opção 3 (0) → ato1_cap2_naoligar
 3. ato1_cap3_dia (sem escolhas)
 4. ato2_cap4_noite → Opção 2 (0) → fim_demo
 **Barra: 0-1 → FINAL BOM**

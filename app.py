@@ -1,12 +1,19 @@
 # app.py
 import os
+import random
 from flask import Flask, render_template, render_template_string, session, redirect, url_for, jsonify, request
 from game_logic import get_capitulo, get_proximo_capitulo, processar_escolha, molly_age_sozinha, get_final, get_flag_escolha, get_final_data
 
+TRILHAS_DIA = [
+    "audio/soundtrack/day.mp3",
+    "audio/soundtrack/day_2.mp3",
+    "audio/soundtrack/day_3.mp3",
+]
+
 TRILHAS_NOITE = [
-    "audio/soundtrack/Night.mp3",
-    "audio/soundtrack/Night_2.mp3",
-    "audio/soundtrack/Night_3.mp3",
+    "audio/soundtrack/night.mp3",
+    "audio/soundtrack/night_2.mp3",
+    "audio/soundtrack/night_3.mp3",
 ]
 
 TODAS_CONQUISTAS = [
@@ -52,7 +59,10 @@ HUD_MAP = {
 }
 
 def get_trilha_noite():
-    idx = session.get("noite_count", 0) % len(TRILHAS_NOITE)
+    # noite_count é incrementado antes de /cena, então subtrai 1 para mapear
+    # primeira noite (count=1) → índice 0 → night.mp3
+    count = max(0, session.get("noite_count", 0) - 1)
+    idx = count % len(TRILHAS_NOITE)
     return TRILHAS_NOITE[idx]
 
 def incrementar_noite():
@@ -153,11 +163,23 @@ def cena():
     if not cap:
         return redirect(url_for("index"))
 
-    # Trilha rotativa para noite
+    # Ato 3 início: se ignorou Kelly nos dois atos → final em desenvolvimento
+    if cap_id == "ato3_cap5_dia" and session.get("ignorou_kelly_ato2"):
+        return redirect(url_for("fim_demo", tipo="desenvolvimento"))
+
+    # Ato 2 noite início: pesadelo se viu tudo e tratou Kelly mal
+    if cap_id == "ato2_cap4_noite" and cena_num == 1:
+        if (session.get("viu_examinar") and session.get("viu_comentario") and session.get("tratou_kelly_mal")):
+            return redirect(url_for("transicao_pesadelo"))
+
+    # Trilha rotativa para noite; aleatória para dia
     if cap.get("tipo") == "noite":
         trilha = get_trilha_noite()
     else:
-        trilha = cap.get("trilha", "")
+        if session.get("dia_cap") != cap_id:
+            session["dia_trilha"] = random.choice(TRILHAS_DIA)
+            session["dia_cap"] = cap_id
+        trilha = session.get("dia_trilha", TRILHAS_DIA[0])
 
     if cap.get("tipo") == "demo":
         return render_template("fimdemo.html")
@@ -209,8 +231,13 @@ def cena():
     # Detectar se voltou de curtidas
     session_volta = session.pop("volta_curtidas", False)
 
-    # Resolver mensagens para render server-side
+    # Resolver mensagens e texto para render server-side
     dados_cena = dict(dados_cena)
+    # Resolve barra-dependent texto
+    if barra > 5 and dados_cena.get("texto_barra_alta"):
+        dados_cena["texto"] = dados_cena["texto_barra_alta"]
+    elif barra <= 5 and dados_cena.get("texto_barra_baixa"):
+        dados_cena["texto"] = dados_cena["texto_barra_baixa"]
     if not dados_cena.get("mensagens"):
         contador_kelly = session.get("contador_kelly", 0)
         if contador_kelly >= 2 and dados_cena.get("mensagens_contador_kelly"):
@@ -401,17 +428,19 @@ def escolha(opcao):
             if _afin:
                 session["afinidade_kelly"] = session.get("afinidade_kelly", 0) + _afin
 
-    # Ações kelly
-    _kelly_cena_map = {
-        "kelly_animada": 2, "kelly_perguntar_bonita": 3, "kelly_aula": 4,
-        "kelly_silencio": 5, "kelly_filme": 6, "kelly_aula_ok": 8,
-        "kelly_flash": 7, "kelly_monster_ok": 8,
-        "kelly_continuar_pos_flash": 9, "kelly_encerrar": 11, "kelly_cobra": 10,
+    # Ações cap4 kelly
+    _cap4_cena_map = {
+        "cap4_continuar": 3, "cap4_bonita": 4, "cap4_aula": 5, "cap4_deixa": 12,
+        "cap4_que_filme": 6, "cap4_aula_ok": 11, "cap4_monster_ok": 11,
+        "cap4_como_venceram": 7, "cap4_continuar_pos_flash": 8,
+        "cap4_encerrar": 10, "cap4_cobra": 9, "cap4_dormir_agora": 13,
     }
-    if acao in _kelly_cena_map:
-        if acao == "kelly_flash":
+    if acao in _cap4_cena_map:
+        if acao == "cap4_como_venceram":
             session["descobriu_segredo_kelly"] = True
-        session["cena"] = _kelly_cena_map[acao]
+        if acao == "cap4_cobra":
+            session["afinidade_kelly"] = session.get("afinidade_kelly", 0) + 1
+        session["cena"] = _cap4_cena_map[acao]
         return redirect(url_for("cena"))
 
     # Ações especiais
@@ -424,35 +453,57 @@ def escolha(opcao):
         return redirect(url_for("transicao", tipo="dia"))
 
     if acao == "naoligar":
+        session["ignorou_kelly_ato1"] = True
         session["cap"] = "ato1_cap2_naoligar"
         session["frame"] = 0
         session["cena"] = 1
         return redirect(url_for("cena"))
 
     if acao == "examinar":
+        session["viu_examinar"] = True
         session["cap"] = "ato1_cap2_examinar"
+        session["frame"] = 0
+        session["cena"] = 1
+        return redirect(url_for("cena"))
+
+    if acao == "ver_comentario":
+        session["viu_comentario"] = True
+        session["cap"] = "ato1_cap2_comentario"
         session["frame"] = 0
         session["cena"] = 1
         return redirect(url_for("cena"))
 
     if acao == "conversa_kelly":
         flag = get_flag_escolha(cap_id, cena_num, opcao)
-        if "humor" in flag:
-            session["humor_kelly"] = flag["humor"]
+        humor = flag.get("humor", "")
+        if humor:
+            session["humor_kelly"] = humor
         session["contador_kelly"] = session.get("contador_kelly", 0) + 1
         session["cap"] = "ato1_cap2_kelly"
         session["frame"] = 0
-        session["cena"] = 1
+        if humor == "animada":
+            session["cena"] = 2
+        elif humor == "insegura":
+            session["cena"] = 3
+        else:
+            session["cena"] = 1
+        return redirect(url_for("cena"))
+
+    if acao == "kelly_perguntar_bonita":
+        session["tratou_kelly_mal"] = True
+        session["cena"] = 3
+        return redirect(url_for("cena"))
+
+    if acao == "kelly_aula":
+        session["cena"] = 4
+        return redirect(url_for("cena"))
+
+    if acao == "kelly_silencio":
+        session["cena"] = 5
         return redirect(url_for("cena"))
 
     if acao == "ver_curtidas":
         session["cap"] = "ato1_cap2_curtidas"
-        session["frame"] = 0
-        session["cena"] = 1
-        return redirect(url_for("cena"))
-
-    if acao == "ver_comentario":
-        session["cap"] = "ato1_cap2_comentario"
         session["frame"] = 0
         session["cena"] = 1
         return redirect(url_for("cena"))
@@ -473,8 +524,23 @@ def escolha(opcao):
         session["cena"] = 1
         return redirect(url_for("cena"))
 
+    if acao == "dormir_ignorou":
+        if session.get("ignorou_kelly_ato1"):
+            session["ignorou_kelly_ato2"] = True
+        proximo_cap = get_proximo_capitulo(cap_id)
+        if proximo_cap:
+            session["cap"] = proximo_cap
+            session["frame"] = 0
+            session["cena"] = 1
+        return redirect(url_for("transicao", tipo="dia"))
+
     if acao == "olhar_teto":
-        session["cena"] = 4
+        if session.get("finais"):
+            session["cena"] = 10
+        elif session.get("ignorou_kelly_ato1"):
+            session["cena"] = 7
+        else:
+            session["cena"] = 4
         return redirect(url_for("cena"))
 
     if acao == "dormir_cap4":
@@ -486,7 +552,8 @@ def escolha(opcao):
         return redirect(url_for("cena"))
 
     if acao == "deixar_pra_la":
-        return redirect(url_for("final"))
+        session["cena"] = 4
+        return redirect(url_for("cena"))
 
     # Ação padrão: próxima cena
     cap = get_capitulo(cap_id)
@@ -583,11 +650,18 @@ def build_cena_json(cap_id, cena_num, barra):
         else:
             mensagens = dados_cena.get("mensagens_humor_animada", [])
     
+    # Resolve barra-dependent texto
+    texto_final = dados_cena.get("texto", "")
+    if barra > 5 and dados_cena.get("texto_barra_alta"):
+        texto_final = dados_cena["texto_barra_alta"]
+    elif barra <= 5 and dados_cena.get("texto_barra_baixa"):
+        texto_final = dados_cena["texto_barra_baixa"]
+
     return {
         "fim": False,
         "frame": frame_atual,
         "tipo_texto": dados_cena.get("tipo_texto"),
-        "texto": dados_cena.get("texto", ""),
+        "texto": texto_final,
         "titulo": dados_cena.get("titulo", ""),
         "remetente": dados_cena.get("remetente", ""),
         "mensagens": mensagens,
@@ -687,18 +761,21 @@ def escolha_data(opcao):
             if _afin2:
                 session["afinidade_kelly"] = session.get("afinidade_kelly", 0) + _afin2
 
-    # Ações kelly
-    _kelly_cena_map2 = {
-        "kelly_animada": 2, "kelly_perguntar_bonita": 3, "kelly_aula": 4,
-        "kelly_silencio": 5, "kelly_filme": 6, "kelly_aula_ok": 8,
-        "kelly_flash": 7, "kelly_monster_ok": 8,
-        "kelly_continuar_pos_flash": 9, "kelly_encerrar": 11, "kelly_cobra": 10,
+    # Ações cap4 kelly
+    _cap4_cena_map2 = {
+        "cap4_continuar": 3, "cap4_bonita": 4, "cap4_aula": 5, "cap4_deixa": 12,
+        "cap4_que_filme": 6, "cap4_aula_ok": 11, "cap4_monster_ok": 11,
+        "cap4_como_venceram": 7, "cap4_continuar_pos_flash": 8,
+        "cap4_encerrar": 10, "cap4_cobra": 9, "cap4_dormir_agora": 13,
     }
-    if acao in _kelly_cena_map2:
-        if acao == "kelly_flash":
+    if acao in _cap4_cena_map2:
+        if acao == "cap4_como_venceram":
             session["descobriu_segredo_kelly"] = True
-        session["cena"] = _kelly_cena_map2[acao]
-        return jsonify(build_cena_json(cap_id, _kelly_cena_map2[acao], nova_barra))
+        if acao == "cap4_cobra":
+            session["afinidade_kelly"] = session.get("afinidade_kelly", 0) + 1
+        cena_alvo = _cap4_cena_map2[acao]
+        session["cena"] = cena_alvo
+        return jsonify(build_cena_json(cap_id, cena_alvo, nova_barra))
 
     if acao in ("dormir", "dormir_olho"):
         proximo_cap = get_proximo_capitulo(cap_id)
@@ -709,38 +786,61 @@ def escolha_data(opcao):
         return jsonify({"fim": True, "redirect": "/transicao/dia", "dormir": True})
 
     if acao == "naoligar":
+        session["ignorou_kelly_ato1"] = True
         session["cap"] = "ato1_cap2_naoligar"
         session["frame"] = 0
         session["cena"] = 1
         return jsonify(build_cena_json("ato1_cap2_naoligar", 1, nova_barra))
 
     if acao == "examinar":
+        session["viu_examinar"] = True
         session["cap"] = "ato1_cap2_examinar"
         session["frame"] = 0
         session["cena"] = 1
         return jsonify(build_cena_json("ato1_cap2_examinar", 1, nova_barra))
 
+    if acao == "ver_comentario":
+        session["viu_comentario"] = True
+        session["cap"] = "ato1_cap2_comentario"
+        session["frame"] = 0
+        session["cena"] = 1
+        return jsonify(build_cena_json("ato1_cap2_comentario", 1, nova_barra))
+
     if acao == "conversa_kelly":
         flag = get_flag_escolha(cap_id, cena_num, opcao)
-        if "humor" in flag:
-            session["humor_kelly"] = flag["humor"]
+        humor = flag.get("humor", "")
+        if humor:
+            session["humor_kelly"] = humor
         session["contador_kelly"] = session.get("contador_kelly", 0) + 1
         session["cap"] = "ato1_cap2_kelly"
         session["frame"] = 0
-        session["cena"] = 1
-        return jsonify(build_cena_json("ato1_cap2_kelly", 1, nova_barra))
+        if humor == "animada":
+            cena_kelly = 2
+        elif humor == "insegura":
+            cena_kelly = 3
+        else:
+            cena_kelly = 1
+        session["cena"] = cena_kelly
+        return jsonify(build_cena_json("ato1_cap2_kelly", cena_kelly, nova_barra))
+
+    if acao == "kelly_perguntar_bonita":
+        session["tratou_kelly_mal"] = True
+        session["cena"] = 3
+        return jsonify(build_cena_json(cap_id, 3, nova_barra))
+
+    if acao == "kelly_aula":
+        session["cena"] = 4
+        return jsonify(build_cena_json(cap_id, 4, nova_barra))
+
+    if acao == "kelly_silencio":
+        session["cena"] = 5
+        return jsonify(build_cena_json(cap_id, 5, nova_barra))
 
     if acao == "ver_curtidas":
         session["cap"] = "ato1_cap2_curtidas"
         session["frame"] = 0
         session["cena"] = 1
         return jsonify(build_cena_json("ato1_cap2_curtidas", 1, nova_barra))
-
-    if acao == "ver_comentario":
-        session["cap"] = "ato1_cap2_comentario"
-        session["frame"] = 0
-        session["cena"] = 1
-        return jsonify(build_cena_json("ato1_cap2_comentario", 1, nova_barra))
 
     if acao == "apagar_post":
         session["cena"] = 5
@@ -757,9 +857,25 @@ def escolha_data(opcao):
         session["cena"] = 1
         return jsonify(build_cena_json("ato2_cap4_kelly", 1, nova_barra))
 
+    if acao == "dormir_ignorou":
+        if session.get("ignorou_kelly_ato1"):
+            session["ignorou_kelly_ato2"] = True
+        proximo_cap = get_proximo_capitulo(cap_id)
+        if proximo_cap:
+            session["cap"] = proximo_cap
+            session["frame"] = 0
+            session["cena"] = 1
+        return jsonify({"fim": True, "redirect": "/transicao/dia", "dormir": True})
+
     if acao == "olhar_teto":
-        session["cena"] = 4
-        return jsonify(build_cena_json(cap_id, 4, nova_barra))
+        if session.get("finais"):
+            cena_alvo = 10
+        elif session.get("ignorou_kelly_ato1"):
+            cena_alvo = 7
+        else:
+            cena_alvo = 4
+        session["cena"] = cena_alvo
+        return jsonify(build_cena_json(cap_id, cena_alvo, nova_barra))
 
     if acao == "dormir_cap4":
         session["cena"] = 7
@@ -770,7 +886,8 @@ def escolha_data(opcao):
         return jsonify(build_cena_json(cap_id, 3, nova_barra))
 
     if acao == "deixar_pra_la":
-        return jsonify({"fim": True, "redirect": "/fim_demo?tipo=ruim"})
+        session["cena"] = 4
+        return jsonify(build_cena_json(cap_id, 4, nova_barra))
 
     if acao == "final_aceitar":
         session["tipo_final"] = "aceitar"

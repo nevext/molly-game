@@ -16,7 +16,8 @@
             font-weight: 100 900;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; pointer-events: none; }
+        a, button { pointer-events: auto; }
 
         body {
             width: 100vw;

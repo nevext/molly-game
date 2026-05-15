@@ -28,8 +28,11 @@
    - Kelly fala sobre uma "Reporter perigosa" sendo procurada
    - Molly vai dormir + **ir_dormir: True**
 
-2. **"Não responder e ir dormir"** `delta: 0`
-   - → vai direto para **ato1_cap3_dia**
+2. **"Deixar pra depois e tentar dormir"** `delta: 0`
+   - acao: "naoligar"
+   - → vai para **ato1_cap2_naoligar** (rota curta)
+   - Molly vira o celular de cabeça para baixo
+   - Dorme sem responder
    - Mantém a barra
 
 3. **"Examinar que comentário é esse"** `delta: +1` 🔴 SFX ruim
@@ -297,7 +300,7 @@ ATO 1
   └─ Cap 1 (dia) ✗ escolhas
       └─ Cap 2 (noite) ⚡ ESCOLHA 1
           ├─ Opção 1: Kelly (-1) → Cap 2 Kelly → Cap 3
-          ├─ Opção 2: Dormir (0) → Cap 3
+          ├─ Opção 2: Não Ligar (0) → Cap 2 Não Ligar → Cap 3
           └─ Opção 3: Examinar (+1) → Cap 2 Examinar
               ├─ Sub: Deixar (-1) → dormir
               ├─ Sub: Curtidas (+1) → Ver 32 curtidas → voltar
@@ -337,7 +340,7 @@ FINAL BOM (barra 0-1) OU FINAL RUIM (barra 2-10)
 | Escolha | Opção | Delta | Efeito | Próxima Cena |
 |---------|-------|-------|--------|-------------|
 | 1️⃣ Cap 2 | Responder Kelly | -1 | ✓ Reduz ansiedade | Cap 2 Kelly |
-| 1️⃣ Cap 2 | Dormir | 0 | Neutro | Cap 3 |
+| 1️⃣ Cap 2 | Deixar pra depois | 0 | Neutro | Cap 2 Não Ligar |
 | 1️⃣ Cap 2 | Examinar | +1 | ✗ Aumenta | Cap 2 Examinar |
 | 🔍 Examinar | Deixar | -1 | ✓ Reduz | Dormir |
 | 🔍 Examinar | Ver Curtidas | +1 | ✗ Aumenta | Sub-rota curtidas |

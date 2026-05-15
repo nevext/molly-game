@@ -19,7 +19,8 @@
       "PowerShell(Get-ChildItem -Recurse \"C:\\\\Users\\\\deivi\\\\OneDrive\\\\Desktop\\\\Files\\\\Ciesa atividades\\\\Periodo 3\\\\Pratica de Extensão\\\\Regulamentação das RA\\\\Game\\\\Github\\\\molly-game\\\\static\\\\jornada\\\\ato_1\" | Where-Object {!$_.PSIsContainer} | Select-Object FullName | Sort-Object FullName)",
       "PowerShell(Get-ChildItem *)",
       "PowerShell(Test-Path *)",
-      "PowerShell(& \"C:\\\\Users\\\\deivi\\\\AppData\\\\Local\\\\Python\\\\pythoncore-3.14-64\\\\python.exe\" \"C:\\\\Users\\\\deivi\\\\AppData\\\\Local\\\\Temp\\\\test_molly.py\" 2>&1)"
+      "PowerShell(& \"C:\\\\Users\\\\deivi\\\\AppData\\\\Local\\\\Python\\\\pythoncore-3.14-64\\\\python.exe\" \"C:\\\\Users\\\\deivi\\\\AppData\\\\Local\\\\Temp\\\\test_molly.py\" 2>&1)",
+      "Bash(dir C:\\\\Users\\\\deivi\\\\OneDrive\\\\Desktop\\\\Files\\\\Ciesa atividades\\\\Periodo 3\\\\Pratica de Extensão\\\\Regulamentação das RA\\\\Game\\\\Github\\\\molly-game\\\\static\\\\jornada\\\\ato_3 *)"
     ]
   }
 }
